@@ -164,7 +164,6 @@ export const PageContentContainer = styled.div`
 	}
 
 	${media.smallToMedium`
-
 		padding: 2rem;
 		padding-left: 10rem;
 

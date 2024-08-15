@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MyDependencies from "@components/Dashboard/MyDependencies";
 import Dashboard from "@components/Dashboard";
-import CreateProject from "@components/CreateProject";
+// import CreateProject from "@components/CreateProject";
 import ProjectList from "@components/ProjectList";
 import ErrorModal from "@components/Modal/ErrorModal";
 import DashboardLayout from "@components/Layout/DashboardLayout";
@@ -19,7 +19,7 @@ function App() {
 				<Route path="project" element={<PrivateLayout />}>
 					<Route index element={<ProjectList />} />
 					<Route path="project-list" element={<ProjectList />} />
-					<Route path="create-project" element={<CreateProject />} />
+					{/* <Route path="create-project" element={<CreateProject />} /> */}
 				</Route>
 
 				<Route path="*" element={<ErrorModal />} />
