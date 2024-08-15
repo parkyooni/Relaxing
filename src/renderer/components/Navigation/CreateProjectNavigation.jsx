@@ -1,17 +1,38 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { Navigation } from "@public/style/Project.styles";
+import icons from "@public/images";
 
 const CreateProjectNavigation = () => {
+  const location = useLocation();
+  const isCreateProjectPage = location.pathname === "/project/create-project";
+
   return (
-    <nav>
+    <Navigation isCreateProjectPage={isCreateProjectPage}>
       <ul>
         <li>
-          <Link to="/project/project-list">Project List</Link>
+          <img
+            src={isCreateProjectPage ? icons.logoWhiteIcon : icons.logoIcon}
+            alt="Logo Icon"
+          />
         </li>
-        <li>
-          <Link to="/project/create-project">Create Project</Link>
-        </li>
+        {!isCreateProjectPage && (
+          <>
+            <li>
+              <Link to="/project/project-list">
+                <img src={icons.listIcon} alt="Project List Icon" />
+                <span>Project List</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/project/create-project">
+                <img src={icons.folderIcon} alt="Create Project Icon" />
+                <span>Create Project</span>
+              </Link>
+            </li>
+          </>
+        )}
       </ul>
-    </nav>
+    </Navigation>
   );
 };
 
