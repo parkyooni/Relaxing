@@ -15,12 +15,14 @@ export const theme = {
     small: ".625rem"
   },
   colors: {
-    main: "#ffde5a",
+    main: "#699dff",
     sub: "#878787",
     basic: "#333333",
     white: "#ffffff",
     border: "#8299Bc",
-    opacity: "rgba(51, 51, 51, 0.9)"
+    opacity: "rgba(51, 51, 51, 0.9)",
+    gray: "#cacaca",
+    action: "#ffde5a"
   },
   breakpoints: {
     smallToMedium: "(min-width: 600px) and (max-width: 1200px)",
