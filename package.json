@@ -10,7 +10,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
-    "prepare": "husky"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",
@@ -28,6 +28,7 @@
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.1.4",
     "prettier": "^3.3.3",
     "vite": "^5.4.0"
   },
@@ -36,7 +37,6 @@
   "license": "MIT",
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
-    "husky": "^9.1.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router": "^6.26.0",
@@ -44,7 +44,7 @@
     "styled-components": "^6.1.12"
   },
   "lint-staged": {
-    "./**/*.{js,jsx,ts,tsx}": [
+    "./**/*.{js,jsx,ts,tsx,mjs}": [
       "eslint --fix",
       "prettier --write"
     ]
