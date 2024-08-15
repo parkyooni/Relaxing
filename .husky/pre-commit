@@ -1,0 +1,4 @@
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Hello, husky is running!"
+npx lint-staged
