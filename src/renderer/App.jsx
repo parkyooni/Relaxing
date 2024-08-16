@@ -8,19 +8,19 @@ import DashboardLayout from "@components/Layout/DashboardLayout";
 import PrivateLayout from "@components/Layout/PrivateLayout";
 
 function App() {
-	return (
-		<Router>
-			<Routes>
-				<Route path="/" element={<DashboardLayout />}>
-					<Route path="dashboard/:id" element={<Dashboard />} />
-					<Route path="my-dependencies" element={<MyDependencies />} />
-				</Route>
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<DashboardLayout />}>
+          <Route path="dashboard/:id" element={<Dashboard />} />
+          <Route path="my-dependencies" element={<MyDependencies />} />
+        </Route>
 
-				<Route path="project" element={<PrivateLayout />}>
-					<Route index element={<ProjectList />} />
-					<Route path="project-list" element={<ProjectList />} />
-					{/* <Route path="create-project" element={<CreateProject />} /> */}
-				</Route>
+        <Route path="project" element={<PrivateLayout />}>
+          <Route index element={<ProjectList />} />
+          <Route path="project-list" element={<ProjectList />} />
+          <Route path="create-project" element={<CreateProject />} />
+        </Route>
 
 				<Route path="*" element={<ErrorModal />} />
 			</Routes>
