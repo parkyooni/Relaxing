@@ -186,7 +186,7 @@ export const PageContentContainer = styled.div`
 			}
 		}
 	`}
-
+  
 	.toggle-layout {
 		h1 {
 			padding-bottom: 10px;
