@@ -6,6 +6,10 @@ import logoWhiteIcon from "./logo_white_icon.png";
 import arrowIcon from "./arrow_icon.svg";
 import folderLineIcon from "./folder_line_icon.svg";
 import fileIcon from "./file_icon.png";
+import homeIcon from "./home_icon.svg";
+import dashboardIcon from "./dashboard_icon.svg";
+import puzzleIcon from "./puzzle_icon.svg";
+import settingIcon from "./setting_icon.svg";
 
 export default {
   closeIcon,
@@ -15,5 +19,9 @@ export default {
   fileIcon,
   logoIcon,
   logoWhiteIcon,
-  arrowIcon
+  arrowIcon,
+  homeIcon,
+  dashboardIcon,
+  puzzleIcon,
+  settingIcon
 };

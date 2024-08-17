@@ -12,7 +12,8 @@ export const theme = {
     main: "1.875rem",
     sub: "1.25rem",
     minSmall: ".9375rem",
-    small: ".625rem"
+    small: ".625rem",
+    largest: "9.375rem"
   },
   colors: {
     main: "#699dff",
@@ -22,7 +23,8 @@ export const theme = {
     border: "#8299Bc",
     opacity: "rgba(51, 51, 51, 0.9)",
     gray: "#cacaca",
-    action: "#ffde5a"
+    action: "#ffde5a",
+    activeButton: "#699eff"
   },
   breakpoints: {
     smallToMedium: "(min-width: 600px) and (max-width: 1200px)",

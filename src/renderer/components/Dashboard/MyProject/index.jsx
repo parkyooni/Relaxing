@@ -1,9 +1,8 @@
+import { MyProjectContentContainer } from "@public/style/Dashboard.styles";
+
 const MyProject = () => {
-  return (
-    <>
-      <div>MyProject</div>
-    </>
-  );
+  return <MyProjectContentContainer>
+  </MyProjectContentContainer>;
 };
 
 export default MyProject;
