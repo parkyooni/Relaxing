@@ -60,18 +60,18 @@ const DetailDependencies = () => {
     new Array(dependencies.length).fill("")
   );
 
-  const handleCheckboxChange = index => {
-    setCheckedState(prevState => ({
-      ...prevState,
-      [index]: !prevState[index]
-    }));
-  };
-
-  const handleDevCheckboxChange = index => {
-    setDevCheckedState(prevState => ({
-      ...prevState,
-      [index]: !prevState[index]
-    }));
+  const handleCheckboxChange = (index, isDev = false) => {
+    if (isDev) {
+      setDevCheckedState(prevState => ({
+        ...prevState,
+        [index]: !prevState[index]
+      }));
+    } else {
+      setCheckedState(prevState => ({
+        ...prevState,
+        [index]: !prevState[index]
+      }));
+    }
   };
 
   const handleSelectChange = (index, event) => {
@@ -138,7 +138,7 @@ const DetailDependencies = () => {
             <Devedpendencies>
               <DisabledCheckbox
                 checked={!!devCheckedState[index]}
-                onChange={() => handleDevCheckboxChange(index)}
+                onChange={() => handleCheckboxChange(index, true)}
                 id={`checkbox-dev-${index}`}
                 disabled={!dependency.texts && !dependency.versionOptions}
                 // 데이터 통신했을때, 외부 API에 대한 devedpendencie의 체크 해야함

@@ -9,12 +9,14 @@ const CreateProjectNavigation = () => {
   return (
     <Navigation isCreateProjectPage={isCreateProjectPage}>
       <ul>
-        <li>
-          <img
-            src={isCreateProjectPage ? icons.logoWhiteIcon : icons.logoIcon}
-            alt="Logo Icon"
-          />
-        </li>
+        <Link to="/project/project-list">
+          <li>
+            <img
+              src={isCreateProjectPage ? icons.logoWhiteIcon : icons.logoIcon}
+              alt="Logo Icon"
+            />
+          </li>
+        </Link>
         {!isCreateProjectPage && (
           <>
             <li>

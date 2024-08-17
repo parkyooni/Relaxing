@@ -1,5 +1,19 @@
 import styled from "styled-components";
 
+const getBackgroundColor = (theme, isActive) =>
+  isActive ? theme.colors.white : theme.colors.gray;
+
+const getColor = (theme, isActive) =>
+  isActive ? theme.colors.action : theme.colors.sub;
+
+const getBoxShadow = isActive =>
+  isActive ? "0 4px 4px 0 rgba(0, 0, 0, 0.25)" : "none";
+
+const getFontColor = (theme, isActive) =>
+  isActive ? theme.colors.basic : theme.colors.white;
+
+const getFontWeight = isActive => (isActive ? "bold" : "normal");
+
 const SectionTitle = styled.h2.withConfig({
   shouldForwardProp: prop => prop !== "isActive"
 })`
@@ -10,17 +24,14 @@ const SectionTitle = styled.h2.withConfig({
   margin: 1.25rem 0;
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background-color: ${({ theme, isActive }) =>
-    isActive ? theme.colors.white : theme.colors.gray};
-  color: ${({ theme, isActive }) =>
-    isActive ? theme.colors.action : theme.colors.sub};
-  box-shadow: ${({ isActive }) =>
-    isActive ? "0 4px 4px 0 rgba(0, 0, 0, 0.25)" : "none"};
+    getBackgroundColor(theme, isActive)};
+  color: ${({ theme, isActive }) => getColor(theme, isActive)};
+  box-shadow: ${({ theme, isActive }) => getBoxShadow(theme, isActive)};
   cursor: pointer;
 
   span {
-    color: ${({ theme, isActive }) =>
-      isActive ? theme.colors.basic : theme.colors.white};
-    font-weight: ${({ isActive }) => (isActive ? "bold" : "normal")};
+    color: ${({ theme, isActive }) => getFontColor(theme, isActive)};
+    font-weight: ${({ isActive }) => getFontWeight(isActive)};
   }
 
   img {
