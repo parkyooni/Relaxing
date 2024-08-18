@@ -8,17 +8,17 @@ const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
 
     ::-webkit-scrollbar {
-      width: 10px;
+      width: .625rem;
     }
 
     ::-webkit-scrollbar-track {
-      background: #eeeeee;
-      border-radius: 10px;
+      background: ${({ theme }) => theme.colors.mainScroll};
+      border-radius: .625rem;
     }
 
     ::-webkit-scrollbar-thumb {
-      background-color: #8299bc;
-      border-radius: 10px;
+      background-color: ${({ theme }) => theme.colors.border};
+      border-radius: .625rem;
     }
   }
 

@@ -18,13 +18,16 @@ export const theme = {
   colors: {
     main: "#699dff",
     sub: "#878787",
+    lightMain: "#c9dbff",
     basic: "#333333",
     white: "#ffffff",
     border: "#8299Bc",
     opacity: "rgba(51, 51, 51, 0.9)",
     gray: "#cacaca",
     action: "#ffde5a",
-    activeButton: "#699eff"
+    activeButton: "#699eff",
+    subScroll: "#88b1ff",
+    mainScroll: "#f7f7f7"
   },
   breakpoints: {
     smallToMedium: "(min-width: 600px) and (max-width: 1200px)",

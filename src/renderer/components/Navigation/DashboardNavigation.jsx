@@ -16,7 +16,7 @@ const DashboardNavigation = () => {
           </Link>
         </li>
         <li>
-          <Link to="/dashboard">
+          <Link to="/dashboard/id">
             <img src={icons.dashboardIcon} alt="puzzle Icon" />
             <span>Dashboard</span>
           </Link>

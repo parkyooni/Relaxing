@@ -3,31 +3,49 @@ import { media } from "./theme";
 
 export const DashboardContentContainer = styled.div`
   flex-grow: 1;
-  padding: 3rem;
-  cursor: default;
-  padding-left: 15rem;
   margin-bottom: 3rem;
+  padding: 3rem;
+  padding-left: 15rem;
+  cursor: default;
   transition: padding 0.1s ease-in-out;
 
-  p {
+  > p {
     padding-bottom: 10px;
     font-size: ${({ theme }) => theme.fontSizes.xlarge};
     color: ${({ theme }) => theme.colors.white};
   }
 
   .layer {
-    height: 100%;
     display: flex;
     justify-content: space-between;
+    height: 100%;
   }
+
+  ${media.smallToMedium`
+		padding: 2rem;
+		padding-left: 10rem;
+	`}
 `;
 
 export const MyProjectContentContainer = styled.div`
-  background-color: ${({ theme }) => theme.colors.white};
+  width: 50%;
+  padding: 1.875rem;
   border-radius: ${({ theme }) => theme.borderRadius.main};
   box-shadow: ${({ theme }) => theme.colors.opacity};
-  width: 18.75rem;
-  height: 70%;
+  background-color: ${({ theme }) => theme.colors.white};
+
+  p {
+    border-bottom: 1px dashed ${({ theme }) => theme.colors.lightMain};
+  }
+
+  ul {
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  ${media.smallToMedium`
+    width: 100%;
+	`};
 `;
 
 export const ProjectControllerContainer = styled.div.withConfig({
@@ -37,63 +55,57 @@ export const ProjectControllerContainer = styled.div.withConfig({
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.white};
+  width: 20%;
+  height: 9.375rem;
   border-radius: ${({ theme }) => theme.borderRadius.sub};
   box-shadow: ${({ theme }) => theme.colors.opacity};
-  width: 18.75rem;
-  height: 15%;
+  background-color: ${({ theme }) => theme.colors.white};
 
   h1 {
-    font-size: 1.875rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 3.125rem;
+    font-size: ${({ theme }) => theme.fontSizes.xlarge};
     color: ${({ isStartChecked, theme }) =>
       isStartChecked ? theme.colors.basic : theme.colors.sub};
   }
 
   .project-controller {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: flex-end;
-    width: 90%;
-
-    label {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-around;
-      width: 9rem;
-      height: 3rem;
-      font-size: ${({ theme }) => theme.fontSizes.xsmall};
-    }
+    width: 100%;
+    height: 3.125rem;
+    padding: 0 0.625rem;
+    font-size: ${({ theme }) => theme.fontSizes.xsmall};
 
     span {
-      display: flex;
-      width: 0.5rem;
+      padding-right: 0.625rem;
     }
 
     .project-controller-button {
       appearance: none;
+      position: relative;
       width: 4.5rem;
       height: 2rem;
+      border: 2px solid ${({ theme }) => theme.colors.border};
       border-radius: ${({ theme }) => theme.borderRadius.largest};
       background-color: ${({ isStartChecked, theme }) =>
-        isStartChecked ? theme.colors.activeButton : theme.colors.gray};
-      position: relative;
+        isStartChecked ? theme.colors.main : theme.colors.border};
       cursor: pointer;
       transition: background-color 0.3s ease-in-out;
-      border: 2px solid ${({ theme }) => theme.colors.border};
-
-      &:checked {
-        background-color: ${({ theme }) => theme.colors.sub};
-      }
 
       &:before {
         content: "";
         position: absolute;
+        top: 0.125rem;
+        left: 0.125rem;
         width: 1.5rem;
         height: 1.5rem;
         border-radius: 50%;
         background-color: ${({ theme }) => theme.colors.white};
-        top: 0.125rem;
-        left: 0.125rem;
         transition: left 0.3s ease-in-out;
       }
 
@@ -102,4 +114,24 @@ export const ProjectControllerContainer = styled.div.withConfig({
       }
     }
   }
+
+  ${media.smallToMedium`
+    position: absolute;
+    top: .625rem;
+    flex-direction: row;
+    right: 1.875rem;
+		width: 40%;
+    height: 3.125rem;
+
+    h1 {
+      height: inherit;
+      font-size: 1.25rem;
+      letter-spacing: -1px;
+    }
+
+    .project-controller {
+      justify-content: center;
+      align-items: center;
+    }
+	`};
 `;

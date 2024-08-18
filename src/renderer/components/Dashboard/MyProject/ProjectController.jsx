@@ -11,18 +11,16 @@ const ProjectController = () => {
 
   return (
     <ProjectControllerContainer isStartChecked={isChecked}>
-      <h1>$npm run dev</h1>
-      <div className="project-controller">
-        <label>
-          <span>{isChecked ? "Run" : "End"}</span>
-          <input
-            className="project-controller-button"
-            type="checkbox"
-            checked={isChecked}
-            onChange={handleToggleSwitch}
-          ></input>
-        </label>
-      </div>
+      <h1>$ npm run dev</h1>
+      <label className="project-controller">
+        <span>{isChecked ? "Run" : "End"}</span>
+        <input
+          className="project-controller-button"
+          type="checkbox"
+          checked={isChecked}
+          onChange={handleToggleSwitch}
+        ></input>
+      </label>
     </ProjectControllerContainer>
   );
 };

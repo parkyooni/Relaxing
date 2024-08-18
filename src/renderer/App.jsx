@@ -1,6 +1,10 @@
-import { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import DependencyInstall from "@components/DependencyInstall";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate
+} from "react-router-dom";
+import DependencyInstall from "@components/Dashboard/DependencyInstall";
 import Dashboard from "@components/Dashboard";
 import CreateProject from "@components/CreateProject";
 import ProjectList from "@components/ProjectList";
@@ -24,11 +28,11 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Navigate to="project/project-list" />} />
         <Route path="/" element={<DashboardLayout />}>
           <Route path="dashboard/:id" element={<Dashboard />} />
           <Route path="my-dependencies" element={<DependencyInstall />} />
         </Route>
-
         <Route path="project" element={<PrivateLayout />}>
           <Route index element={<ProjectList showModal={showModal} />} />
           <Route

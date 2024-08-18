@@ -129,8 +129,8 @@ export const PageContentContainer = styled.div`
       align-items: center;
       justify-content: space-between;
       height: 4.375rem;
-      margin: 20px 0;
-      padding: 0 20px;
+      margin: 1.25rem 0;
+      padding: 0 1.25rem;
       border-radius: ${({ theme }) => theme.borderRadius.sub};
       background-color: ${({ theme }) => theme.colors.white};
       box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
