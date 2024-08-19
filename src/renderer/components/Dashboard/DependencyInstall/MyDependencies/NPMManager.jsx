@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   NPMManagerContainer,
   InputContainer,
@@ -7,28 +7,38 @@ import {
   ButtonContainer
 } from "@public/style/DependencyInstall.styles";
 import ButtonBox from "@components/common/ButtonBox";
-
-const dummyKeyword = [
-  { name: "eslint", version: "9.9.0" },
-  { name: "eslint", version: "3.1.8" },
-  { name: "eslint-scope", version: "9.8.7" },
-  { name: "eslint-scope", version: "9.9.0" },
-  { name: "Welcome-Vanilla-Coding" },
-  { name: "React", version: "18.2" }
-];
+import mockData from "@utils/mockData.json";
 
 const NPMManager = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [packageItems, setPackageItems] = useState([]);
   const [selectedPackageItem, setSelectedPackageItem] = useState(null);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isEnterPressed, setIsEnterPressed] = useState(false);
+
+  const isNotFound = packageItems.length === 0;
+
+  useEffect(() => {
+    const handleClickOutside = e => {
+      if (!e.target.closest(".npm-manager-container")) {
+        setIsDropdownVisible(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const handleInputChange = e => {
     setSearchQuery(e.target.value);
+    setIsEnterPressed(false);
+    setIsDropdownVisible(false);
   };
 
   const handleSearch = () => {
     if (searchQuery) {
-      const filtered = dummyKeyword
+      const filtered = mockData.dependenciesSelector
         .filter(pkg =>
           pkg.name.toLowerCase().includes(searchQuery.toLowerCase())
         )
@@ -36,6 +46,8 @@ const NPMManager = () => {
 
       setPackageItems(filtered);
       setSelectedPackageItem(null);
+      setIsDropdownVisible(true);
+      setIsEnterPressed(true);
     }
   };
 
@@ -43,22 +55,31 @@ const NPMManager = () => {
     setSelectedPackageItem(packageItem);
   };
 
+  const handleKeyUp = e => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
-    <NPMManagerContainer>
-      <InputContainer>
+    <NPMManagerContainer className="npm-manager-container">
+      <InputContainer isEnterPressed={isEnterPressed}>
         <input
           type="text"
           value={searchQuery}
           onChange={handleInputChange}
           placeholder="search..."
-          onKeyUp={e => e.key === "Enter" && handleSearch()}
+          onKeyUp={handleKeyUp}
         />
       </InputContainer>
 
-      {packageItems.length > 0 && (
-        <>
-          <PackageListContainer>
-            {packageItems.map(packageItem => (
+      {isDropdownVisible && (
+        <PackageListContainer
+          isEnterPressed={isEnterPressed}
+          isNotFound={isNotFound}
+        >
+          {!isNotFound ? (
+            packageItems.map(packageItem => (
               <PackageListItem
                 onClick={() => handleSearchKeywordClick(packageItem)}
                 className={
@@ -68,21 +89,25 @@ const NPMManager = () => {
               >
                 {packageItem}
               </PackageListItem>
-            ))}
-          </PackageListContainer>
+            ))
+          ) : (
+            <span className="not-found">찾을 수 없습니다.</span>
+          )}
+        </PackageListContainer>
+      )}
 
-          <ButtonContainer>
-            <ButtonBox variant="active" onClick={handleSearch}>
-              검색
-            </ButtonBox>
-            <ButtonBox
-              variant={selectedPackageItem ? "active" : "disabled"}
-              disabled={!selectedPackageItem}
-            >
-              Install
-            </ButtonBox>
-          </ButtonContainer>
-        </>
+      {isDropdownVisible && packageItems.length > 0 && (
+        <ButtonContainer>
+          <ButtonBox variant="active" onClick={handleSearch}>
+            검색
+          </ButtonBox>
+          <ButtonBox
+            variant={selectedPackageItem ? "active" : "disabled"}
+            disabled={!selectedPackageItem}
+          >
+            Install
+          </ButtonBox>
+        </ButtonContainer>
       )}
     </NPMManagerContainer>
   );

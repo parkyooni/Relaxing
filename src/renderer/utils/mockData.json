@@ -1,4 +1,70 @@
 {
+  "folderStructure": {
+    "name": "src",
+    "type": "folder",
+    "children": [
+      {
+        "name": "main",
+        "type": "folder",
+        "children": [
+          {
+            "name": "main.js",
+            "type": "file"
+          },
+          {
+            "name": "preload.js",
+            "type": "file"
+          }
+        ]
+      },
+      {
+        "name": "renderer",
+        "type": "folder",
+        "children": [
+          {
+            "name": "components",
+            "type": "folder",
+            "children": [
+              {
+                "name": "common",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "ButtonBox.jsx",
+                    "type": "file"
+                  },
+                  {
+                    "name": "CheckBox.jsx",
+                    "type": "file"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "CreateProject",
+            "type": "folder",
+            "children": [
+              {
+                "name": "Project",
+                "type": "folder",
+                "children": [
+                  {
+                    "name": "DependenciesSelector.jsx",
+                    "type": "file"
+                  },
+                  {
+                    "name": "DetailDependencies.jsx",
+                    "type": "file"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
   "projects": [
     {
       "id": 1,
@@ -44,6 +110,136 @@
       "id": 9,
       "name": "Project 9",
       "path": "/Users/yooni/Desktop/vaco/project9"
+    }
+  ],
+  "savedSettings": [
+    "내가 저장한 설정 이름 1",
+    "내가 저장한 설정 이름 2",
+    "내가 저장한 설정 이름 3",
+    "내가 저장한 설정 이름 4",
+    "내가 저장한 설정 이름 5",
+    "내가 저장한 설정 이름 6",
+    "내가 저장한 설정 이름 7",
+    "내가 저장한 설정 이름 8",
+    "내가 저장한 설정 이름 9",
+    "내가 저장한 설정 이름 10",
+    "내가 저장한 설정 이름 11",
+    "내가 저장한 설정 이름 12",
+    "내가 저장한 설정 이름 13"
+  ],
+  "packageManagers": ["npm"],
+  "dependenciesSelector": [
+    {
+      "name": "eslint",
+      "version": "^9.9.0",
+      "text": "ESLint is a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.",
+      "type": "boolean"
+    },
+    {
+      "name": "Webpack",
+      "version": "^18.3.1",
+      "text": "Webpack is a static module bundler for modern JavaScript applications.",
+      "type": "boolean"
+    },
+    {
+      "name": "react",
+      "version": "^18.3.1",
+      "text": "React is a JavaScript library for building user interfaces.",
+      "type": "boolean"
+    },
+    {
+      "name": "react-dom",
+      "version": "^18.3.1",
+      "text": "ReactDOM is the entry point to the DOM and server renderers for React.",
+      "type": "boolean"
+    },
+    {
+      "name": "husky",
+      "version": "^9.1.4",
+      "text": "Husky improves your commits and more with Git hooks.",
+      "type": "boolean"
+    },
+    {
+      "name": "Pick a CSS pre-processor",
+      "text": "PostCSS, Autoprefixer and CSS Modules are supported by default.",
+      "versionOptions": [
+        "ESLint with error prevention only",
+        "ESLint + Airbnb config",
+        "ESLint + Standard config",
+        "ESLint + Prettier"
+      ]
+    },
+    {
+      "name": "Pick additional lint features",
+      "texts": [
+        {
+          "text": "Lint on save",
+          "type": "boolean"
+        },
+        {
+          "text": "Lint and fix on commit",
+          "type": "boolean"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "packageName": "react",
+      "currentVersion": "18.3.1",
+      "latestVersion": "18.3.1"
+    },
+    {
+      "packageName": "react-dom",
+      "currentVersion": "18.3.0",
+      "latestVersion": "18.3.1"
+    },
+    {
+      "packageName": "react-router",
+      "currentVersion": "6.26.0",
+      "latestVersion": "6.26.0"
+    },
+    {
+      "packageName": "react-router-dom",
+      "currentVersion": "6.26.0",
+      "latestVersion": "6.26.0"
+    },
+    {
+      "packageName": "redux",
+      "currentVersion": "4.2.1",
+      "latestVersion": "4.2.1"
+    },
+    {
+      "packageName": "styled-components",
+      "currentVersion": "6.1.12",
+      "latestVersion": "6.1.12"
+    },
+    {
+      "packageName": "electron-squirrel-startup",
+      "currentVersion": "1.0.1",
+      "latestVersion": "1.0.1"
+    }
+  ],
+  "devDependencies": [
+    {
+      "packageName": "webpack",
+      "currentVersion": "5.88.1",
+      "latestVersion": "5.88.1"
+    },
+    {
+      "packageName": "babel",
+      "currentVersion": "7.22.10",
+      "latestVersion": "7.22.10"
+    },
+    {
+      "packageName": "eslint",
+      "currentVersion": "8.47.0",
+      "latestVersion": "8.47.0"
+    },
+    {
+      "packageName": "jest",
+      "currentVersion": "29.7.0",
+      "latestVersion": "29.7.0"
     }
   ]
 }

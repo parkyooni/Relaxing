@@ -24,7 +24,9 @@ const getBorderColor = (theme, variant) => {
   return "transparent";
 };
 
-const ButtonBox = styled.button`
+const ButtonBox = styled.button.withConfig({
+  shouldForwardProp: prop => prop !== "variant"
+})`
   font-size: ${({ theme }) => theme.fontSizes.normal};
   background-color: ${({ theme, variant }) =>
     getBackgroundColor(theme, variant)};

@@ -10,6 +10,7 @@ export const ModalBackground = styled.div`
   width: 100%;
   height: 100%;
   background: ${({ theme }) => theme.colors.opacity};
+  z-index: 20;
 `;
 
 export const ModalContainer = styled.div`

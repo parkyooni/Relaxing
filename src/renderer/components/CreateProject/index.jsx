@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigation, useModal } from "@utils/common.cjs";
+import { useNavigation, useModal } from "@utils/common";
 import {
   PageContentContainer,
   ButtonContainer

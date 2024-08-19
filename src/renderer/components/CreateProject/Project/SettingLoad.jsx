@@ -1,28 +1,12 @@
-import React, { useState } from "react";
-import {
-  SettingLoadContainer,
-  RadioGroup,
-  RadioButton
-} from "@public/style/Project.styles";
+import { useState } from "react";
+import { SettingLoadContainer, RadioGroup } from "@public/style/Project.styles";
+import RadioBox from "@components/common/RadioBox";
+import mockData from "@utils/mockData.json";
 
 const SettingLoad = () => {
   const [selectedOption, setSelectedOption] = useState("userDefined");
 
-  const savedSettings = [
-    "내가 저장한 설정 이름 1",
-    "내가 저장한 설정 이름 2",
-    "내가 저장한 설정 이름 3",
-    "내가 저장한 설정 이름 4",
-    "내가 저장한 설정 이름 5",
-    "내가 저장한 설정 이름 6",
-    "내가 저장한 설정 이름 7",
-    "내가 저장한 설정 이름 8",
-    "내가 저장한 설정 이름 9",
-    "내가 저장한 설정 이름 10",
-    "내가 저장한 설정 이름 11",
-    "내가 저장한 설정 이름 12",
-    "내가 저장한 설정 이름 13"
-  ];
+  const savedSettings = mockData.savedSettings;
 
   const handleChange = e => {
     setSelectedOption(e.target.value);
@@ -31,32 +15,27 @@ const SettingLoad = () => {
   return (
     <SettingLoadContainer>
       <RadioGroup>
-        <label>
-          <RadioButton
-            id="userDefined"
-            name="setting"
-            value="userDefined"
-            checked={selectedOption === "userDefined"}
-            onChange={handleChange}
-          />
-          <span>사용자 정의</span>
-        </label>
+        <RadioBox
+          id="userDefined"
+          name="setting"
+          value="userDefined"
+          checked={selectedOption === "userDefined"}
+          onChange={handleChange}
+          label="사용자 정의"
+        />
       </RadioGroup>
       <RadioGroup>
-        <RadioGroup>
-          {savedSettings.map((setting, index) => (
-            <label key={index}>
-              <RadioButton
-                id={`savedSetting-${index}`}
-                name="setting"
-                value={setting}
-                checked={selectedOption === setting}
-                onChange={handleChange}
-              />
-              <span>{setting}</span>
-            </label>
-          ))}
-        </RadioGroup>
+        {savedSettings.map((setting, index) => (
+          <RadioBox
+            key={index}
+            id={`savedSetting-${index}`}
+            name="setting"
+            value={setting}
+            checked={selectedOption === setting}
+            onChange={handleChange}
+            label={setting}
+          />
+        ))}
       </RadioGroup>
     </SettingLoadContainer>
   );

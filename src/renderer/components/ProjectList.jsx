@@ -1,5 +1,5 @@
 import { PageContentContainer } from "@public/style/Project.styles";
-import { useNavigation } from "@utils/common.cjs";
+import { useNavigation } from "@utils/common";
 import icons from "@public/images";
 import mockData from "@utils/mockData.json";
 

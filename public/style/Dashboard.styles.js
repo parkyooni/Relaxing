@@ -36,12 +36,41 @@ export const MyProjectContentContainer = styled.div`
   ${commonBoxShadow}
 
   p {
+    display: flex;
+    align-items: center;
+    padding: 0.3125rem 0;
+    font-size: ${({ theme }) => theme.fontSizes.largePlus};
+    color: ${({ theme }) => theme.colors.basic};
     border-bottom: 1px dashed ${({ theme }) => theme.colors.lightMain};
+
+    img {
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
   }
 
-  ul {
+  > ul {
     height: 100%;
     overflow-y: auto;
+    padding: 0.625rem 0 0.9375rem 1rem;
+
+    li {
+      margin-bottom: 0.5rem;
+      padding-top: 0.1875rem;
+
+      img {
+        margin-right: 0.5rem;
+      }
+
+      span {
+        font-size: 1rem;
+        color: ${({ theme }) => theme.colors.basicText};
+      }
+    }
+
+    li ul {
+      padding-left: 1rem;
+    }
   }
 
   ${media.smallToMedium`
@@ -112,7 +141,7 @@ export const ProjectControllerContainer = styled.div.withConfig({
       }
 
       &:checked:before {
-        transform: translateX(2rem);
+        transform: translateX(2.5rem);
       }
     }
   }

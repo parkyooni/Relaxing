@@ -10,6 +10,8 @@ import {
   SelectWrapper,
   ProjectNameSelect
 } from "@public/style/Project.styles";
+import mockData from "@utils/mockData.json";
+import { getTopFolderPath, processFileList } from "@utils/fileUtils.cjs";
 
 const ProjectStarter = () => {
   const [path, setPath] = useState("");
@@ -25,50 +27,16 @@ const ProjectStarter = () => {
     const fileList = event.target.files;
     if (fileList.length > 0) {
       const fullPath = fileList[0].webkitRelativePath;
-      const topFolderPath = fullPath.substring(0, fullPath.indexOf("/"));
+      const topFolderPath = getTopFolderPath(fullPath);
       setPath(topFolderPath);
 
-      const foldersSet = new Set();
-      const filesArray = [];
-
-      Array.from(fileList).forEach(file => {
-        const relativePath = file.webkitRelativePath.replace(
-          `${topFolderPath}/`,
-          ""
-        );
-        const pathSegments = relativePath.split("/");
-
-        if (pathSegments.length === 1) {
-          filesArray.push({
-            name: file.name,
-            type: "file",
-            path: file.webkitRelativePath
-          });
-        } else if (pathSegments.length > 1) {
-          foldersSet.add(pathSegments[0]);
-        }
-      });
-
-      foldersSet.forEach(folderName => {
-        filesArray.push({
-          name: folderName,
-          type: "folder",
-          path: `${topFolderPath}/${folderName}`
-        });
-      });
-
-      const sortedFilesArray = filesArray.sort((a, b) => {
-        if (a.type === b.type) {
-          return a.name.localeCompare(b.name);
-        }
-        return a.type === "folder" ? -1 : 1;
-      });
-
+      const sortedFilesArray = processFileList(fileList, topFolderPath);
       setFiles(sortedFilesArray);
     }
   };
 
-  const packageManagers = ["npm"];
+  const packageManagers = mockData.packageManagers;
+
   const handlePackageManagerChange = event => {
     setSelectedPackageManager(event.target.value);
   };

@@ -245,26 +245,6 @@ export const RadioGroup = styled.ul`
   }
 `;
 
-export const RadioButton = styled.input.attrs({ type: "radio" })`
-  appearance: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 2px solid ${({ theme }) => theme.colors.action};
-  border-radius: 50%;
-  cursor: pointer;
-
-  &:checked::before {
-    content: "";
-    width: 1rem;
-    height: 1rem;
-    border-radius: 50%;
-    background-color: ${({ theme }) => theme.colors.action};
-  }
-`;
-
 export const ProjectStarterContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -473,22 +453,16 @@ export const ControlContainers = styled.div`
   flex-direction: column;
   align-items: center;
 
-  .sub-text {
+  .option-check-box {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
 
-    &:first-child {
-      padding-bottom: 0.125rem;
-    }
-
-    span {
-      width: 100%;
-      padding-right: 0.3125rem;
+    > label {
+      width: inherit;
+      padding-right: 3px;
       text-align: right;
-      font-size: ${({ theme }) => theme.fontSizes.normal};
-      color: ${({ theme }) => theme.colors.basic};
     }
   }
 `;

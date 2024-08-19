@@ -35,11 +35,18 @@ const StyledCheckbox = styled.label`
   }
 `;
 
-const Checkbox = ({ checked, id, disabled, ...props }) => (
-  <CheckboxWrapper>
-    <HiddenCheckbox checked={checked} id={id} disabled={disabled} {...props} />
-    <StyledCheckbox checked={checked} htmlFor={id} disabled={disabled} />
-  </CheckboxWrapper>
-);
+const Checkbox = ({ checked, id, disabled, ...props }) => {
+  return (
+    <CheckboxWrapper>
+      <HiddenCheckbox
+        checked={checked}
+        id={id}
+        disabled={disabled}
+        {...props}
+      />
+      <StyledCheckbox checked={checked} htmlFor={id} disabled={disabled} />
+    </CheckboxWrapper>
+  );
+};
 
 export default Checkbox;

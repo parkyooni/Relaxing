@@ -89,8 +89,7 @@ export const ButtonContainerStyle = styled.div`
   justify-content: space-between;
   padding: 0.625rem;
   background-color: ${({ theme }) => theme.colors.white};
-  border-radius: 0 0 ${({ theme }) => theme.borderRadius.small}
-    ${({ theme }) => theme.borderRadius.small};
+  border-radius: 0 0 ${({ theme }) => theme.borderRadius.small} ${({ theme }) => theme.borderRadius.small};
   ${commonBoxShadow}
 
   button {

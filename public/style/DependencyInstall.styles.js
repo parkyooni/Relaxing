@@ -138,11 +138,13 @@ export const NPMManagerContainer = styled.div`
   align-items: center;
 `;
 
-export const InputContainer = styled.div`
+export const InputContainer = styled.div.withConfig({
+  shouldForwardProp: prop => prop !== "isEnterPressed"
+})`
   width: 18.75rem;
   margin-top: 1rem;
 
-  input {
+  /* input {
     width: 100%;
     height: 1.875rem;
     padding: 0.9375rem;
@@ -150,18 +152,43 @@ export const InputContainer = styled.div`
     ${commonBorderRadius}
     ${commonBoxShadow}
 		background-color: ${({ theme }) => theme.colors.white};
+  } */
+
+  input {
+    width: 100%;
+    height: 1.875rem;
+    padding: 0.9375rem;
+    font-size: ${({ theme }) => theme.fontSizes.medium};
+    ${commonBorderRadius};
+    background-color: ${({ theme }) => theme.colors.white};
+    ${({ isEnterPressed }) => !isEnterPressed && commonBoxShadow};
+
+    border-bottom-left-radius: ${({ isEnterPressed }) =>
+      isEnterPressed ? "0" : commonBorderRadius};
+    border-bottom-right-radius: ${({ isEnterPressed }) =>
+      isEnterPressed ? "0" : commonBorderRadius};
   }
 `;
 
-export const PackageListContainer = styled.div`
+export const PackageListContainer = styled.div.withConfig({
+  shouldForwardProp: prop => prop !== "isEnterPressed" && prop !== "isNotFound"
+})`
   width: 18.75rem;
-  height: 18.75rem;
+  height: ${({ isNotFound }) => (isNotFound ? "3.125rem" : "18.75rem")};
   padding: 0.9375rem;
   border-top: 1px dashed ${({ theme }) => theme.colors.lightMain};
   background-color: ${({ theme }) => theme.colors.white};
   overflow-y: auto;
-  border-radius: ${({ theme }) => theme.borderRadius.small}
-    ${({ theme }) => theme.borderRadius.small} 0 0;
+  border-radius: ${({ isNotFound, theme }) =>
+    isNotFound
+      ? `0 0 ${theme.borderRadius.small} ${theme.borderRadius.small}`
+      : "0"};
+
+  .not-found {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+  }
 `;
 
 export const PackageListItem = styled.div.withConfig({
@@ -177,8 +204,10 @@ export const PackageListItem = styled.div.withConfig({
     background-color: ${({ theme }) => theme.colors.action};
   }
 
-  &:last-child {
-    border-bottom: none;
+  &.selected {
+    color: ${({ theme }) => theme.colors.white};
+    background-color: ${({ theme }) => theme.colors.action};
+    font-weight: bold;
   }
 `;
 
