@@ -12,52 +12,43 @@ import ToggleSection from "@components/common/ToggleSection";
 import ButtonBox from "@components/common/ButtonBox";
 import CancelModal from "@components/Modal/CancelModal";
 import SaveModal from "@components/Modal/SaveModal";
+import useUIStore from "@/store/UIStore";
 
 const CreateProject = () => {
   const { navigateToPath } = useNavigation();
-  const [sections, setSections] = useState({
-    showSettingLoad: false,
-    showProjectStarter: false,
-    showDependenciesSelector: false,
-    showDetailDependencies: false
-  });
 
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const { isModalOpen, openModal, closeModal } = useModal();
-  const [activeModal, setActiveModal] = useState(null);
-
-  const toggleSection = section => {
-    setSections(prevSections => ({
-      ...prevSections,
-      [section]: !prevSections[section]
-    }));
-    setHasUnsavedChanges(true);
-  };
+  const {
+    isModalOpen,
+    activeModal,
+    showModal,
+    closeModal,
+    setActiveModal,
+    sections,
+    toggleSection,
+    switchToggle,
+    setSwitchToggle,
+    resetSections
+  } = useUIStore();
 
   const handleCancelClick = () => {
-    if (hasUnsavedChanges) {
+    if (switchToggle) {
       setActiveModal("cancel");
-      openModal();
+      showModal();
     } else {
       navigateToPath("/project/project-list");
     }
   };
 
   const handleSaveClick = () => {
-    if (hasUnsavedChanges) {
+    if (switchToggle) {
       setActiveModal("save");
-      openModal();
+      showModal();
     }
   };
 
   const handleConfirmCancel = () => {
-    setSections({
-      showSettingLoad: false,
-      showProjectStarter: false,
-      showDependenciesSelector: false,
-      showDetailDependencies: false
-    });
-    setHasUnsavedChanges(false);
+    resetSections();
+    setSwitchToggle(false);
     closeModal();
     navigateToPath("/project/project-list");
   };
@@ -70,8 +61,8 @@ const CreateProject = () => {
         </ButtonBox>
         <ButtonBox
           onClick={handleSaveClick}
-          variant={hasUnsavedChanges ? "active" : "disabled"}
-          disabled={!hasUnsavedChanges}
+          variant={switchToggle ? "active" : "disabled"}
+          disabled={!switchToggle}
         >
           저장
         </ButtonBox>
@@ -83,28 +74,28 @@ const CreateProject = () => {
           isActive={sections.showSettingLoad}
           onToggle={() => toggleSection("showSettingLoad")}
         >
-          <SettingLoad onChange={() => setHasUnsavedChanges(true)} />
+          <SettingLoad onChange={() => setSwitchToggle(true)} />
         </ToggleSection>
         <ToggleSection
           title="Project Starter"
           isActive={sections.showProjectStarter}
           onToggle={() => toggleSection("showProjectStarter")}
         >
-          <ProjectStarter onChange={() => setHasUnsavedChanges(true)} />
+          <ProjectStarter onChange={() => setSwitchToggle(true)} />
         </ToggleSection>
         <ToggleSection
           title="Dependencies Selector"
           isActive={sections.showDependenciesSelector}
           onToggle={() => toggleSection("showDependenciesSelector")}
         >
-          <DependenciesSelector onChange={() => setHasUnsavedChanges(true)} />
+          <DependenciesSelector onChange={() => setSwitchToggle(true)} />
         </ToggleSection>
         <ToggleSection
           title="Detail Dependencies"
           isActive={sections.showDetailDependencies}
           onToggle={() => toggleSection("showDetailDependencies")}
         >
-          <DetailDependencies onChange={() => setHasUnsavedChanges(true)} />
+          <DetailDependencies onChange={() => setSwitchToggle(true)} />
         </ToggleSection>
       </div>
 

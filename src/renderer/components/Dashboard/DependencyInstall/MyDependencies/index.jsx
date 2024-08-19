@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { MyDependenciesContainer } from "@public/style/DependencyInstall.styles";
 import DependencyList from "@components/common/DependencyList";
 import mockData from "@utils/mockData.json";
+import useUIStore from "@/store/UIStore";
 
 const MyDependencies = () => {
-  const [activeTab, setActiveTab] = useState("dependencies");
+  const { activeTab, setActiveTab } = useUIStore();
 
   const handleIconClick = dependency => {
     console.log(`삭제 할 패키지: ${dependency.packageName}`);

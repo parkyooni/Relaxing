@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -12,19 +11,10 @@ import ProjectList from "@components/ProjectList";
 import ErrorModal from "@components/Modal/ErrorModal";
 import DashboardLayout from "@components/Layout/DashboardLayout";
 import PrivateLayout from "@components/Layout/PrivateLayout";
+import useUIStore from "@/store/uiStore";
 
 function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-
-  const showModal = message => {
-    setModalMessage(message);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  const { isModalOpen, modalMessage, showModal, closeModal } = useUIStore();
 
   return (
     <Router>
