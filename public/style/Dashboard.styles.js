@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { media } from "./theme";
+import { media, commonBoxShadow } from "./utils.styles";
 
 export const DashboardContentContainer = styled.div`
   flex-grow: 1;
@@ -33,6 +33,7 @@ export const MyProjectContentContainer = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.main};
   box-shadow: ${({ theme }) => theme.colors.opacity};
   background-color: ${({ theme }) => theme.colors.white};
+  ${commonBoxShadow}
 
   p {
     border-bottom: 1px dashed ${({ theme }) => theme.colors.lightMain};
@@ -60,6 +61,7 @@ export const ProjectControllerContainer = styled.div.withConfig({
   border-radius: ${({ theme }) => theme.borderRadius.sub};
   box-shadow: ${({ theme }) => theme.colors.opacity};
   background-color: ${({ theme }) => theme.colors.white};
+  ${commonBoxShadow}
 
   h1 {
     display: flex;

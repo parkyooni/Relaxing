@@ -1,6 +1,10 @@
 import styled from "styled-components";
-import { media } from "./theme";
-import { FlexContainer } from "./utils.styles";
+import {
+  media,
+  FlexContainer,
+  commonBoxShadow,
+  commonBorderRadius
+} from "./utils.styles";
 import Checkbox from "@components/common/CheckBox";
 import icons from "../images";
 
@@ -113,13 +117,13 @@ export const PageContentContainer = styled.div`
   transition: padding 0.1s ease-in-out;
 
   h1 {
-    padding-bottom: 10px;
+    padding-bottom: 0.625rem;
     font-size: ${({ theme }) => theme.fontSizes.xlarge};
     color: ${({ theme }) => theme.colors.white};
   }
 
   .project-title {
-    padding-bottom: 5px;
+    padding-bottom: 0.3125rem;
     font-size: ${({ theme }) => theme.fontSizes.xlarge};
   }
 
@@ -133,7 +137,7 @@ export const PageContentContainer = styled.div`
       padding: 0 1.25rem;
       border-radius: ${({ theme }) => theme.borderRadius.sub};
       background-color: ${({ theme }) => theme.colors.white};
-      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+      ${commonBoxShadow}
       cursor: pointer;
       transition: all 0.1s ease-in-out;
 
@@ -189,11 +193,20 @@ export const PageContentContainer = styled.div`
 
   .toggle-layout {
     h1 {
-      padding-bottom: 10px;
+      padding-bottom: 0.625rem;
       font-size: ${({ theme }) => theme.fontSizes.xlarge};
       color: ${({ theme }) => theme.colors.white};
     }
   }
+`;
+
+export const ButtonContainer = styled.div`
+  position: absolute;
+  top: 1.25rem;
+  right: 4.5%;
+  display: flex;
+  gap: 1rem;
+  z-index: 10;
 `;
 
 export const SettingLoadContainer = styled.div`
@@ -202,7 +215,7 @@ export const SettingLoadContainer = styled.div`
   gap: 1rem;
   padding: 1rem;
   border-radius: ${({ theme }) => theme.borderRadius.main};
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  ${commonBoxShadow}
   background-color: ${({ theme }) => theme.colors.white};
   overflow-y: auto;
 `;
@@ -268,20 +281,20 @@ export const PathInput = styled.input`
   flex-grow: 1;
   padding: 1.25rem;
   margin-right: 0.625rem;
-  border-radius: ${({ theme }) => theme.borderRadius.minSmall};
+  ${commonBorderRadius}
   font-size: ${({ theme }) => theme.fontSizes.normal};
   color: ${({ theme }) => theme.colors.sub};
   background-color: ${({ theme }) => theme.colors.white};
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  ${commonBoxShadow}
   cursor: default;
 `;
 
 export const UploadButton = styled.button`
   padding: 0.625rem 1.25rem;
-  border-radius: ${({ theme }) => theme.borderRadius.minSmall};
+  ${commonBorderRadius}
   color: ${({ theme }) => theme.colors.basic};
-  font-weight: 700;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  font-weight: bold;
+  ${commonBoxShadow}
   background-color: ${({ theme }) => theme.colors.action};
   cursor: pointer;
 `;
@@ -291,9 +304,9 @@ export const DirectoryListContainer = styled.div`
   height: 15.625rem;
   padding: 1.25rem;
   margin-bottom: 1.25rem;
-  border-radius: ${({ theme }) => theme.borderRadius.minSmall};
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-  background-color: ${({ theme }) => theme.colors.white};
+  ${commonBorderRadius}
+  ${commonBoxShadow}
+	background-color: ${({ theme }) => theme.colors.white};
   overflow-y: auto;
 `;
 
@@ -324,10 +337,10 @@ export const ProjectNameInput = styled.input`
   height: 3.125rem;
   padding: 0.625rem;
   margin-bottom: 0.625rem;
-  border-radius: ${({ theme }) => theme.borderRadius.minSmall};
+  ${commonBorderRadius}
   border: 1px solid ${({ theme }) => theme.colors.gray};
   font-size: ${({ theme }) => theme.fontSizes.normal};
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  ${commonBoxShadow}
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
@@ -361,9 +374,9 @@ export const ProjectNameSelect = styled.select`
   padding: 0.625rem;
   padding-right: 2rem;
   border: 1px solid ${({ theme }) => theme.colors.gray};
-  border-radius: ${({ theme }) => theme.borderRadius.minSmall};
-  font-size: ${({ theme }) => theme.fontSizes.normal};
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  ${commonBorderRadius}
+  ${commonBoxShadow}
+	font-size: ${({ theme }) => theme.fontSizes.normal};
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
@@ -479,26 +492,6 @@ export const ControlContainers = styled.div`
     }
   }
 `;
-
-// export const SelectWrapper = styled.div`
-// 	position: relative;
-// 	margin-bottom: 0.625rem;
-// 	color: ${({ theme }) => theme.colors.border};
-
-// 	&::after {
-// 		content: "";
-// 		position: absolute;
-// 		top: 50%;
-// 		right: 0.75rem;
-// 		width: 1rem;
-// 		height: 1rem;
-// 		background: url(${icons.arrowIcon}) no-repeat;
-// 		background-size: contain;
-// 		pointer-events: none;
-// 		transform: translateY(-50%) rotate(180deg);
-// 		transition: transform 0.3s ease;
-// 	}
-// `;
 
 export const Select = styled.select`
   appearance: none;

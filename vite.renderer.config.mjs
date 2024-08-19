@@ -23,7 +23,8 @@ export default defineConfig(env => {
       alias: {
         "@": path.resolve(__dirname, "src/renderer"),
         "@public": path.resolve(__dirname, "public"),
-        "@components": path.resolve(__dirname, "src/renderer/components")
+        "@components": path.resolve(__dirname, "src/renderer/components"),
+        "@utils": path.resolve(__dirname, "src/renderer/utils")
       }
     },
     clearScreen: false

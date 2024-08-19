@@ -29,26 +29,6 @@ const dummyDependency = [
     packageName: "electron-squirrel-startup",
     currentVersion: "1.0.1",
     latestVersion: "1.0.1"
-  },
-  {
-    packageName: "electron-squirrel-startup",
-    currentVersion: "1.0.1",
-    latestVersion: "1.0.1"
-  },
-  {
-    packageName: "electron-squirrel-startup",
-    currentVersion: "1.0.1",
-    latestVersion: "1.0.1"
-  },
-  {
-    packageName: "electron-squirrel-startup",
-    currentVersion: "1.0.1",
-    latestVersion: "1.0.1"
-  },
-  {
-    packageName: "electron-squirrel-startup",
-    currentVersion: "1.0.1",
-    latestVersion: "1.0.1"
   }
 ];
 

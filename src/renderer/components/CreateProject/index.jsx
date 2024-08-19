@@ -1,28 +1,20 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { PageContentContainer } from "@public/style/Project.styles";
+import { useNavigation, useModal } from "@utils/common.cjs";
+import {
+  PageContentContainer,
+  ButtonContainer
+} from "@public/style/Project.styles";
 import DependenciesSelector from "@components/CreateProject/Project/DependenciesSelector";
 import DetailDependencies from "@components/CreateProject/Project/DetailDependencies";
 import ProjectStarter from "@components/CreateProject/Project/ProjectStarter";
 import SettingLoad from "@components/CreateProject/Project/SettingLoad";
+import ToggleSection from "@components/common/ToggleSection";
 import ButtonBox from "@components/common/ButtonBox";
-import styled from "styled-components";
-import icons from "@public/images";
-import SectionTitle from "@components/common/SectionTitle";
 import CancelModal from "@components/Modal/CancelModal";
 import SaveModal from "@components/Modal/SaveModal";
 
-const ButtonContainer = styled.div`
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  display: flex;
-  gap: 1rem;
-`;
-
 const CreateProject = () => {
-  const navigate = useNavigate();
-
+  const { navigateToPath } = useNavigation();
   const [sections, setSections] = useState({
     showSettingLoad: false,
     showProjectStarter: false,
@@ -31,8 +23,8 @@ const CreateProject = () => {
   });
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showSaveModal, setShowSaveModal] = useState(false);
+  const { isModalOpen, openModal, closeModal } = useModal();
+  const [activeModal, setActiveModal] = useState(null);
 
   const toggleSection = section => {
     setSections(prevSections => ({
@@ -44,45 +36,38 @@ const CreateProject = () => {
 
   const handleCancelClick = () => {
     if (hasUnsavedChanges) {
-      setShowCancelModal(true);
+      setActiveModal("cancel");
+      openModal();
     } else {
-      console.log("No unsaved changes. Proceed with cancellation.");
-      navigate("/project/project-list");
+      navigateToPath("/project/project-list");
     }
   };
 
   const handleSaveClick = () => {
     if (hasUnsavedChanges) {
-      setShowSaveModal(true);
+      setActiveModal("save");
+      openModal();
     }
   };
 
   const handleConfirmCancel = () => {
-    console.log("Cancel confirmed. Navigating to ProjectList...");
     setSections({
       showSettingLoad: false,
       showProjectStarter: false,
       showDependenciesSelector: false,
       showDetailDependencies: false
     });
-
     setHasUnsavedChanges(false);
-    setShowCancelModal(false);
-    navigate("/project/project-list");
-  };
-
-  const handleDismissCancelModal = () => {
-    setShowCancelModal(false);
-  };
-
-  const handleDismissSaveModal = () => {
-    setShowSaveModal(false);
+    closeModal();
+    navigateToPath("/project/project-list");
   };
 
   return (
     <PageContentContainer>
       <ButtonContainer>
-        <ButtonBox onClick={handleCancelClick}>취소</ButtonBox>
+        <ButtonBox variant="default" onClick={handleCancelClick}>
+          취소
+        </ButtonBox>
         <ButtonBox
           onClick={handleSaveClick}
           variant={hasUnsavedChanges ? "active" : "disabled"}
@@ -93,63 +78,51 @@ const CreateProject = () => {
       </ButtonContainer>
       <div className="toggle-layout">
         <h1>Create Project</h1>
-        <SectionTitle
+        <ToggleSection
+          title="Setting Load"
           isActive={sections.showSettingLoad}
-          onClick={() => toggleSection("showSettingLoad")}
+          onToggle={() => toggleSection("showSettingLoad")}
         >
-          <span>Setting Load</span>
-          <img src={icons.arrowIcon} alt="Arrow Icon" />
-        </SectionTitle>
-        {sections.showSettingLoad && (
           <SettingLoad onChange={() => setHasUnsavedChanges(true)} />
-        )}
-
-        <SectionTitle
+        </ToggleSection>
+        <ToggleSection
+          title="Project Starter"
           isActive={sections.showProjectStarter}
-          onClick={() => toggleSection("showProjectStarter")}
+          onToggle={() => toggleSection("showProjectStarter")}
         >
-          <span>Project Starter</span>
-          <img src={icons.arrowIcon} alt="Project List Icon" />
-        </SectionTitle>
-        {sections.showProjectStarter && (
           <ProjectStarter onChange={() => setHasUnsavedChanges(true)} />
-        )}
-
-        <SectionTitle
+        </ToggleSection>
+        <ToggleSection
+          title="Dependencies Selector"
           isActive={sections.showDependenciesSelector}
-          onClick={() => toggleSection("showDependenciesSelector")}
+          onToggle={() => toggleSection("showDependenciesSelector")}
         >
-          <span>Dependencies Selector</span>
-          <img src={icons.arrowIcon} alt="Project List Icon" />
-        </SectionTitle>
-        {sections.showDependenciesSelector && (
           <DependenciesSelector onChange={() => setHasUnsavedChanges(true)} />
-        )}
-
-        <SectionTitle
+        </ToggleSection>
+        <ToggleSection
+          title="Detail Dependencies"
           isActive={sections.showDetailDependencies}
-          onClick={() => toggleSection("showDetailDependencies")}
+          onToggle={() => toggleSection("showDetailDependencies")}
         >
-          <span>Detail Dependencies</span>
-          <img src={icons.arrowIcon} alt="Project List Icon" />
-        </SectionTitle>
-        {sections.showDetailDependencies && (
           <DetailDependencies onChange={() => setHasUnsavedChanges(true)} />
-        )}
+        </ToggleSection>
       </div>
 
-      {showCancelModal && (
-        <CancelModal
-          onConfirm={handleConfirmCancel}
-          onCancel={handleDismissCancelModal}
-        />
+      {isModalOpen && activeModal === "cancel" && (
+        <CancelModal onConfirm={handleConfirmCancel} onCancel={closeModal} />
       )}
 
-      {showSaveModal && (
+      {isModalOpen && activeModal === "save" && (
         <SaveModal
-          onSave={() => console.log("Save confirmed!")}
-          onCreate={() => console.log("Save custom!")}
-          onCancel={handleDismissSaveModal}
+          onSave={() => {
+            console.log("Save confirmed!");
+            closeModal();
+          }}
+          onCreate={() => {
+            console.log("Save custom!");
+            closeModal();
+          }}
+          onCancel={closeModal}
         />
       )}
     </PageContentContainer>

@@ -1,34 +1,30 @@
 import styled from "styled-components";
-import { media } from "./theme";
+import {
+  media,
+  FlexContainer,
+  commonBoxShadow,
+  commonBorderRadius,
+  ContainerStyle,
+  ButtonContainerStyle
+} from "./utils.styles";
 import ButtonBox from "@components/common/ButtonBox";
 
-export const DependencyInstallContentContainer = styled.div`
-  display: flex;
-  flex-grow: 1;
-  margin-bottom: 3rem;
-  padding: 3rem;
-  padding-left: 15rem;
-  transition: padding 0.1s ease-in-out;
-  cursor: default;
-
+export const DependencyInstallContentContainer = styled(ContainerStyle)`
   .my-dependencies {
     width: 75%;
 
     h1 {
-      padding-bottom: 10px;
+      padding-bottom: 0.625rem;
       font-size: ${({ theme }) => theme.fontSizes.xlarge};
       color: ${({ theme }) => theme.colors.white};
     }
   }
 
   ${media.smallToMedium`
-		padding: 2rem;
-		padding-left: 10rem;
-
-		.my-dependencies {
-			width: 100%;
-		}
-	`}
+    .my-dependencies {
+      width: 100%;
+    }
+  `}
 `;
 
 export const MyDependenciesContainer = styled.div`
@@ -102,9 +98,9 @@ export const MyDependenciesContainer = styled.div`
           height: 4.375rem;
           margin: 0.625rem 0;
           padding: 0 1.25rem;
-          border-radius: ${({ theme }) => theme.borderRadius.sub};
-          background-color: ${({ theme }) => theme.colors.white};
-          box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+          ${commonBorderRadius}
+          ${commonBoxShadow}
+					background-color: ${({ theme }) => theme.colors.white};
           transition: all 0.1s ease-in-out;
           cursor: pointer;
 
@@ -137,7 +133,7 @@ export const NPMManagerContainer = styled.div`
   position: fixed;
   right: 1.25rem;
   top: 0;
-  display: flex;
+  ${FlexContainer}
   flex-direction: column;
   align-items: center;
 `;
@@ -151,9 +147,9 @@ export const InputContainer = styled.div`
     height: 1.875rem;
     padding: 0.9375rem;
     font-size: ${({ theme }) => theme.fontSizes.medium};
-    border-radius: ${({ theme }) => theme.borderRadius.small};
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-    background-color: ${({ theme }) => theme.colors.white};
+    ${commonBorderRadius}
+    ${commonBoxShadow}
+		background-color: ${({ theme }) => theme.colors.white};
   }
 `;
 
@@ -186,33 +182,10 @@ export const PackageListItem = styled.div.withConfig({
   }
 `;
 
-export const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0.625rem;
-  background-color: ${({ theme }) => theme.colors.white};
-  border-radius: 0 0 ${({ theme }) => theme.borderRadius.small}
-    ${({ theme }) => theme.borderRadius.small};
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-
+export const ButtonContainer = styled(ButtonContainerStyle)`
   ${ButtonBox} {
-    width: 6.25rem;
-    height: 3.125rem;
-    font-size: ${({ theme }) => theme.fontSizes.medium};
-    border-radius: ${({ theme }) => theme.borderRadius.small};
-
-    &:first-child {
-      background-color: ${({ theme }) => theme.colors.action};
-      color: ${({ theme }) => theme.colors.basic};
-    }
-
-    &:last-child {
-      background-color: ${({ disabled, theme }) =>
-        disabled ? theme.colors.gray : theme.colors.main};
-      color: ${({ disabled, theme }) =>
-        disabled ? theme.colors.basic : theme.colors.white};
-      cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+    &.active {
+      color: ${({ theme }) => theme.colors.white};
     }
   }
 `;

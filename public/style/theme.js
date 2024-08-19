@@ -1,5 +1,4 @@
 import GlobalStyle from "./GlobalStyles";
-import { media } from "./media";
 
 export const theme = {
   fontSizes: {
@@ -18,16 +17,16 @@ export const theme = {
   colors: {
     main: "#699dff",
     sub: "#878787",
-    lightMain: "#c9dbff",
     basic: "#333333",
     white: "#ffffff",
     border: "#8299Bc",
-    opacity: "rgba(51, 51, 51, 0.9)",
     gray: "#cacaca",
     action: "#ffde5a",
     activeButton: "#699eff",
+    lightMain: "#c9dbff",
+    mainScroll: "#f7f7f7",
     subScroll: "#88b1ff",
-    mainScroll: "#f7f7f7"
+    opacity: "rgba(51, 51, 51, 0.9)"
   },
   breakpoints: {
     smallToMedium: "(min-width: 600px) and (max-width: 1200px)",
@@ -35,4 +34,4 @@ export const theme = {
   }
 };
 
-export { GlobalStyle, media };
+export { GlobalStyle };
