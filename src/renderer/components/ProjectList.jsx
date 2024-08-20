@@ -1,10 +1,29 @@
+import { useEffect } from "react";
 import { PageContentContainer } from "@public/style/Project.styles";
 import { useNavigation } from "@utils/common";
 import icons from "@public/images";
-import mockData from "@utils/mockData.json";
+import useUIStore from "@/store/uiStore";
+import useProjectStore from "@/store/projectStore";
 
-const ProjectList = ({ showModal }) => {
+const ProjectList = () => {
+  const { showModal } = useUIStore();
+  const { projects, setProjects, checkProjectPath } = useProjectStore();
   const { navigateToPath } = useNavigation();
+
+  useEffect(() => {
+    const loadProjectLists = async () => {
+      try {
+        const path = "TEMPORARY_PATH";
+
+        const projectData = await window.api.loadProjectList(path);
+        setProjects([projectData]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadProjectLists();
+  }, [setProjects]);
 
   const handleProjectClick = project => {
     if (checkProjectPath(project.path)) {
@@ -15,21 +34,17 @@ const ProjectList = ({ showModal }) => {
   };
 
   const handleIconClick = project => {
-    console.log(`삭제할 프로젝트: ${project.name}`);
-  };
-
-  const checkProjectPath = path => {
-    return true;
+    console.log(`삭제할 프로젝트: ${project.projectName}`);
   };
 
   return (
     <PageContentContainer>
       <h1>Project List</h1>
       <ul>
-        {mockData.projects.map((project, index) => (
+        {projects.map((project, index) => (
           <li key={index} onClick={() => handleProjectClick(project)}>
             <div className="project-title">
-              <span>{project.name}</span>
+              <span>{project.projectName}</span>
               <span>{project.path}</span>
             </div>
 
