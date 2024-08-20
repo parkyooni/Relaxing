@@ -12,8 +12,13 @@ const useUIStore = create(set => ({
     showDetailDependencies: false
   },
   switchToggle: false,
-
   activeTab: "dependencies",
+
+  searchQuery: "",
+  packageItems: [],
+  selectedPackageItem: null,
+  isDropdownVisible: false,
+  isEnterPressed: false,
 
   showModal: message => set({ modalMessage: message, isModalOpen: true }),
   closeModal: () =>
@@ -40,8 +45,13 @@ const useUIStore = create(set => ({
       },
       switchToggle: false
     }),
+  setActiveTab: tabName => set({ activeTab: tabName }),
 
-  setActiveTab: tabName => set({ activeTab: tabName })
+  setSearchQuery: query => set({ searchQuery: query }),
+  setPackageItems: items => set({ packageItems: items }),
+  setSelectedPackageItem: item => set({ selectedPackageItem: item }),
+  setIsDropdownVisible: isVisible => set({ isDropdownVisible: isVisible }),
+  setIsEnterPressed: isPressed => set({ isEnterPressed: isPressed })
 }));
 
 export default useUIStore;

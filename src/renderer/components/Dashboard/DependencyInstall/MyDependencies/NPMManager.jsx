@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import {
   NPMManagerContainer,
   InputContainer,
@@ -8,27 +8,39 @@ import {
 } from "@public/style/DependencyInstall.styles";
 import ButtonBox from "@components/common/ButtonBox";
 import mockData from "@utils/mockData.json";
+import useUIStore from "@/store/uiStore";
 
 const NPMManager = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [packageItems, setPackageItems] = useState([]);
-  const [selectedPackageItem, setSelectedPackageItem] = useState(null);
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [isEnterPressed, setIsEnterPressed] = useState(false);
-
-  const isNotFound = packageItems.length === 0;
+  const {
+    searchQuery,
+    setSearchQuery,
+    packageItems,
+    setPackageItems,
+    selectedPackageItem,
+    setSelectedPackageItem,
+    isDropdownVisible,
+    setIsDropdownVisible,
+    isEnterPressed,
+    setIsEnterPressed
+  } = useUIStore();
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    const handleClickOutside = e => {
-      if (!e.target.closest(".npm-manager-container")) {
+    const handleClickOutside = event => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
         setIsDropdownVisible(false);
+        setIsEnterPressed(false);
       }
     };
-    document.addEventListener("click", handleClickOutside);
+
+    window.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      window.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [setIsDropdownVisible, setIsEnterPressed]);
 
   const handleInputChange = e => {
     setSearchQuery(e.target.value);
@@ -61,55 +73,65 @@ const NPMManager = () => {
     }
   };
 
+  const handleClickOutside = () => {
+    setIsDropdownVisible(false);
+  };
+
   return (
-    <NPMManagerContainer className="npm-manager-container">
-      <InputContainer isEnterPressed={isEnterPressed}>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleInputChange}
-          placeholder="search..."
-          onKeyUp={handleKeyUp}
-        />
-      </InputContainer>
+    <div onClick={handleClickOutside}>
+      <NPMManagerContainer
+        className="npm-manager-container"
+        ref={containerRef}
+        onClick={e => e.stopPropagation()}
+      >
+        <InputContainer isEnterPressed={isEnterPressed}>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleInputChange}
+            placeholder="search..."
+            onKeyUp={handleKeyUp}
+          />
+        </InputContainer>
 
-      {isDropdownVisible && (
-        <PackageListContainer
-          isEnterPressed={isEnterPressed}
-          isNotFound={isNotFound}
-        >
-          {!isNotFound ? (
-            packageItems.map(packageItem => (
-              <PackageListItem
-                onClick={() => handleSearchKeywordClick(packageItem)}
-                className={
-                  packageItem === selectedPackageItem ? "selected" : ""
-                }
-                key={packageItem}
-              >
-                {packageItem}
-              </PackageListItem>
-            ))
-          ) : (
-            <span className="not-found">찾을 수 없습니다.</span>
-          )}
-        </PackageListContainer>
-      )}
-
-      {isDropdownVisible && packageItems.length > 0 && (
-        <ButtonContainer>
-          <ButtonBox variant="active" onClick={handleSearch}>
-            검색
-          </ButtonBox>
-          <ButtonBox
-            variant={selectedPackageItem ? "active" : "disabled"}
-            disabled={!selectedPackageItem}
+        {isDropdownVisible && (
+          <PackageListContainer
+            isEnterPressed={isEnterPressed}
+            isNotFound={packageItems.length === 0}
           >
-            Install
-          </ButtonBox>
-        </ButtonContainer>
-      )}
-    </NPMManagerContainer>
+            {!packageItems.length ? (
+              <span className="not-found">찾을 수 없습니다.</span>
+            ) : (
+              packageItems.map(packageItem => (
+                <PackageListItem
+                  onClick={() => handleSearchKeywordClick(packageItem)}
+                  className={
+                    packageItem === selectedPackageItem ? "selected" : ""
+                  }
+                  key={packageItem}
+                >
+                  {packageItem}
+                </PackageListItem>
+              ))
+            )}
+          </PackageListContainer>
+        )}
+
+        {isDropdownVisible && packageItems.length > 0 && (
+          <ButtonContainer>
+            <ButtonBox variant="active" onClick={handleSearch}>
+              검색
+            </ButtonBox>
+            <ButtonBox
+              variant={selectedPackageItem ? "active" : "disabled"}
+              disabled={!selectedPackageItem}
+            >
+              Install
+            </ButtonBox>
+          </ButtonContainer>
+        )}
+      </NPMManagerContainer>
+    </div>
   );
 };
 

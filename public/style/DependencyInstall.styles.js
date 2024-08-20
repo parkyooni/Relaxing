@@ -144,16 +144,6 @@ export const InputContainer = styled.div.withConfig({
   width: 18.75rem;
   margin-top: 1rem;
 
-  /* input {
-    width: 100%;
-    height: 1.875rem;
-    padding: 0.9375rem;
-    font-size: ${({ theme }) => theme.fontSizes.medium};
-    ${commonBorderRadius}
-    ${commonBoxShadow}
-		background-color: ${({ theme }) => theme.colors.white};
-  } */
-
   input {
     width: 100%;
     height: 1.875rem;

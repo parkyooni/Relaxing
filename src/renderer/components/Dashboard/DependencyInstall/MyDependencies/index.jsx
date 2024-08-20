@@ -1,7 +1,7 @@
 import { MyDependenciesContainer } from "@public/style/DependencyInstall.styles";
 import DependencyList from "@components/common/DependencyList";
 import mockData from "@utils/mockData.json";
-import useUIStore from "@/store/UIStore";
+import useUIStore from "@/store/uiStore";
 
 const MyDependencies = () => {
   const { activeTab, setActiveTab } = useUIStore();
