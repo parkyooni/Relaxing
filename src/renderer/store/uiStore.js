@@ -4,54 +4,71 @@ const useUIStore = create(set => ({
   isModalOpen: false,
   activeModal: null,
   modalMessage: "",
-
   sections: {
     showSettingLoad: true,
     showProjectStarter: false,
     showDependenciesSelector: false,
     showDetailDependencies: false
   },
+
   switchToggle: false,
   activeTab: "dependencies",
 
-  searchQuery: "",
-  packageItems: [],
-  selectedPackageItem: null,
-  isDropdownVisible: false,
-  isEnterPressed: false,
-
-  showModal: message => set({ modalMessage: message, isModalOpen: true }),
-  closeModal: () =>
-    set({ isModalOpen: false, activeModal: null, modalMessage: "" }),
-  setActiveModal: type => set({ activeModal: type }),
-
-  toggleSection: section =>
+  setSectionsVisibility: newVisibility =>
     set(state => ({
       sections: {
         ...state.sections,
-        [section]: !state.sections[section]
-      },
-      switchToggle: true
+        ...newVisibility
+      }
     })),
-  setSwitchToggle: hasSwitch => set({ switchToggle: hasSwitch }),
 
-  resetSections: () =>
+  showModal: (modalType, message = "") =>
     set({
-      sections: {
+      isModalOpen: true,
+      activeModal: modalType,
+      modalMessage: message
+    }),
+  closeModal: () =>
+    set({
+      isModalOpen: false,
+      activeModal: null,
+      modalMessage: ""
+    }),
+
+  toggleSection: section =>
+    set(state => {
+      if (section === "showSettingLoad" || section === "showProjectStarter") {
+        return {
+          sections: {
+            ...state.sections,
+            [section]: !state.sections[section]
+          }
+        };
+      }
+
+      return state;
+    }),
+
+  setSwitchToggle: value => set({ switchToggle: value }),
+  setActiveTab: tabName => set({ activeTab: tabName }),
+
+  resetUIState: () =>
+    set(state => {
+      const initialSections = {
         showSettingLoad: true,
         showProjectStarter: false,
         showDependenciesSelector: false,
         showDetailDependencies: false
-      },
-      switchToggle: false
-    }),
-  setActiveTab: tabName => set({ activeTab: tabName }),
+      };
 
-  setSearchQuery: query => set({ searchQuery: query }),
-  setPackageItems: items => set({ packageItems: items }),
-  setSelectedPackageItem: item => set({ selectedPackageItem: item }),
-  setIsDropdownVisible: isVisible => set({ isDropdownVisible: isVisible }),
-  setIsEnterPressed: isPressed => set({ isEnterPressed: isPressed })
+      return {
+        ...state,
+        sections: initialSections,
+        switchToggle: false,
+        activeTab: "dependencies",
+        ...state.closeModal()
+      };
+    })
 }));
 
 export default useUIStore;

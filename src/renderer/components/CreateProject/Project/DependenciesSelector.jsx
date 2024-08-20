@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Checkbox from "@components/common/CheckBox";
 import {
   DependenciesSelectorContainer,
@@ -6,9 +6,11 @@ import {
   TextContainer,
   ControlContainer
 } from "@public/style/Project.styles";
+import useProjectStore from "@/store/projectStore";
 import mockData from "@utils/mockData.json";
 
 const DependenciesSelector = () => {
+  const { setDependenciesSelected } = useProjectStore();
   const dependencies = mockData.dependenciesSelector;
 
   const [checkedState, setCheckedState] = useState(
@@ -21,6 +23,11 @@ const DependenciesSelector = () => {
     );
     setCheckedState(updatedCheckedState);
   };
+
+  useEffect(() => {
+    const hasCheckedItem = checkedState.some(item => item === true);
+    setDependenciesSelected(hasCheckedItem);
+  }, [checkedState, setDependenciesSelected]);
 
   return (
     <DependenciesSelectorContainer>

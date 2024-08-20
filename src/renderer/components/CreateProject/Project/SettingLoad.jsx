@@ -1,15 +1,15 @@
-import { useState } from "react";
 import { SettingLoadContainer, RadioGroup } from "@public/style/Project.styles";
 import RadioBox from "@components/common/RadioBox";
 import mockData from "@utils/mockData.json";
+import useProjectStore from "@/store/projectStore";
 
 const SettingLoad = () => {
-  const [selectedOption, setSelectedOption] = useState("userDefined");
-
+  const { selectedSettingOption, setSelectedSettingOption } = useProjectStore();
   const savedSettings = mockData.savedSettings;
 
   const handleChange = e => {
-    setSelectedOption(e.target.value);
+    const settingValue = e.target.value;
+    setSelectedSettingOption(settingValue);
   };
 
   return (
@@ -19,7 +19,7 @@ const SettingLoad = () => {
           id="userDefined"
           name="setting"
           value="userDefined"
-          checked={selectedOption === "userDefined"}
+          checked={selectedSettingOption === "userDefined"}
           onChange={handleChange}
           label="사용자 정의"
         />
@@ -31,7 +31,7 @@ const SettingLoad = () => {
             id={`savedSetting-${index}`}
             name="setting"
             value={setting}
-            checked={selectedOption === setting}
+            checked={selectedSettingOption === setting}
             onChange={handleChange}
             label={setting}
           />

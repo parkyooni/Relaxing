@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigation, useModal } from "@utils/common";
+import { useEffect } from "react";
+import { useNavigation } from "@utils/common";
 import {
   PageContentContainer,
   ButtonContainer
@@ -12,43 +12,66 @@ import ToggleSection from "@components/common/ToggleSection";
 import ButtonBox from "@components/common/ButtonBox";
 import CancelModal from "@components/Modal/CancelModal";
 import SaveModal from "@components/Modal/SaveModal";
-import useUIStore from "@/store/UIStore";
+import CustomSaveModal from "@components/Modal/CustomSaveModal";
+import useUIStore from "@/store/uiStore";
+import useProjectStore from "@/store/projectStore";
 
 const CreateProject = () => {
   const { navigateToPath } = useNavigation();
-
   const {
     isModalOpen,
     activeModal,
     showModal,
     closeModal,
-    setActiveModal,
     sections,
     toggleSection,
-    switchToggle,
-    setSwitchToggle,
-    resetSections
+    resetUIState,
+    setSectionsVisibility
   } = useUIStore();
+  const {
+    isProjectStarterValid,
+    isDependenciesSelected,
+    resetProjectState,
+    isUserDefinedSetting
+  } = useProjectStore();
+
+  useEffect(() => {
+    setSectionsVisibility({
+      showSettingLoad: true,
+      showProjectStarter: true,
+      showDependenciesSelector: isProjectStarterValid && isUserDefinedSetting,
+      showDetailDependencies:
+        isProjectStarterValid && isDependenciesSelected && isUserDefinedSetting
+    });
+  }, [
+    isProjectStarterValid,
+    isDependenciesSelected,
+    isUserDefinedSetting,
+    setSectionsVisibility
+  ]);
 
   const handleCancelClick = () => {
-    if (switchToggle) {
-      setActiveModal("cancel");
-      showModal();
+    if (isProjectStarterValid || isDependenciesSelected) {
+      showModal("cancel", "프로젝트 생성을 취소하시겠습니까?");
     } else {
       navigateToPath("/project/project-list");
     }
   };
 
   const handleSaveClick = () => {
-    if (switchToggle) {
-      setActiveModal("save");
-      showModal();
+    if (isProjectStarterValid) {
+      showModal("customSave", "프로젝트를 저장하시겠습니까?");
     }
   };
 
   const handleConfirmCancel = () => {
-    resetSections();
-    setSwitchToggle(false);
+    resetUIState();
+    resetProjectState();
+    closeModal();
+    navigateToPath("/project/project-list");
+  };
+
+  const handleConfirmSave = () => {
     closeModal();
     navigateToPath("/project/project-list");
   };
@@ -61,8 +84,8 @@ const CreateProject = () => {
         </ButtonBox>
         <ButtonBox
           onClick={handleSaveClick}
-          variant={switchToggle ? "active" : "disabled"}
-          disabled={!switchToggle}
+          variant={isProjectStarterValid ? "active" : "disabled"}
+          disabled={!isProjectStarterValid}
         >
           저장
         </ButtonBox>
@@ -74,33 +97,37 @@ const CreateProject = () => {
           isActive={sections.showSettingLoad}
           onToggle={() => toggleSection("showSettingLoad")}
         >
-          <SettingLoad onChange={() => setSwitchToggle(true)} />
+          <SettingLoad />
         </ToggleSection>
         <ToggleSection
           title="Project Starter"
           isActive={sections.showProjectStarter}
           onToggle={() => toggleSection("showProjectStarter")}
         >
-          <ProjectStarter onChange={() => setSwitchToggle(true)} />
+          <ProjectStarter />
         </ToggleSection>
         <ToggleSection
           title="Dependencies Selector"
           isActive={sections.showDependenciesSelector}
           onToggle={() => toggleSection("showDependenciesSelector")}
         >
-          <DependenciesSelector onChange={() => setSwitchToggle(true)} />
+          <DependenciesSelector />
         </ToggleSection>
         <ToggleSection
           title="Detail Dependencies"
           isActive={sections.showDetailDependencies}
           onToggle={() => toggleSection("showDetailDependencies")}
         >
-          <DetailDependencies onChange={() => setSwitchToggle(true)} />
+          <DetailDependencies />
         </ToggleSection>
       </div>
 
       {isModalOpen && activeModal === "cancel" && (
-        <CancelModal onConfirm={handleConfirmCancel} onCancel={closeModal} />
+        <CancelModal
+          onConfirm={handleConfirmCancel}
+          onCancel={closeModal}
+          message="프로젝트 생성을 취소하시겠습니까?"
+        />
       )}
 
       {isModalOpen && activeModal === "save" && (
@@ -114,6 +141,14 @@ const CreateProject = () => {
             closeModal();
           }}
           onCancel={closeModal}
+        />
+      )}
+
+      {isModalOpen && activeModal === "customSave" && (
+        <CustomSaveModal
+          onSave={handleConfirmSave}
+          onCancel={closeModal}
+          message="프로젝트를 저장하시겠습니까?"
         />
       )}
     </PageContentContainer>

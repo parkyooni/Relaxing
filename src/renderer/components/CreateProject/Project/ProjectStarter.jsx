@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useEffect } from "react";
+import { useRef } from "react";
 import {
   ProjectStarterContainer,
   PathInputContainer,
@@ -12,12 +13,22 @@ import {
 } from "@public/style/Project.styles";
 import mockData from "@utils/mockData.json";
 import { getTopFolderPath, processFileList } from "@utils/fileUtils.cjs";
+import useProjectStore from "@/store/projectStore";
 
 const ProjectStarter = () => {
-  const [path, setPath] = useState("");
-  const [selectedPackageManager, setSelectedPackageManager] = useState("npm");
-  const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
+  const {
+    path,
+    setPath,
+    selectedPackageManager,
+    setSelectedPackageManager,
+    projectName,
+    setProjectName,
+    files,
+    setFiles,
+    validateProjectStarter,
+    isProjectStarterValid
+  } = useProjectStore();
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -29,16 +40,30 @@ const ProjectStarter = () => {
       const fullPath = fileList[0].webkitRelativePath;
       const topFolderPath = getTopFolderPath(fullPath);
       setPath(topFolderPath);
-
       const sortedFilesArray = processFileList(fileList, topFolderPath);
       setFiles(sortedFilesArray);
+
+      validateProjectStarter();
     }
   };
 
   const packageManagers = mockData.packageManagers;
 
+  useEffect(() => {
+    if (!selectedPackageManager && packageManagers.length > 0) {
+      setSelectedPackageManager(packageManagers[0]);
+    }
+  }, [selectedPackageManager, setSelectedPackageManager, packageManagers]);
+
+  const handleProjectNameChange = event => {
+    setProjectName(event.target.value);
+    validateProjectStarter();
+  };
+
   const handlePackageManagerChange = event => {
-    setSelectedPackageManager(event.target.value);
+    const selectedManager = event.target.value;
+    setSelectedPackageManager(selectedManager);
+    validateProjectStarter();
   };
 
   return (
@@ -61,7 +86,11 @@ const ProjectStarter = () => {
           </DirectoryItem>
         ))}
       </DirectoryListContainer>
-      <ProjectNameInput placeholder="프로젝트 이름을 적어주세요..." />
+      <ProjectNameInput
+        placeholder="프로젝트 이름을 적어주세요..."
+        value={projectName}
+        onChange={handleProjectNameChange}
+      />
       <SelectWrapper>
         <ProjectNameSelect
           value={selectedPackageManager}
@@ -74,6 +103,7 @@ const ProjectStarter = () => {
           ))}
         </ProjectNameSelect>
       </SelectWrapper>
+      {isProjectStarterValid && <p>프로젝트 정보가 유효합니다.</p>}
     </ProjectStarterContainer>
   );
 };
