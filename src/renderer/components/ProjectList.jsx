@@ -13,9 +13,7 @@ const ProjectList = () => {
   useEffect(() => {
     const loadProjectLists = async () => {
       try {
-        const path = "TEMPORARY_PATH";
-
-        const projectData = await window.api.loadProjectList(path);
+        const projectData = await window.api.loadProjectList();
         setProjects(projectData);
       } catch (error) {
         console.error(error);
@@ -35,12 +33,8 @@ const ProjectList = () => {
 
   const handleIconClick = async project => {
     try {
-      const path = "TEMPORARY_PATH";
-      const response = await window.api.deleteProjectList(
-        path,
-        project.projectName
-      );
-        setProjects(response.updatedProjects);
+      const response = await window.api.deleteProjectList(project.projectName);
+      setProjects(response);
     } catch (error) {
       console.error(error);
     }

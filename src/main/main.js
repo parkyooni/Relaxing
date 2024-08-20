@@ -1,10 +1,46 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("node:path");
 const fs = require("fs");
+const os = require("os");
 
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
+
+const initializeProjectDirectories = () => {
+  const homeDirectory = os.homedir();
+  let basePath = "";
+
+  switch (os.platform()) {
+    case "win32":
+      basePath = path.join(homeDirectory, ".relaxing");
+      break;
+    case "darwin":
+      basePath = path.join(homeDirectory, ".relaxing");
+      break;
+    default:
+      console.error("Unsupported platform");
+  }
+
+  if (!fs.existsSync(basePath)) {
+    fs.mkdirSync(basePath, { recursive: true });
+  }
+
+  const savePath = path.join(basePath, "save");
+  if (!fs.existsSync(savePath)) {
+    fs.mkdirSync(savePath);
+  }
+
+  const commandPath = path.join(basePath, "command");
+  if (!fs.existsSync(commandPath)) {
+    fs.mkdirSync(commandPath);
+  }
+
+  const projectPath = path.join(savePath, "rlxproject.json");
+  return projectPath;
+};
+
+const projectPath = initializeProjectDirectories();
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
@@ -44,9 +80,9 @@ app.on("window-all-closed", () => {
   }
 });
 
-ipcMain.handle("get-project-list", async (_, path) => {
+ipcMain.handle("get-project-list", async () => {
   try {
-    const data = fs.readFileSync(path, "utf-8");
+    const data = fs.readFileSync(projectPath, "utf-8");
     const projectData = JSON.parse(data);
     return projectData;
   } catch (error) {
@@ -54,18 +90,22 @@ ipcMain.handle("get-project-list", async (_, path) => {
   }
 });
 
-ipcMain.handle("delete-project-list", async (_, { path, projectName }) => {
+ipcMain.handle("delete-project-list", async (_, projectName) => {
   try {
-    const data = fs.readFileSync(path, "utf-8");
+    const data = fs.readFileSync(projectPath, "utf-8");
     let projectData = JSON.parse(data);
 
     projectData = projectData.filter(
       project => project.projectName !== projectName
     );
 
-    fs.writeFileSync(path, JSON.stringify(projectData, null, 2), "utf-8");
+    fs.writeFileSync(
+      projectPath,
+      JSON.stringify(projectData, null, 2),
+      "utf-8"
+    );
 
-    return { updatedProjects: projectData };
+    return projectData;
   } catch (error) {
     console.error(error);
   }
