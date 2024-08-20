@@ -53,3 +53,20 @@ ipcMain.handle("get-project-list", async (_, path) => {
     console.error(error);
   }
 });
+
+ipcMain.handle("delete-project-list", async (_, { path, projectName }) => {
+  try {
+    const data = fs.readFileSync(path, "utf-8");
+    let projectData = JSON.parse(data);
+
+    projectData = projectData.filter(
+      project => project.projectName !== projectName
+    );
+
+    fs.writeFileSync(path, JSON.stringify(projectData, null, 2), "utf-8");
+
+    return { updatedProjects: projectData };
+  } catch (error) {
+    console.error(error);
+  }
+});

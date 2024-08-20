@@ -16,7 +16,7 @@ const ProjectList = () => {
         const path = "TEMPORARY_PATH";
 
         const projectData = await window.api.loadProjectList(path);
-        setProjects([projectData]);
+        setProjects(projectData);
       } catch (error) {
         console.error(error);
       }
@@ -33,8 +33,17 @@ const ProjectList = () => {
     }
   };
 
-  const handleIconClick = project => {
-    console.log(`삭제할 프로젝트: ${project.projectName}`);
+  const handleIconClick = async project => {
+    try {
+      const path = "TEMPORARY_PATH";
+      const response = await window.api.deleteProjectList(
+        path,
+        project.projectName
+      );
+        setProjects(response.updatedProjects);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
