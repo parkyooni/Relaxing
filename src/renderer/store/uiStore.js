@@ -19,6 +19,11 @@ const initialState = {
     showFrameworkSelector: false,
     showVariantSelector: false,
     showDependenciesSelector: false
+  },
+
+  loading: {
+    loadingMessages: ["프로젝트를 생성중 입니다....", "Vite Create Project..."],
+    currentLoadingMessageIndex: 0
   }
 };
 
@@ -71,6 +76,14 @@ const useUIStore = create(set => ({
     })),
 
   setActiveTab: tabName => set({ activeTab: tabName }),
+
+  updateLoadingMessageIndex: () =>
+    set(state => ({
+      currentLoadingMessageIndex:
+        (state.currentLoadingMessageIndex + 1) % state.loadingMessages.length
+    })),
+
+  resetLoadingMessageIndex: () => set({ currentLoadingMessageIndex: 0 }),
 
   resetUIState: () => set(initialState)
 }));
