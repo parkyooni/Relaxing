@@ -28,6 +28,7 @@ const useUIStore = create(set => ({
       activeModal: modalType,
       modalMessage: message
     }),
+
   closeModal: () =>
     set({
       isModalOpen: false,
@@ -36,39 +37,30 @@ const useUIStore = create(set => ({
     }),
 
   toggleSection: section =>
-    set(state => {
-      if (section === "showSettingLoad" || section === "showProjectStarter") {
-        return {
-          sections: {
-            ...state.sections,
-            [section]: !state.sections[section]
-          }
-        };
+    set(state => ({
+      sections: {
+        ...state.sections,
+        [section]: !state.sections[section]
       }
-
-      return state;
-    }),
+    })),
 
   setSwitchToggle: value => set({ switchToggle: value }),
   setActiveTab: tabName => set({ activeTab: tabName }),
 
   resetUIState: () =>
-    set(state => {
-      const initialSections = {
+    set(state => ({
+      sections: {
         showSettingLoad: true,
         showProjectStarter: false,
         showDependenciesSelector: false,
         showDetailDependencies: false
-      };
-
-      return {
-        ...state,
-        sections: initialSections,
-        switchToggle: false,
-        activeTab: "dependencies",
-        ...state.closeModal()
-      };
-    })
+      },
+      switchToggle: false,
+      activeTab: "dependencies",
+      isModalOpen: false,
+      activeModal: null,
+      modalMessage: ""
+    }))
 }));
 
 export default useUIStore;

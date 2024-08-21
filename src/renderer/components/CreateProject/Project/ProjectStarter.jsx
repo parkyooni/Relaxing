@@ -26,7 +26,6 @@ const ProjectStarter = () => {
     setProjectName,
     files,
     setFiles,
-    validateProjectStarter,
     isProjectStarterValid
   } = useProjectStore();
 
@@ -42,8 +41,6 @@ const ProjectStarter = () => {
       setPath(topFolderPath);
       const sortedFilesArray = processFileList(fileList, topFolderPath);
       setFiles(sortedFilesArray);
-
-      validateProjectStarter();
     }
   };
 
@@ -57,13 +54,11 @@ const ProjectStarter = () => {
 
   const handleProjectNameChange = event => {
     setProjectName(event.target.value);
-    validateProjectStarter();
   };
 
   const handlePackageManagerChange = event => {
     const selectedManager = event.target.value;
     setSelectedPackageManager(selectedManager);
-    validateProjectStarter();
   };
 
   return (

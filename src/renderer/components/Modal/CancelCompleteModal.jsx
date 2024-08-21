@@ -1,13 +1,13 @@
 import ButtonBox from "@components/common/ButtonBox";
 import { ModalBackground, ModalContainer } from "@public/style/Modal.styles";
 
-const CancelModal = ({ onConfirm, onCancel }) => {
+const CancelCompleteModal = ({ onConfirm, onCancel, message, subMessage }) => {
   return (
     <ModalBackground onClick={onCancel}>
       <ModalContainer className="large" onClick={e => e.stopPropagation()}>
         <p>
-          <span>프로젝트 생성을 취소 하시겠습니까?</span>
-          <span>입력한 정보는 복구할 수 없습니다.</span>
+          <span>{message}</span>
+          <span>{subMessage}</span>
         </p>
         <div className="button-group">
           <ButtonBox variant="default" onClick={onCancel}>
@@ -22,4 +22,4 @@ const CancelModal = ({ onConfirm, onCancel }) => {
   );
 };
 
-export default CancelModal;
+export default CancelCompleteModal;

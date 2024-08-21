@@ -4,6 +4,7 @@ import {
   Routes,
   Navigate
 } from "react-router-dom";
+import { useState } from "react";
 import DependencyInstall from "@components/Dashboard/DependencyInstall";
 import Dashboard from "@components/Dashboard";
 import CreateProject from "@components/CreateProject";
@@ -14,7 +15,12 @@ import PrivateLayout from "@components/Layout/PrivateLayout";
 import useUIStore from "@/store/uiStore";
 
 function App() {
-  const { isModalOpen, modalMessage, showModal, closeModal } = useUIStore();
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const { showModal } = useUIStore();
+
+  const closeErrorModal = () => {
+    setIsErrorModalOpen(false);
+  };
 
   return (
     <Router>
@@ -35,12 +41,12 @@ function App() {
 
         <Route
           path="*"
-          element={<ErrorModal message="Page not found" onClose={closeModal} />}
+          element={<Navigate to="/project/project-list" replace />}
         />
       </Routes>
 
-      {isModalOpen && (
-        <ErrorModal message={modalMessage} onClose={closeModal} />
+      {isErrorModalOpen && (
+        <ErrorModal message="An error occurred" onClose={closeErrorModal} />
       )}
     </Router>
   );
