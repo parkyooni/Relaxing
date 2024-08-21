@@ -50,7 +50,7 @@ const NPMManager = () => {
 
   const handleSearch = () => {
     if (searchQuery) {
-      const filtered = mockData.dependenciesSelector
+      const filtered = mockData.frameworkSelector
         .filter(pkg =>
           pkg.name.toLowerCase().includes(searchQuery.toLowerCase())
         )

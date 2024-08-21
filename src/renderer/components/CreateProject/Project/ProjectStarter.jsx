@@ -92,7 +92,7 @@ const ProjectStarter = () => {
           ))}
         </ProjectNameSelect>
       </SelectWrapper>
-      {isProjectStarterValid && <p>프로젝트 정보가 유효합니다.</p>}
+      {isProjectStarterValid && <span>프로젝트 정보가 유효합니다.</span>}
     </ProjectStarterContainer>
   );
 };

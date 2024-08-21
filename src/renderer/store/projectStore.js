@@ -24,12 +24,16 @@ const useProjectStore = create(set => ({
   selectedSettingOption: "userDefined",
   isUserDefinedSetting: true,
   isProjectStarterValid: false,
+  isFrameworksSelected: false,
   isDependenciesSelected: false,
   searchQuery: "",
   packageItems: [],
   selectedPackageItem: null,
   isDropdownVisible: false,
   isEnterPressed: false,
+  selectedOptionIndex: null,
+  selectedFrameworkIndex: null,
+  selectedDependenciesIndex: [],
 
   setSelectedSettingOption: option =>
     set(state => ({
@@ -39,18 +43,31 @@ const useProjectStore = create(set => ({
 
   setPath: path => set(state => updateState(set, state, "path", path)),
   setSelectedPackageManager: selectedPackageManager =>
-    set(state => updateState(set, state, "selectedPackageManager", selectedPackageManager)),
-  setProjectName: projectName => set(state => updateState(set, state, "projectName", projectName)),
+    set(state =>
+      updateState(set, state, "selectedPackageManager", selectedPackageManager)
+    ),
+  setProjectName: projectName =>
+    set(state => updateState(set, state, "projectName", projectName)),
 
   setFiles: files => set({ files }),
-  setUserDefinedSetting: isUserDefined => set({ isUserDefinedSetting: isUserDefined }),
-  setDependenciesSelected: isSelected => set({ isDependenciesSelected: isSelected }),
+  setUserDefinedSetting: isUserDefined =>
+    set({ isUserDefinedSetting: isUserDefined }),
+
+  setFrameworksSelected: isSelected =>
+    set({ isFrameworksSelected: isSelected }),
+  setDependenciesSelected: isSelected =>
+    set({ isDependenciesSelected: isSelected }),
   setSearchQuery: query => set({ searchQuery: query }),
   setPackageItems: items => set({ packageItems: items }),
   setSelectedPackageItem: item => set({ selectedPackageItem: item }),
   setIsDropdownVisible: isVisible => set({ isDropdownVisible: isVisible }),
   setIsEnterPressed: isPressed => set({ isEnterPressed: isPressed }),
   setProjects: projects => set({ projects }),
+
+  setSelectedOptionIndex: index => set({ selectedOptionIndex: index }),
+  setSelectedFrameworkIndex: index => set({ selectedFrameworkIndex: index }),
+  setSelectedDependenciesIndex: index =>
+    set({ selectedDependenciesIndex: index }),
 
   checkProjectPath: path => {
     return true;
@@ -64,13 +81,16 @@ const useProjectStore = create(set => ({
       files: [],
       projects: [],
       isProjectStarterValid: false,
-      isDependenciesSelected: false,
+      isFrameworksSelected: false,
       searchQuery: "",
       packageItems: [],
       selectedPackageItem: null,
       isDropdownVisible: false,
       selectedSettingOption: "userDefined",
-      isEnterPressed: false
+      isEnterPressed: false,
+      selectedOptionIndex: null,
+      selectedFrameworkIndex: null,
+      selectedDependenciesIndex: []
     })
 }));
 

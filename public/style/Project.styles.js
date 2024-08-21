@@ -360,7 +360,7 @@ export const ProjectNameSelect = styled.select`
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
-export const DependenciesSelectorContainer = styled.div`
+export const SelectorContainer = styled.div`
   height: 18.75rem;
   padding: 1.25rem;
   border-radius: ${({ theme }) => theme.borderRadius.main};
@@ -369,7 +369,7 @@ export const DependenciesSelectorContainer = styled.div`
   overflow-y: auto;
 `;
 
-export const DependencyItem = styled.div`
+export const SelectorItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -381,90 +381,14 @@ export const TextContainer = styled.div`
   flex-direction: column;
 
   span {
-    &:first-child {
-      font-size: ${({ theme }) => theme.fontSizes.largePlus};
-      color: ${({ theme }) => theme.colors.basic};
-    }
-    &:last-child {
-      font-size: ${({ theme }) => theme.fontSizes.normal};
-      color: ${({ theme }) => theme.colors.sub};
-    }
+    font-size: ${({ theme }) => theme.fontSizes.largePlus};
+    color: ${({ theme }) => theme.colors.basic};
   }
 `;
 
 export const ControlContainer = styled.div`
   display: flex;
   align-items: center;
-`;
-
-export const DevedpendenciesContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1.25rem;
-  margin: 1.25rem auto;
-  border-radius: ${({ theme }) => theme.borderRadius.main};
-  background-color: ${({ theme }) => theme.colors.white};
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-  > span {
-    text-align: right;
-    font-size: ${({ theme }) => theme.fontSizes.sub};
-    color: ${({ theme }) => theme.colors.border};
-    cursor: default;
-  }
-`;
-
-export const DependencyList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.9375rem;
-`;
-
-export const DependencyItems = styled.div`
-  display: flex;
-  padding: 0.625rem 0;
-
-  .dependency-list {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding-right: 1.875rem;
-  }
-`;
-
-export const TextContainers = styled.div`
-  display: flex;
-  flex-direction: column;
-  cursor: default;
-
-  span {
-    display: inline-block;
-    font-size: ${({ theme }) => theme.fontSizes.normal};
-    color: ${({ theme }) => theme.colors.basic};
-
-    &:last-child {
-      color: ${({ theme }) => theme.colors.sub};
-    }
-  }
-`;
-
-export const ControlContainers = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  .option-check-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-
-    > label {
-      width: inherit;
-      padding-right: 3px;
-      text-align: right;
-    }
-  }
 `;
 
 export const Select = styled.select`
@@ -478,20 +402,4 @@ export const Select = styled.select`
   letter-spacing: -0.0313rem;
   text-align: center;
   cursor: pointer;
-`;
-
-export const Devedpendencies = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  padding-left: 1.25rem;
-  border-left: 1px dashed ${({ theme }) => theme.colors.gray};
-`;
-
-export const DisabledCheckbox = styled(Checkbox)`
-  label {
-    border-color: ${({ theme }) => theme.colors.gray};
-    background-color: ${({ theme }) => theme.colors.gray};
-    cursor: not-allowed;
-  }
 `;

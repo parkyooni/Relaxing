@@ -50,11 +50,11 @@
                 "type": "folder",
                 "children": [
                   {
-                    "name": "DependenciesSelector.jsx",
+                    "name": "FrameworkSelector.jsx",
                     "type": "file"
                   },
                   {
-                    "name": "DetailDependencies.jsx",
+                    "name": "VariantSelector.jsx",
                     "type": "file"
                   }
                 ]
@@ -128,59 +128,67 @@
     "내가 저장한 설정 이름 13"
   ],
   "packageManagers": ["npm"],
+  "frameworkSelector": [
+    {
+      "name": "React",
+      "type": "boolean",
+      "option": [
+        {
+          "name": "TypeScript",
+          "type": "boolean"
+        },
+        {
+          "name": "Javascript",
+          "type": "boolean"
+        },
+        {
+          "name": "Javas",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "Vue",
+      "type": "boolean",
+      "option": [
+        {
+          "name": "TypeScript",
+          "type": "boolean"
+        },
+        {
+          "name": "Javascript",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "Vanilla",
+      "type": "boolean",
+      "option": [
+        {
+          "name": "TypeScript",
+          "type": "boolean"
+        },
+        {
+          "name": "Javascript",
+          "type": "boolean"
+        }
+      ]
+    }
+  ],
+
   "dependenciesSelector": [
     {
       "name": "eslint",
-      "version": "^9.9.0",
-      "text": "ESLint is a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.",
       "type": "boolean"
     },
     {
-      "name": "Webpack",
-      "version": "^18.3.1",
-      "text": "Webpack is a static module bundler for modern JavaScript applications.",
-      "type": "boolean"
-    },
-    {
-      "name": "react",
-      "version": "^18.3.1",
-      "text": "React is a JavaScript library for building user interfaces.",
-      "type": "boolean"
-    },
-    {
-      "name": "react-dom",
-      "version": "^18.3.1",
-      "text": "ReactDOM is the entry point to the DOM and server renderers for React.",
+      "name": "prettier",
       "type": "boolean"
     },
     {
       "name": "husky",
-      "version": "^9.1.4",
-      "text": "Husky improves your commits and more with Git hooks.",
       "type": "boolean"
-    },
-    {
-      "name": "Pick a CSS pre-processor",
-      "text": "PostCSS, Autoprefixer and CSS Modules are supported by default.",
-      "versionOptions": [
-        "ESLint with error prevention only",
-        "ESLint + Airbnb config",
-        "ESLint + Standard config",
-        "ESLint + Prettier"
-      ]
-    },
-    {
-      "name": "Pick additional lint features",
-      "texts": [
-        {
-          "text": "Lint on save",
-          "type": "boolean"
-        },
-        {
-          "text": "Lint and fix on commit",
-          "type": "boolean"
-        }
-      ]
     }
   ],
   "dependencies": [

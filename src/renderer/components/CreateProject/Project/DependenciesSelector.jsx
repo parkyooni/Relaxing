@@ -1,52 +1,60 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Checkbox from "@components/common/CheckBox";
 import {
-  DependenciesSelectorContainer,
-  DependencyItem,
-  TextContainer,
-  ControlContainer
+  SelectorContainer,
+  SelectorItem,
+  ControlContainer,
+  TextContainer
 } from "@public/style/Project.styles";
 import useProjectStore from "@/store/projectStore";
 import mockData from "@utils/mockData.json";
 
 const DependenciesSelector = () => {
-  const { setDependenciesSelected } = useProjectStore();
+  const {
+    selectedDependenciesIndex,
+    setSelectedDependenciesIndex,
+    setDependenciesSelected
+  } = useProjectStore(state => ({
+    selectedDependenciesIndex: state.selectedDependenciesIndex,
+    setSelectedDependenciesIndex: state.setSelectedDependenciesIndex,
+    setDependenciesSelected: state.setDependenciesSelected
+  }));
+
   const dependencies = mockData.dependenciesSelector;
 
-  const [checkedState, setCheckedState] = useState(
-    new Array(dependencies.length).fill(false)
-  );
-
   const handleCheckboxChange = index => {
-    const updatedCheckedState = checkedState.map((item, i) =>
-      i === index ? !item : item
-    );
-    setCheckedState(updatedCheckedState);
+    let newSelectedIndex;
+
+    if (selectedDependenciesIndex.includes(index)) {
+      newSelectedIndex = selectedDependenciesIndex.filter(i => i !== index);
+    } else {
+      newSelectedIndex = [...selectedDependenciesIndex, index];
+    }
+
+    setSelectedDependenciesIndex(newSelectedIndex);
   };
 
   useEffect(() => {
-    const hasCheckedItem = checkedState.some(item => item === true);
-    setDependenciesSelected(hasCheckedItem);
-  }, [checkedState, setDependenciesSelected]);
+    setDependenciesSelected(selectedDependenciesIndex.length > 0);
+  }, [selectedDependenciesIndex, setDependenciesSelected]);
 
   return (
-    <DependenciesSelectorContainer>
+    <SelectorContainer>
       {dependencies.map((dependency, index) => (
-        <DependencyItem key={index}>
+        <SelectorItem key={index}>
           <TextContainer>
             <span>{dependency.name}</span>
-            <span>{dependency.version}</span>
           </TextContainer>
           <ControlContainer>
             <Checkbox
-              checked={checkedState[index]}
+              checked={selectedDependenciesIndex.includes(index)}
               onChange={() => handleCheckboxChange(index)}
               id={`checkbox-${index}`}
             />
           </ControlContainer>
-        </DependencyItem>
+        </SelectorItem>
       ))}
-    </DependenciesSelectorContainer>
+    </SelectorContainer>
   );
 };
 

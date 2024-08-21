@@ -7,8 +7,9 @@ const useUIStore = create(set => ({
   sections: {
     showSettingLoad: true,
     showProjectStarter: false,
-    showDependenciesSelector: false,
-    showDetailDependencies: false
+    showFrameworkSelector: false,
+    showVariantSelector: false,
+    showDependenciesSelector: false
   },
 
   switchToggle: false,
@@ -52,8 +53,9 @@ const useUIStore = create(set => ({
       sections: {
         showSettingLoad: true,
         showProjectStarter: false,
-        showDependenciesSelector: false,
-        showDetailDependencies: false
+        showFrameworkSelector: false,
+        showVariantSelector: false,
+        showDependenciesSelector: false
       },
       switchToggle: false,
       activeTab: "dependencies",
