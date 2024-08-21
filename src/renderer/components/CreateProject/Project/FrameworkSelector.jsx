@@ -13,24 +13,24 @@ const FrameworkSelector = () => {
   const {
     selectedFrameworkIndex,
     setSelectedFrameworkIndex,
-    setFrameworksSelected
-  } = useProjectStore(
-    ({
-      selectedFrameworkIndex,
-      setSelectedFrameworkIndex,
-      setFrameworksSelected
-    }) => ({
-      selectedFrameworkIndex,
-      setSelectedFrameworkIndex,
-      setFrameworksSelected
-    })
-  );
+    setFrameworksSelected,
+    setFrameworkName
+  } = useProjectStore(state => ({
+    selectedFrameworkIndex: state.selectedFrameworkIndex,
+    setSelectedFrameworkIndex: state.setSelectedFrameworkIndex,
+    setFrameworksSelected: state.setFrameworksSelected,
+    setFrameworkName: state.setFrameworkName
+  }));
 
   const frameworks = mockData.frameworkSelector;
 
   const handleCheckboxChange = index => {
     const newIndex = index === selectedFrameworkIndex ? null : index;
     setSelectedFrameworkIndex(newIndex);
+
+    newIndex !== null
+      ? setFrameworkName(frameworks[newIndex].name.toLowerCase())
+      : setFrameworkName("");
   };
 
   useEffect(() => {

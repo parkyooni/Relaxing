@@ -13,7 +13,9 @@ const initialProjectState = {
   projects: [],
   isUserDefinedSetting: true,
   isFrameworksSelected: false,
-  isDependenciesSelected: false
+  isDependenciesSelected: false,
+  frameworkName: "",
+  variantName: ""
 };
 
 const checkProjectStarterValidity = state =>
@@ -30,8 +32,11 @@ const updateState = (state, field, value) => {
 const useProjectStore = create(set => ({
   ...initialProjectState,
 
+  setFrameworkName: state => set({ frameworkName: state }),
+  setVariantName: state => set({ variantName: state }),
+
   setSelectedSettingOption: option =>
-    set(state => ({
+    set(() => ({
       selectedSettingOption: option,
       isUserDefinedSetting: option === "userDefined"
     })),

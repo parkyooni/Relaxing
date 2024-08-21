@@ -77,13 +77,34 @@ const useUIStore = create(set => ({
 
   setActiveTab: tabName => set({ activeTab: tabName }),
 
-  updateLoadingMessageIndex: () =>
+  setLoading: isLoading =>
     set(state => ({
-      currentLoadingMessageIndex:
-        (state.currentLoadingMessageIndex + 1) % state.loadingMessages.length
+      loading: {
+        ...state.loading,
+        isLoading
+      }
     })),
 
-  resetLoadingMessageIndex: () => set({ currentLoadingMessageIndex: 0 }),
+  updateLoadingMessageIndex: () =>
+    set(state => {
+      const { loadingMessages, currentLoadingMessageIndex } = state.loading;
+
+      return {
+        loading: {
+          ...state.loading,
+          currentLoadingMessageIndex:
+            (currentLoadingMessageIndex + 1) % loadingMessages.length
+        }
+      };
+    }),
+
+  resetLoadingMessageIndex: () =>
+    set(state => ({
+      loading: {
+        ...state.loading,
+        currentLoadingMessageIndex: 0
+      }
+    })),
 
   resetUIState: () => set(initialState)
 }));

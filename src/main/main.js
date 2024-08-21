@@ -1,4 +1,6 @@
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
+import { exec } from "node:child_process";
+import { promisify } from "node:util";
 import path from "node:path";
 import fs from "fs";
 import os from "os";
@@ -29,11 +31,6 @@ const initializeProjectDirectories = () => {
   const savePath = path.join(basePath, "save");
   if (!fs.existsSync(savePath)) {
     fs.mkdirSync(savePath);
-  }
-
-  const commandPath = path.join(basePath, "command");
-  if (!fs.existsSync(commandPath)) {
-    fs.mkdirSync(commandPath);
   }
 
   const projectPath = path.join(savePath, "rlxproject.json");
@@ -136,3 +133,31 @@ ipcMain.handle("read-directory", async (_, folderPath) => {
     console.error(error);
   }
 });
+
+const execAsync = promisify(exec);
+ipcMain.handle(
+  "install-project",
+  async (_, { path, projectName, framework }) => {
+    try {
+      const command = `npm create vite@latest ${projectName} -- --template ${framework}`;
+      const { stdout } = await execAsync(command, { cwd: path });
+      return stdout;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
+ipcMain.handle(
+  "install-dependencies",
+  async (_, { path, projectName, dependencies }) => {
+    try {
+      const projectPath = `${path}/${projectName}`;
+      const command = `npm install ${dependencies.join(" ")}`;
+      const { stdout } = await execAsync(command, { cwd: projectPath });
+      return stdout;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);

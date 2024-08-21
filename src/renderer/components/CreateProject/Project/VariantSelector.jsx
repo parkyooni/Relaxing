@@ -12,18 +12,14 @@ const VariantSelector = () => {
   const {
     selectedFrameworkIndex,
     selectedOptionIndex,
-    setSelectedOptionIndex
-  } = useProjectStore(
-    ({
-      selectedFrameworkIndex,
-      selectedOptionIndex,
-      setSelectedOptionIndex
-    }) => ({
-      selectedFrameworkIndex,
-      selectedOptionIndex,
-      setSelectedOptionIndex
-    })
-  );
+    setSelectedOptionIndex,
+    setVariantName
+  } = useProjectStore(state => ({
+    selectedFrameworkIndex: state.selectedFrameworkIndex,
+    selectedOptionIndex: state.selectedOptionIndex,
+    setSelectedOptionIndex: state.setSelectedOptionIndex,
+    setVariantName: state.setVariantName
+  }));
 
   const frameworks = mockData.frameworkSelector;
 
@@ -36,6 +32,10 @@ const VariantSelector = () => {
   const handleCheckboxChange = optionIndex => {
     const newIndex = optionIndex === selectedOptionIndex ? null : optionIndex;
     setSelectedOptionIndex(newIndex);
+
+    newIndex !== null
+      ? setVariantName(selectedFramework.option[newIndex].value)
+      : setVariantName("");
   };
 
   return (

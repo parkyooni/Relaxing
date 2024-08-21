@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import useUIStore from "@/store/uiStore";
 

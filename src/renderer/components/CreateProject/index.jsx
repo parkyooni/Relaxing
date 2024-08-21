@@ -15,6 +15,8 @@ import CancelCompleteModal from "@components/Modal/CancelCompleteModal";
 import SaveModal from "@components/Modal/SaveModal";
 import useUIStore from "@/store/uiStore";
 import useProjectStore from "@/store/projectStore";
+import mockData from "@utils/mockData.json";
+import Loading from "@/components/common/Loading";
 
 const CreateProject = () => {
   const { navigateToPath } = useNavigation();
@@ -27,7 +29,9 @@ const CreateProject = () => {
     sections,
     toggleSection,
     resetUIState,
-    setSectionsVisibility
+    setSectionsVisibility,
+    loading: { isLoading },
+    setLoading
   } = useUIStore();
   const {
     isUserDefinedSetting,
@@ -42,8 +46,27 @@ const CreateProject = () => {
     resetProjectState,
     path,
     selectedPackageManager,
-    projectName
-  } = useProjectStore();
+    projectName,
+    frameworkName,
+    variantName
+  } = useProjectStore(state => ({
+    projectName: state.projectName,
+    path: state.path,
+    frameworkName: state.frameworkName,
+    variantName: state.variantName,
+    setSelectedVariantIndex: state.setSelectedVariantIndex,
+    selectedPackageManager: state.selectedPackageManager,
+    isProjectStarterComplete: state.isProjectStarterComplete,
+    isProjectStarterValid: state.isProjectStarterValid,
+    isFrameworksSelected: state.isFrameworksSelected,
+    selectedSettingOption: state.selectedSettingOption,
+    resetProjectState: state.resetProjectState,
+    isUserDefinedSetting: state.isUserDefinedSetting,
+    selectedDependenciesIndex: state.selectedDependenciesIndex,
+    selectedFrameworkIndex: state.selectedVariantIndex,
+    setSelectedFrameworkIndex: state.selectedVariantIndex,
+    selectedVariantIndex: state.selectedVariantIndex
+  }));
 
   useEffect(() => {
     setSectionsVisibility({
@@ -101,6 +124,38 @@ const CreateProject = () => {
     }
   };
 
+  const handleConfirmCreate = async () => {
+    const framework = variantName
+      ? `${frameworkName}-${variantName}`
+      : frameworkName;
+
+    try {
+      setLoading(true);
+      await window.api.installProject({ projectName, path, framework });
+
+      if (selectedDependenciesIndex.length > 0) {
+        const selectedDependencies = selectedDependenciesIndex.map(
+          index => mockData.dependenciesSelector[index].name
+        );
+        await window.api.installDependencies({
+          projectName,
+          path,
+          dependencies: selectedDependencies
+        });
+      }
+
+      resetUIState();
+      resetProjectState();
+
+      closeModal();
+      navigateToPath("/project/project-list");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleConfirmCancel = () => {
     resetUIState();
     resetProjectState();
@@ -113,6 +168,7 @@ const CreateProject = () => {
 
   return (
     <PageContentContainer>
+      {isLoading && <Loading />}
       <ButtonContainer>
         <ButtonBox variant="default" onClick={handleCancelClick}>
           취소
@@ -201,7 +257,7 @@ const CreateProject = () => {
         <>
           <SaveModal
             onSave={closeModal}
-            onCreate={closeModal}
+            onCreate={handleConfirmCreate}
             onCancel={closeModal}
           />
         </>

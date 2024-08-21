@@ -5,9 +5,9 @@ import useProjectStore from "@/store/projectStore";
 
 const SettingLoad = () => {
   const { selectedSettingOption, setSelectedSettingOption } = useProjectStore(
-    ({ selectedSettingOption, setSelectedSettingOption }) => ({
-      selectedSettingOption,
-      setSelectedSettingOption
+    state => ({
+      selectedSettingOption: state.selectedSettingOption,
+      setSelectedSettingOption: state.setSelectedSettingOption
     })
   );
 

@@ -135,14 +135,11 @@
       "option": [
         {
           "name": "TypeScript",
+          "value": "ts",
           "type": "boolean"
         },
         {
           "name": "Javascript",
-          "type": "boolean"
-        },
-        {
-          "name": "Javas",
           "type": "boolean"
         }
       ]
@@ -153,6 +150,7 @@
       "option": [
         {
           "name": "TypeScript",
+          "value": "ts",
           "type": "boolean"
         },
         {
@@ -167,6 +165,7 @@
       "option": [
         {
           "name": "TypeScript",
+          "value": "ts",
           "type": "boolean"
         },
         {
@@ -179,7 +178,7 @@
 
   "dependenciesSelector": [
     {
-      "name": "eslint",
+      "name": "dotenv",
       "type": "boolean"
     },
     {
@@ -188,6 +187,46 @@
     },
     {
       "name": "husky",
+      "type": "boolean"
+    },
+    {
+      "name": "lodash",
+      "type": "boolean"
+    },
+    {
+      "name": "react-router",
+      "type": "boolean"
+    },
+    {
+      "name": "react-router-dom",
+      "type": "boolean"
+    },
+    {
+      "name": "express",
+      "type": "boolean"
+    },
+    {
+      "name": "mongoose",
+      "type": "boolean"
+    },
+    {
+      "name": "axios",
+      "type": "boolean"
+    },
+    {
+      "name": "mocha",
+      "type": "boolean"
+    },
+    {
+      "name": "chai",
+      "type": "boolean"
+    },
+    {
+      "name": "body-parser",
+      "type": "boolean"
+    },
+    {
+      "name": "core-js",
       "type": "boolean"
     }
   ],
