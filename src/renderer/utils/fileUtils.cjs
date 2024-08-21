@@ -1,35 +1,21 @@
-export const getTopFolderPath = fullPath => {
-  return fullPath.substring(0, fullPath.indexOf("/"));
-};
-
 export const processFileList = (fileList, topFolderPath) => {
-  const foldersSet = new Set();
   const filesArray = [];
 
-  Array.from(fileList).forEach(file => {
-    const relativePath = file.webkitRelativePath.replace(
-      `${topFolderPath}/`,
-      ""
-    );
+  fileList.forEach(file => {
+    const relativePath = file.path
+      ? file.path.replace(`${topFolderPath}/`, "")
+      : "";
     const pathSegments = relativePath.split("/");
 
-    if (pathSegments.length === 1) {
+    const isFolder = file.type === "folder";
+
+    if (pathSegments.length === 1 || isFolder) {
       filesArray.push({
         name: file.name,
-        type: "file",
-        path: file.webkitRelativePath
+        type: isFolder ? "folder" : "file",
+        path: file.path
       });
-    } else if (pathSegments.length > 1) {
-      foldersSet.add(pathSegments[0]);
     }
-  });
-
-  foldersSet.forEach(folderName => {
-    filesArray.push({
-      name: folderName,
-      type: "folder",
-      path: `${topFolderPath}/${folderName}`
-    });
   });
 
   return filesArray.sort((a, b) => {

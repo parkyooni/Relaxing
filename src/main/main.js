@@ -1,7 +1,7 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
-const path = require("node:path");
-const fs = require("fs");
-const os = require("os");
+import { app, BrowserWindow, ipcMain, dialog } from "electron";
+import path from "node:path";
+import fs from "fs";
+import os from "os";
 
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -106,6 +106,32 @@ ipcMain.handle("delete-project-list", async (_, projectName) => {
     );
 
     return projectData;
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+ipcMain.handle("setting-path", async () => {
+  const path = await dialog.showOpenDialog({
+    properties: ["openDirectory"]
+  });
+
+  if (path.filePaths && path.filePaths.length > 0) {
+    return path.filePaths.shift();
+  }
+
+  return undefined;
+});
+
+ipcMain.handle("read-directory", async (_, folderPath) => {
+  try {
+    const files = fs.readdirSync(folderPath, { withFileTypes: true });
+
+    return files.map(file => ({
+      name: file.name,
+      type: file.isDirectory() ? "folder" : "file",
+      path: path.join(folderPath, file.name)
+    }));
   } catch (error) {
     console.error(error);
   }
