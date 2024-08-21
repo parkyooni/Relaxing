@@ -4,38 +4,40 @@ import mockData from "@utils/mockData.json";
 import useProjectStore from "@/store/projectStore";
 
 const SettingLoad = () => {
-  const { selectedSettingOption, setSelectedSettingOption } = useProjectStore();
+  const { selectedSettingOption, setSelectedSettingOption } = useProjectStore(
+    ({ selectedSettingOption, setSelectedSettingOption }) => ({
+      selectedSettingOption,
+      setSelectedSettingOption
+    })
+  );
+
   const savedSettings = mockData.savedSettings;
 
   const handleChange = e => {
-    const settingValue = e.target.value;
-    setSelectedSettingOption(settingValue);
+    setSelectedSettingOption(e.target.value);
   };
+
+  const renderRadioBox = (id, value, label) => (
+    <RadioBox
+      key={id}
+      id={id}
+      name="setting"
+      value={value}
+      checked={selectedSettingOption === value}
+      onChange={handleChange}
+      label={label}
+    />
+  );
 
   return (
     <SettingLoadContainer>
       <RadioGroup>
-        <RadioBox
-          id="userDefined"
-          name="setting"
-          value="userDefined"
-          checked={selectedSettingOption === "userDefined"}
-          onChange={handleChange}
-          label="사용자 정의"
-        />
+        {renderRadioBox("userDefined", "userDefined", "사용자 정의")}
       </RadioGroup>
       <RadioGroup>
-        {savedSettings.map((setting, index) => (
-          <RadioBox
-            key={index}
-            id={`savedSetting-${index}`}
-            name="setting"
-            value={setting}
-            checked={selectedSettingOption === setting}
-            onChange={handleChange}
-            label={setting}
-          />
-        ))}
+        {savedSettings.map((setting, index) =>
+          renderRadioBox(`savedSetting-${setting}-${index}`, setting, setting)
+        )}
       </RadioGroup>
     </SettingLoadContainer>
   );

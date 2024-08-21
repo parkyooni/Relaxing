@@ -5,7 +5,6 @@ import {
   commonBoxShadow,
   commonBorderRadius
 } from "./utils.styles";
-import Checkbox from "@components/common/CheckBox";
 import icons from "../images";
 
 export const Container = styled.div`
@@ -287,7 +286,19 @@ export const DirectoryListContainer = styled.div`
   ${commonBorderRadius}
   ${commonBoxShadow}
 	background-color: ${({ theme }) => theme.colors.white};
-  overflow-y: auto;
+
+  .layout {
+    height: 12.5rem;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar-track {
+      background: ${({ theme }) => theme.colors.mainScroll};
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: ${({ theme }) => theme.colors.border};
+    }
+  }
 `;
 
 export const DirectoryItem = styled.div.withConfig({
@@ -361,18 +372,36 @@ export const ProjectNameSelect = styled.select`
 `;
 
 export const SelectorContainer = styled.div`
-  height: 18.75rem;
+  min-height: 12.5rem;
   padding: 1.25rem;
   border-radius: ${({ theme }) => theme.borderRadius.main};
   background-color: ${({ theme }) => theme.colors.white};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
+
+  .layout {
+    height: 9.375rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+      width: 0.5rem;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: ${({ theme }) => theme.colors.mainScroll};
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: ${({ theme }) => theme.colors.border};
+    }
+  }
 `;
 
 export const SelectorItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-right: 0.3125rem;
   margin-bottom: 1.25rem;
 `;
 

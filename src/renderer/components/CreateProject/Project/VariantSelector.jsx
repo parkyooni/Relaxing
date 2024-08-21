@@ -13,42 +13,49 @@ const VariantSelector = () => {
     selectedFrameworkIndex,
     selectedOptionIndex,
     setSelectedOptionIndex
-  } = useProjectStore(state => ({
-    selectedFrameworkIndex: state.selectedFrameworkIndex,
-    selectedOptionIndex: state.selectedOptionIndex,
-    setSelectedOptionIndex: state.setSelectedOptionIndex
-  }));
+  } = useProjectStore(
+    ({
+      selectedFrameworkIndex,
+      selectedOptionIndex,
+      setSelectedOptionIndex
+    }) => ({
+      selectedFrameworkIndex,
+      selectedOptionIndex,
+      setSelectedOptionIndex
+    })
+  );
 
-  const variants = mockData.frameworkSelector;
+  const frameworks = mockData.frameworkSelector;
 
   if (selectedFrameworkIndex === null) {
     return <div>Please select a framework first.</div>;
   }
 
-  const selectedFramework = variants[selectedFrameworkIndex];
+  const selectedFramework = frameworks[selectedFrameworkIndex];
 
   const handleCheckboxChange = optionIndex => {
-    const newSelectedIndex =
-      optionIndex === selectedOptionIndex ? null : optionIndex;
-    setSelectedOptionIndex(newSelectedIndex);
+    const newIndex = optionIndex === selectedOptionIndex ? null : optionIndex;
+    setSelectedOptionIndex(newIndex);
   };
 
   return (
     <SelectorContainer>
-      {selectedFramework.option.map((option, optionIndex) => (
-        <SelectorItem key={`${selectedFrameworkIndex}-${optionIndex}`}>
-          <TextContainer>
-            <span>{option.name}</span>
-          </TextContainer>
-          <ControlContainer>
-            <Checkbox
-              id={`checkbox-on-${selectedFrameworkIndex}-${optionIndex}`}
-              checked={selectedOptionIndex === optionIndex}
-              onChange={() => handleCheckboxChange(optionIndex)}
-            />
-          </ControlContainer>
-        </SelectorItem>
-      ))}
+      <div className="layout">
+        {selectedFramework.option.map((option, optionIndex) => (
+          <SelectorItem key={`${selectedFrameworkIndex}-${optionIndex}`}>
+            <TextContainer>
+              <span>{option.name}</span>
+            </TextContainer>
+            <ControlContainer>
+              <Checkbox
+                id={`checkbox-on-${selectedFrameworkIndex}-${optionIndex}`}
+                checked={selectedOptionIndex === optionIndex}
+                onChange={() => handleCheckboxChange(optionIndex)}
+              />
+            </ControlContainer>
+          </SelectorItem>
+        ))}
+      </div>
     </SelectorContainer>
   );
 };

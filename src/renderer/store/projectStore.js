@@ -1,39 +1,34 @@
 import { create } from "zustand";
 
-const checkProjectStarterValidity = state => {
-  return !!state.path && !!state.selectedPackageManager && !!state.projectName;
+const initialProjectState = {
+  files: [],
+  selectedSettingOption: "userDefined",
+  selectedPackageManager: "",
+  projectName: "",
+  isProjectStarterValid: false,
+  selectedFrameworkIndex: null,
+  selectedOptionIndex: null,
+  selectedDependenciesIndex: [],
+  path: "",
+  projects: [],
+  isUserDefinedSetting: true,
+  isFrameworksSelected: false,
+  isDependenciesSelected: false
 };
-const updateState = (set, state, field, value) => {
-  const newState = {
-    ...state,
-    [field]: value
-  };
 
+const checkProjectStarterValidity = state =>
+  !!state.path && !!state.selectedPackageManager && !!state.projectName;
+
+const updateState = (state, field, value) => {
+  const updatedState = { ...state, [field]: value };
   return {
-    ...newState,
-    isProjectStarterValid: checkProjectStarterValidity(newState)
+    ...updatedState,
+    isProjectStarterValid: checkProjectStarterValidity(updatedState)
   };
 };
 
 const useProjectStore = create(set => ({
-  path: "",
-  selectedPackageManager: "",
-  projectName: "",
-  files: [],
-  projects: [],
-  selectedSettingOption: "userDefined",
-  isUserDefinedSetting: true,
-  isProjectStarterValid: false,
-  isFrameworksSelected: false,
-  isDependenciesSelected: false,
-  searchQuery: "",
-  packageItems: [],
-  selectedPackageItem: null,
-  isDropdownVisible: false,
-  isEnterPressed: false,
-  selectedOptionIndex: null,
-  selectedFrameworkIndex: null,
-  selectedDependenciesIndex: [],
+  ...initialProjectState,
 
   setSelectedSettingOption: option =>
     set(state => ({
@@ -41,57 +36,31 @@ const useProjectStore = create(set => ({
       isUserDefinedSetting: option === "userDefined"
     })),
 
-  setPath: path => set(state => updateState(set, state, "path", path)),
+  setFiles: files => set({ files }),
+  setProjectName: projectName =>
+    set(state => updateState(state, "projectName", projectName)),
   setSelectedPackageManager: selectedPackageManager =>
     set(state =>
-      updateState(set, state, "selectedPackageManager", selectedPackageManager)
+      updateState(state, "selectedPackageManager", selectedPackageManager)
     ),
-  setProjectName: projectName =>
-    set(state => updateState(set, state, "projectName", projectName)),
-
-  setFiles: files => set({ files }),
-  setUserDefinedSetting: isUserDefined =>
-    set({ isUserDefinedSetting: isUserDefined }),
+  setSelectedFrameworkIndex: index => set({ selectedFrameworkIndex: index }),
+  setSelectedOptionIndex: index => set({ selectedOptionIndex: index }),
+  setSelectedDependenciesIndex: index =>
+    set({ selectedDependenciesIndex: index }),
+  setPath: path => set(state => updateState(state, "path", path)),
+  setProjects: projects => set({ projects }),
 
   setFrameworksSelected: isSelected =>
     set({ isFrameworksSelected: isSelected }),
+
   setDependenciesSelected: isSelected =>
     set({ isDependenciesSelected: isSelected }),
-  setSearchQuery: query => set({ searchQuery: query }),
-  setPackageItems: items => set({ packageItems: items }),
-  setSelectedPackageItem: item => set({ selectedPackageItem: item }),
-  setIsDropdownVisible: isVisible => set({ isDropdownVisible: isVisible }),
-  setIsEnterPressed: isPressed => set({ isEnterPressed: isPressed }),
-  setProjects: projects => set({ projects }),
-
-  setSelectedOptionIndex: index => set({ selectedOptionIndex: index }),
-  setSelectedFrameworkIndex: index => set({ selectedFrameworkIndex: index }),
-  setSelectedDependenciesIndex: index =>
-    set({ selectedDependenciesIndex: index }),
 
   checkProjectPath: path => {
     return true;
   },
 
-  resetProjectState: () =>
-    set({
-      path: "",
-      selectedPackageManager: "",
-      projectName: "",
-      files: [],
-      projects: [],
-      isProjectStarterValid: false,
-      isFrameworksSelected: false,
-      searchQuery: "",
-      packageItems: [],
-      selectedPackageItem: null,
-      isDropdownVisible: false,
-      selectedSettingOption: "userDefined",
-      isEnterPressed: false,
-      selectedOptionIndex: null,
-      selectedFrameworkIndex: null,
-      selectedDependenciesIndex: []
-    })
+  resetProjectState: () => set(initialProjectState)
 }));
 
 export default useProjectStore;

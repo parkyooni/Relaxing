@@ -14,17 +14,23 @@ const FrameworkSelector = () => {
     selectedFrameworkIndex,
     setSelectedFrameworkIndex,
     setFrameworksSelected
-  } = useProjectStore(state => ({
-    selectedFrameworkIndex: state.selectedFrameworkIndex,
-    setSelectedFrameworkIndex: state.setSelectedFrameworkIndex,
-    setFrameworksSelected: state.setFrameworksSelected
-  }));
+  } = useProjectStore(
+    ({
+      selectedFrameworkIndex,
+      setSelectedFrameworkIndex,
+      setFrameworksSelected
+    }) => ({
+      selectedFrameworkIndex,
+      setSelectedFrameworkIndex,
+      setFrameworksSelected
+    })
+  );
 
-  const dependencies = mockData.frameworkSelector;
+  const frameworks = mockData.frameworkSelector;
 
   const handleCheckboxChange = index => {
-    const newSelectedIndex = index === selectedFrameworkIndex ? null : index;
-    setSelectedFrameworkIndex(newSelectedIndex);
+    const newIndex = index === selectedFrameworkIndex ? null : index;
+    setSelectedFrameworkIndex(newIndex);
   };
 
   useEffect(() => {
@@ -33,20 +39,22 @@ const FrameworkSelector = () => {
 
   return (
     <SelectorContainer>
-      {dependencies.map((dependency, index) => (
-        <SelectorItem key={index}>
-          <TextContainer>
-            <span>{dependency.name}</span>
-          </TextContainer>
-          <ControlContainer>
-            <Checkbox
-              checked={selectedFrameworkIndex === index}
-              onChange={() => handleCheckboxChange(index)}
-              id={`checkbox-framework-${index}`}
-            />
-          </ControlContainer>
-        </SelectorItem>
-      ))}
+      <div className="layout">
+        {frameworks.map((framework, index) => (
+          <SelectorItem key={index}>
+            <TextContainer>
+              <span>{framework.name}</span>
+            </TextContainer>
+            <ControlContainer>
+              <Checkbox
+                checked={selectedFrameworkIndex === index}
+                onChange={() => handleCheckboxChange(index)}
+                id={`checkbox-framework-${index}`}
+              />
+            </ControlContainer>
+          </SelectorItem>
+        ))}
+      </div>
     </SelectorContainer>
   );
 };

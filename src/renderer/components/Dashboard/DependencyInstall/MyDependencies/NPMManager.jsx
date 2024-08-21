@@ -18,11 +18,10 @@ const NPMManager = () => {
     setPackageItems,
     selectedPackageItem,
     setSelectedPackageItem,
-    isDropdownVisible,
-    setIsDropdownVisible,
-    isEnterPressed,
-    setIsEnterPressed
+    uiFlags: { isDropdownVisible, isEnterPressed },
+    setUIFlag
   } = useUIStore();
+
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -31,8 +30,8 @@ const NPMManager = () => {
         containerRef.current &&
         !containerRef.current.contains(event.target)
       ) {
-        setIsDropdownVisible(false);
-        setIsEnterPressed(false);
+        setUIFlag("isDropdownVisible", false);
+        setUIFlag("isEnterPressed", false);
       }
     };
 
@@ -40,12 +39,12 @@ const NPMManager = () => {
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  }, [setIsDropdownVisible, setIsEnterPressed]);
+  }, [setUIFlag]);
 
   const handleInputChange = e => {
     setSearchQuery(e.target.value);
-    setIsEnterPressed(false);
-    setIsDropdownVisible(false);
+    setUIFlag("isEnterPressed", false);
+    setUIFlag("isDropdownVisible", false);
   };
 
   const handleSearch = () => {
@@ -58,8 +57,8 @@ const NPMManager = () => {
 
       setPackageItems(filtered);
       setSelectedPackageItem(null);
-      setIsDropdownVisible(true);
-      setIsEnterPressed(true);
+      setUIFlag("isDropdownVisible", true);
+      setUIFlag("isEnterPressed", true);
     }
   };
 
@@ -74,7 +73,7 @@ const NPMManager = () => {
   };
 
   const handleClickOutside = () => {
-    setIsDropdownVisible(false);
+    setUIFlag("isDropdownVisible", false);
   };
 
   return (

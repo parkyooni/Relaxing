@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigation } from "@utils/common";
 import {
   PageContentContainer,
@@ -19,7 +19,7 @@ import useProjectStore from "@/store/projectStore";
 const CreateProject = () => {
   const { navigateToPath } = useNavigation();
   const {
-    isModalOpen,
+    uiFlags: { isModalOpen },
     activeModal,
     modalMessage,
     showModal,
@@ -29,15 +29,21 @@ const CreateProject = () => {
     resetUIState,
     setSectionsVisibility
   } = useUIStore();
-
   const {
+    isUserDefinedSetting,
     isProjectStarterValid,
     isFrameworksSelected,
+    selectedSettingOption,
+    selectedFrameworkIndex,
+    setSelectedFrameworkIndex,
+    selectedVariantIndex,
+    setSelectedVariantIndex,
+    selectedDependenciesIndex,
     resetProjectState,
-    isUserDefinedSetting
+    path,
+    selectedPackageManager,
+    projectName
   } = useProjectStore();
-
-  const [selectedFrameworkIndex, setSelectedFrameworkIndex] = useState(null);
 
   useEffect(() => {
     setSectionsVisibility({
@@ -45,13 +51,19 @@ const CreateProject = () => {
       showProjectStarter: true,
       showFrameworkSelector: isProjectStarterValid && isUserDefinedSetting,
       showVariantSelector:
-        isProjectStarterValid && isFrameworksSelected && isUserDefinedSetting
+        isProjectStarterValid && isFrameworksSelected && isUserDefinedSetting,
+      showDependenciesSelector:
+        isProjectStarterValid &&
+        isFrameworksSelected &&
+        selectedFrameworkIndex !== null &&
+        isUserDefinedSetting
     });
   }, [
     isProjectStarterValid,
     isFrameworksSelected,
     isUserDefinedSetting,
-    setSectionsVisibility
+    setSectionsVisibility,
+    selectedFrameworkIndex
   ]);
 
   const handleCancelClick = () => {
@@ -69,34 +81,23 @@ const CreateProject = () => {
   };
 
   const handleSaveClick = () => {
-    const {
-      selectedSettingOption,
-      path,
-      projectName,
-      selectedPackageManager,
-      selectedOptionIndex
-    } = useProjectStore.getState();
+    const canShowSaveModal =
+      isProjectStarterValid &&
+      isFrameworksSelected &&
+      selectedFrameworkIndex !== null &&
+      selectedDependenciesIndex.length > 0;
 
-    const hasInitialSettings =
-      selectedSettingOption === "userDefined" &&
-      projectName !== "" &&
-      selectedPackageManager !== "" &&
-      path !== "" &&
-      selectedOptionIndex !== null;
-
-    const isProjectDataValid =
-      selectedSettingOption !== "userDefined" &&
-      projectName !== "" &&
-      selectedPackageManager !== "" &&
-      path !== "";
-
-    if (isProjectStarterValid && hasInitialSettings) {
-      showModal(
-        "save",
-        "의존성 설치 및 설정에 대한 정보가 저장됩니다. 생성으로 선택할경우 사용자 설정은 저장되지않고, 프로젝트가 만들어집니다."
-      );
-    } else if (isProjectStarterValid && isProjectDataValid) {
-      showModal("customSave", "프로젝트를 생성 하시겠습니까?");
+    if (selectedSettingOption === "userDefined") {
+      if (canShowSaveModal) {
+        showModal(
+          "save",
+          "의존성 설치 및 설정에 대한 정보가 저장됩니다. 생성으로 선택할경우 사용자 설정은 저장되지않고, 프로젝트가 만들어집니다."
+        );
+      }
+    } else {
+      if (isProjectStarterValid) {
+        showModal("customSave", "프로젝트를 생성 하시겠습니까?");
+      }
     }
   };
 
@@ -106,6 +107,9 @@ const CreateProject = () => {
     closeModal();
     navigateToPath("/project/project-list");
   };
+
+  const isProjectStarterComplete =
+    !!path && !!selectedPackageManager && !!projectName;
 
   return (
     <PageContentContainer>
@@ -141,6 +145,9 @@ const CreateProject = () => {
           title="Framework Selector"
           isActive={sections.showFrameworkSelector}
           onToggle={() => toggleSection("showFrameworkSelector")}
+          disabled={
+            !isProjectStarterComplete || selectedSettingOption !== "userDefined"
+          }
         >
           <FrameworkSelector
             selectedFrameworkIndex={selectedFrameworkIndex}
@@ -151,38 +158,53 @@ const CreateProject = () => {
           title="Variant Selector"
           isActive={sections.showVariantSelector}
           onToggle={() => toggleSection("showVariantSelector")}
+          disabled={
+            selectedFrameworkIndex === null ||
+            selectedSettingOption !== "userDefined"
+          }
         >
-          <VariantSelector selectedFrameworkIndex={selectedFrameworkIndex} />
+          <VariantSelector
+            selectedFrameworkIndex={selectedFrameworkIndex}
+            selectedVariantIndex={selectedVariantIndex}
+            setSelectedVariantIndex={setSelectedVariantIndex}
+          />
         </ToggleSection>
         <ToggleSection
           title="Dependencies Selector"
           isActive={sections.showDependenciesSelector}
           onToggle={() => toggleSection("showDependenciesSelector")}
+          disabled={selectedSettingOption !== "userDefined"}
         >
-          <DependenciesSelector />
+          <DependenciesSelector
+            selectedDependenciesIndex={selectedDependenciesIndex}
+          />
         </ToggleSection>
       </div>
 
       {isModalOpen &&
         (activeModal === "cancel" || activeModal === "customSave") && (
-          <CancelCompleteModal
-            onSave={handleConfirmCancel}
-            onCancel={closeModal}
-            message={modalMessage}
-            subMessage={
-              activeModal === "cancel"
-                ? "입력한 정보는 복구할 수 없습니다."
-                : "프로젝트를 생성 하시겠습니까?"
-            }
-          />
+          <>
+            <CancelCompleteModal
+              onSave={handleConfirmCancel}
+              onCancel={closeModal}
+              message={modalMessage}
+              subMessage={
+                activeModal === "cancel"
+                  ? "입력한 정보는 복구할 수 없습니다."
+                  : "프로젝트를 생성 하시겠습니까?"
+              }
+            />
+          </>
         )}
 
       {isModalOpen && activeModal === "save" && (
-        <SaveModal
-          onSave={closeModal}
-          onCreate={closeModal}
-          onCancel={closeModal}
-        />
+        <>
+          <SaveModal
+            onSave={closeModal}
+            onCreate={closeModal}
+            onCancel={closeModal}
+          />
+        </>
       )}
     </PageContentContainer>
   );

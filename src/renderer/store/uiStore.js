@@ -1,19 +1,41 @@
 import { create } from "zustand";
 
-const useUIStore = create(set => ({
-  isModalOpen: false,
+const initialState = {
+  searchQuery: "",
+  packageItems: [],
+  selectedPackageItem: null,
   activeModal: null,
   modalMessage: "",
+  activeTab: "dependencies",
+  uiFlags: {
+    isDropdownVisible: false,
+    isEnterPressed: false,
+    isModalOpen: false,
+    switchToggle: false
+  },
   sections: {
     showSettingLoad: true,
     showProjectStarter: false,
     showFrameworkSelector: false,
     showVariantSelector: false,
     showDependenciesSelector: false
-  },
+  }
+};
 
-  switchToggle: false,
-  activeTab: "dependencies",
+const useUIStore = create(set => ({
+  ...initialState,
+
+  setSearchQuery: query => set({ searchQuery: query }),
+  setPackageItems: items => set({ packageItems: items }),
+  setSelectedPackageItem: item => set({ selectedPackageItem: item }),
+
+  setUIFlag: (flag, value) =>
+    set(state => ({
+      uiFlags: {
+        ...state.uiFlags,
+        [flag]: value
+      }
+    })),
 
   setSectionsVisibility: newVisibility =>
     set(state => ({
@@ -24,18 +46,21 @@ const useUIStore = create(set => ({
     })),
 
   showModal: (modalType, message = "") =>
-    set({
-      isModalOpen: true,
+    set(() => ({
+      uiFlags: {
+        isModalOpen: true
+      },
       activeModal: modalType,
       modalMessage: message
-    }),
-
+    })),
   closeModal: () =>
-    set({
-      isModalOpen: false,
+    set(() => ({
+      uiFlags: {
+        isModalOpen: false
+      },
       activeModal: null,
       modalMessage: ""
-    }),
+    })),
 
   toggleSection: section =>
     set(state => ({
@@ -45,24 +70,9 @@ const useUIStore = create(set => ({
       }
     })),
 
-  setSwitchToggle: value => set({ switchToggle: value }),
   setActiveTab: tabName => set({ activeTab: tabName }),
 
-  resetUIState: () =>
-    set(state => ({
-      sections: {
-        showSettingLoad: true,
-        showProjectStarter: false,
-        showFrameworkSelector: false,
-        showVariantSelector: false,
-        showDependenciesSelector: false
-      },
-      switchToggle: false,
-      activeTab: "dependencies",
-      isModalOpen: false,
-      activeModal: null,
-      modalMessage: ""
-    }))
+  resetUIState: () => set(initialState)
 }));
 
 export default useUIStore;

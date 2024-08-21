@@ -25,7 +25,19 @@ const ProjectStarter = () => {
     files,
     setFiles,
     isProjectStarterValid
-  } = useProjectStore();
+  } = useProjectStore(state => ({
+    path: state.path,
+    setPath: state.setPath,
+    selectedPackageManager: state.selectedPackageManager,
+    setSelectedPackageManager: state.setSelectedPackageManager,
+    projectName: state.projectName,
+    setProjectName: state.setProjectName,
+    files: state.files,
+    setFiles: state.setFiles,
+    isProjectStarterValid: state.isProjectStarterValid
+  }));
+
+  const packageManagers = mockData.packageManagers;
 
   const handleUploadClick = async () => {
     try {
@@ -34,18 +46,15 @@ const ProjectStarter = () => {
         setPath(selectedPath);
 
         const fileList = await window.api.readDirectory(selectedPath);
-
         if (fileList) {
           const processedFiles = processFileList(fileList, selectedPath);
           setFiles(processedFiles);
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error("파일 업로드 중 오류 발생:", error);
     }
   };
-
-  const packageManagers = mockData.packageManagers;
 
   useEffect(() => {
     if (!selectedPackageManager && packageManagers.length > 0) {
@@ -58,8 +67,7 @@ const ProjectStarter = () => {
   };
 
   const handlePackageManagerChange = event => {
-    const selectedManager = event.target.value;
-    setSelectedPackageManager(selectedManager);
+    setSelectedPackageManager(event.target.value);
   };
 
   return (
@@ -69,14 +77,16 @@ const ProjectStarter = () => {
         <UploadButton onClick={handleUploadClick}>업로드</UploadButton>
       </PathInputContainer>
       <DirectoryListContainer>
-        {files.map((item, index) => (
-          <DirectoryItem key={index} isFolder={item.type === "folder"}>
-            {item.name}
-          </DirectoryItem>
-        ))}
+        <div className="layout">
+          {files.map((item, index) => (
+            <DirectoryItem key={index} isFolder={item.type === "folder"}>
+              {item.name}
+            </DirectoryItem>
+          ))}
+        </div>
       </DirectoryListContainer>
       <ProjectNameInput
-        placeholder="프로젝트 이름을 적어주세요..."
+        placeholder="프로젝트 이름을 입력하세요..."
         value={projectName}
         onChange={handleProjectNameChange}
       />

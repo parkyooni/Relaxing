@@ -14,22 +14,24 @@ const DependenciesSelector = () => {
     selectedDependenciesIndex,
     setSelectedDependenciesIndex,
     setDependenciesSelected
-  } = useProjectStore(state => ({
-    selectedDependenciesIndex: state.selectedDependenciesIndex,
-    setSelectedDependenciesIndex: state.setSelectedDependenciesIndex,
-    setDependenciesSelected: state.setDependenciesSelected
-  }));
+  } = useProjectStore(
+    ({
+      selectedDependenciesIndex,
+      setSelectedDependenciesIndex,
+      setDependenciesSelected
+    }) => ({
+      selectedDependenciesIndex,
+      setSelectedDependenciesIndex,
+      setDependenciesSelected
+    })
+  );
 
   const dependencies = mockData.dependenciesSelector;
 
   const handleCheckboxChange = index => {
-    let newSelectedIndex;
-
-    if (selectedDependenciesIndex.includes(index)) {
-      newSelectedIndex = selectedDependenciesIndex.filter(i => i !== index);
-    } else {
-      newSelectedIndex = [...selectedDependenciesIndex, index];
-    }
+    const newSelectedIndex = selectedDependenciesIndex.includes(index)
+      ? selectedDependenciesIndex.filter(i => i !== index)
+      : [...selectedDependenciesIndex, index];
 
     setSelectedDependenciesIndex(newSelectedIndex);
   };
@@ -40,20 +42,22 @@ const DependenciesSelector = () => {
 
   return (
     <SelectorContainer>
-      {dependencies.map((dependency, index) => (
-        <SelectorItem key={index}>
-          <TextContainer>
-            <span>{dependency.name}</span>
-          </TextContainer>
-          <ControlContainer>
-            <Checkbox
-              checked={selectedDependenciesIndex.includes(index)}
-              onChange={() => handleCheckboxChange(index)}
-              id={`checkbox-${index}`}
-            />
-          </ControlContainer>
-        </SelectorItem>
-      ))}
+      <div className="layout">
+        {dependencies.map((dependency, index) => (
+          <SelectorItem key={index}>
+            <TextContainer>
+              <span>{dependency.name}</span>
+            </TextContainer>
+            <ControlContainer>
+              <Checkbox
+                checked={selectedDependenciesIndex.includes(index)}
+                onChange={() => handleCheckboxChange(index)}
+                id={`checkbox-${index}`}
+              />
+            </ControlContainer>
+          </SelectorItem>
+        ))}
+      </div>
     </SelectorContainer>
   );
 };
