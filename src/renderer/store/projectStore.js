@@ -5,15 +5,16 @@ const initialProjectState = {
   selectedSettingOption: "userDefined",
   selectedPackageManager: "",
   projectName: "",
+  isUserDefinedSetting: true,
   isProjectStarterValid: false,
+  isFrameworksSelected: false,
+  isDependenciesSelected: false,
   selectedFrameworkIndex: null,
   selectedOptionIndex: null,
+  selectedVariantIndex: null,
   selectedDependenciesIndex: [],
   path: "",
   projects: [],
-  isUserDefinedSetting: true,
-  isFrameworksSelected: false,
-  isDependenciesSelected: false,
   frameworkName: "",
   variantName: ""
 };
@@ -50,6 +51,7 @@ const useProjectStore = create(set => ({
     ),
   setSelectedFrameworkIndex: index => set({ selectedFrameworkIndex: index }),
   setSelectedOptionIndex: index => set({ selectedOptionIndex: index }),
+  setSelectedVariantIndex: index => set({ selectedVariantIndex: index }),
   setSelectedDependenciesIndex: index =>
     set({ selectedDependenciesIndex: index }),
   setPath: path => set(state => updateState(state, "path", path)),
@@ -57,7 +59,6 @@ const useProjectStore = create(set => ({
 
   setFrameworksSelected: isSelected =>
     set({ isFrameworksSelected: isSelected }),
-
   setDependenciesSelected: isSelected =>
     set({ isDependenciesSelected: isSelected }),
 

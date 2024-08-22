@@ -10,7 +10,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
-    "prepare": "husky install"
+    "pre-commit": "npm test"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",
@@ -28,7 +28,7 @@
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "husky": "^9.1.4",
+    "husky": "^9.1.5",
     "prettier": "^3.3.3",
     "vite": "^5.4.0"
   },

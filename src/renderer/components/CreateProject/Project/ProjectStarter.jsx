@@ -13,8 +13,10 @@ import {
 import mockData from "@utils/mockData.json";
 import { processFileList } from "@utils/fileUtils.cjs";
 import useProjectStore from "@/store/projectStore";
+import useUIStore from "@/store/uiStore";
 
 const ProjectStarter = () => {
+  const { errorMessage, setErrorMessage } = useUIStore();
   const {
     path,
     setPath,
@@ -23,8 +25,7 @@ const ProjectStarter = () => {
     projectName,
     setProjectName,
     files,
-    setFiles,
-    isProjectStarterValid
+    setFiles
   } = useProjectStore(state => ({
     path: state.path,
     setPath: state.setPath,
@@ -33,8 +34,7 @@ const ProjectStarter = () => {
     projectName: state.projectName,
     setProjectName: state.setProjectName,
     files: state.files,
-    setFiles: state.setFiles,
-    isProjectStarterValid: state.isProjectStarterValid
+    setFiles: state.setFiles
   }));
 
   const packageManagers = mockData.packageManagers;
@@ -63,7 +63,25 @@ const ProjectStarter = () => {
   }, [selectedPackageManager, setSelectedPackageManager, packageManagers]);
 
   const handleProjectNameChange = event => {
-    setProjectName(event.target.value);
+    const inputValue = event.target.value;
+    const validInput = inputValue.replace(/[^a-z0-9_-]/g, "");
+    const startsWithNumber = /^[0-9]/.test(validInput);
+    const maxLength = 214;
+    let errorMessage = "";
+
+    if (inputValue !== validInput) {
+      errorMessage = "영문 소문자, 숫자, -, _만 입력 가능합니다.";
+    } else if (startsWithNumber) {
+      errorMessage = "숫자로 시작할 수 없습니다.";
+    } else if (validInput.length > maxLength) {
+      errorMessage = `최대 ${maxLength}자까지 가능합니다.`;
+    }
+
+    setErrorMessage(errorMessage);
+
+    if (!errorMessage) {
+      setProjectName(validInput);
+    }
   };
 
   const handlePackageManagerChange = event => {
@@ -90,6 +108,9 @@ const ProjectStarter = () => {
         value={projectName}
         onChange={handleProjectNameChange}
       />
+      {errorMessage && (
+        <span className="error-message-text">{errorMessage}</span>
+      )}
       <SelectWrapper>
         <ProjectNameSelect
           value={selectedPackageManager}
@@ -102,7 +123,6 @@ const ProjectStarter = () => {
           ))}
         </ProjectNameSelect>
       </SelectWrapper>
-      {isProjectStarterValid && <span>프로젝트 정보가 유효합니다.</span>}
     </ProjectStarterContainer>
   );
 };

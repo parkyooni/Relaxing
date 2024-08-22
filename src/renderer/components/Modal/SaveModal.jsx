@@ -2,7 +2,7 @@ import { useState } from "react";
 import ButtonBox from "@components/common/ButtonBox";
 import { ModalBackground, ModalContainer } from "@public/style/Modal.styles";
 
-const SaveModal = ({ onSave, onCreate, onCancel }) => {
+const SaveModal = ({ onSave, onCreate, onCancel, title, description }) => {
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = e => {
@@ -13,7 +13,7 @@ const SaveModal = ({ onSave, onCreate, onCancel }) => {
     <ModalBackground onClick={onCancel}>
       <ModalContainer className="large" onClick={e => e.stopPropagation()}>
         <div className="user-title">
-          <p className="user-title">사용자 설정 저장</p>
+          <p className="user-title">{title}</p>
           <div className="input-container">
             <input
               type="text"
@@ -21,12 +21,7 @@ const SaveModal = ({ onSave, onCreate, onCancel }) => {
               value={inputValue}
               onChange={handleInputChange}
             />
-            <div className="info-text">
-              의존성 설치 및 설정에 대한 정보가 저장됩니다.
-              <br />
-              생성으로 선택할 경우 사용자 설정은 저장되지 않고, 프로젝트가
-              만들어집니다.
-            </div>
+            <div className="info-text">{description}</div>
           </div>
         </div>
         <div className="button-group">

@@ -6,6 +6,7 @@ const initialState = {
   selectedPackageItem: null,
   activeModal: null,
   modalMessage: "",
+  errorMessage: "",
   activeTab: "dependencies",
   uiFlags: {
     isDropdownVisible: false,
@@ -66,6 +67,8 @@ const useUIStore = create(set => ({
       activeModal: null,
       modalMessage: ""
     })),
+
+  setErrorMessage: message => set({ errorMessage: message }),
 
   toggleSection: section =>
     set(state => ({

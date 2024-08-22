@@ -14,6 +14,14 @@ export const Container = styled.div`
   overflow-y: auto;
   transition: transform 0.1s ease-in-out;
 
+  .error-message-text {
+    display: inline-block;
+    padding: 0 0 0.3125rem 0.625rem;
+    font-size: ${({ theme }) => theme.fontSizes.normal};
+    color: ${({ theme }) => theme.colors.white};
+    cursor: default;
+  }
+
   ${media.smallToMedium`
 		background: url("../images/smallToMedium.png") no-repeat 100%;
 	`}

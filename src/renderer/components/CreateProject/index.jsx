@@ -9,29 +9,29 @@ import FrameworkSelector from "@components/CreateProject/Project/FrameworkSelect
 import VariantSelector from "@components/CreateProject/Project/VariantSelector";
 import ProjectStarter from "@components/CreateProject/Project/ProjectStarter";
 import SettingLoad from "@components/CreateProject/Project/SettingLoad";
-import ToggleSection from "@components/common/ToggleSection";
-import ButtonBox from "@components/common/ButtonBox";
 import CancelCompleteModal from "@components/Modal/CancelCompleteModal";
 import SaveModal from "@components/Modal/SaveModal";
+import Loading from "@/components/common/Loading";
+import ToggleSection from "@components/common/ToggleSection";
+import ButtonBox from "@components/common/ButtonBox";
 import useUIStore from "@/store/uiStore";
 import useProjectStore from "@/store/projectStore";
 import mockData from "@utils/mockData.json";
-import Loading from "@/components/common/Loading";
 
 const CreateProject = () => {
   const { navigateToPath } = useNavigation();
   const {
     uiFlags: { isModalOpen },
+    loading: { isLoading },
+    setLoading,
     activeModal,
-    modalMessage,
     showModal,
     closeModal,
+    modalMessage,
     sections,
     toggleSection,
     resetUIState,
-    setSectionsVisibility,
-    loading: { isLoading },
-    setLoading
+    setSectionsVisibility
   } = useUIStore();
   const {
     isUserDefinedSetting,
@@ -39,54 +39,108 @@ const CreateProject = () => {
     isFrameworksSelected,
     selectedSettingOption,
     selectedFrameworkIndex,
-    setSelectedFrameworkIndex,
+    selectedOptionIndex,
     selectedVariantIndex,
-    setSelectedVariantIndex,
+    setSelectedFrameworkIndex,
     selectedDependenciesIndex,
-    resetProjectState,
-    path,
     selectedPackageManager,
+    setSelectedVariantIndex,
+    setSelectedOptionIndex,
+    path,
     projectName,
     frameworkName,
-    variantName
+    variantName,
+    resetProjectState
   } = useProjectStore(state => ({
     projectName: state.projectName,
     path: state.path,
     frameworkName: state.frameworkName,
     variantName: state.variantName,
-    setSelectedVariantIndex: state.setSelectedVariantIndex,
+    setSelectedFrameworkIndex: state.setSelectedFrameworkIndex,
     selectedPackageManager: state.selectedPackageManager,
-    isProjectStarterComplete: state.isProjectStarterComplete,
     isProjectStarterValid: state.isProjectStarterValid,
     isFrameworksSelected: state.isFrameworksSelected,
     selectedSettingOption: state.selectedSettingOption,
     resetProjectState: state.resetProjectState,
     isUserDefinedSetting: state.isUserDefinedSetting,
     selectedDependenciesIndex: state.selectedDependenciesIndex,
-    selectedFrameworkIndex: state.selectedVariantIndex,
-    setSelectedFrameworkIndex: state.selectedVariantIndex,
-    selectedVariantIndex: state.selectedVariantIndex
+    selectedFrameworkIndex: state.selectedFrameworkIndex,
+    setSelectedOptionIndex: state.setSelectedOptionIndex,
+    selectedOptionIndex: state.selectedOptionIndex,
+    selectedVariantIndex: state.selectedVariantIndex,
+    setSelectedVariantIndex: state.setSelectedVariantIndex
   }));
 
-  useEffect(() => {
-    setSectionsVisibility({
-      showSettingLoad: true,
-      showProjectStarter: true,
-      showFrameworkSelector: isProjectStarterValid && isUserDefinedSetting,
-      showVariantSelector:
-        isProjectStarterValid && isFrameworksSelected && isUserDefinedSetting,
-      showDependenciesSelector:
-        isProjectStarterValid &&
+  const resetState = () => {
+    resetUIState();
+    resetProjectState();
+  };
+
+  const isSaveEnabled = () => {
+    const areBasicFieldsValid =
+      !!path &&
+      !!selectedPackageManager &&
+      !!projectName &&
+      isProjectStarterValid;
+
+    if (selectedSettingOption === "userDefined") {
+      return (
+        areBasicFieldsValid &&
         isFrameworksSelected &&
         selectedFrameworkIndex !== null &&
-        isUserDefinedSetting
-    });
+        selectedOptionIndex !== null
+      );
+    }
+
+    return areBasicFieldsValid;
+  };
+
+  const isSectionVisible = () => ({
+    showSettingLoad: true,
+    showProjectStarter: true,
+    showFrameworkSelector: isProjectStarterValid && isUserDefinedSetting,
+    showVariantSelector:
+      isProjectStarterValid && isFrameworksSelected && isUserDefinedSetting,
+    showDependenciesSelector:
+      isUserDefinedSetting &&
+      isProjectStarterValid &&
+      isFrameworksSelected &&
+      selectedFrameworkIndex !== null &&
+      selectedOptionIndex !== null
+  });
+
+  const getSaveMessage = () => {
+    if (selectedSettingOption === "userDefined" && isSaveEnabled()) {
+      return {
+        type: "save",
+        message:
+          "의존성 설치 및 설정에 대한 정보가 저장됩니다. 생성으로 선택할경우 사용자 설정은 저장되지않고, 프로젝트가 만들어집니다."
+      };
+    } else if (
+      selectedSettingOption !== "userDefined" &&
+      !!path &&
+      !!selectedPackageManager &&
+      !!projectName
+    ) {
+      return {
+        type: "customSave",
+        message: "프로젝트를 생성 하시겠습니까?"
+      };
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    const visibilitySettings = isSectionVisible();
+    setSectionsVisibility(visibilitySettings);
   }, [
+    isUserDefinedSetting,
     isProjectStarterValid,
     isFrameworksSelected,
-    isUserDefinedSetting,
-    setSectionsVisibility,
-    selectedFrameworkIndex
+    selectedFrameworkIndex,
+    selectedVariantIndex,
+    selectedOptionIndex,
+    setSectionsVisibility
   ]);
 
   const handleCancelClick = () => {
@@ -104,23 +158,9 @@ const CreateProject = () => {
   };
 
   const handleSaveClick = () => {
-    const canShowSaveModal =
-      isProjectStarterValid &&
-      isFrameworksSelected &&
-      selectedFrameworkIndex !== null &&
-      selectedDependenciesIndex.length > 0;
-
-    if (selectedSettingOption === "userDefined") {
-      if (canShowSaveModal) {
-        showModal(
-          "save",
-          "의존성 설치 및 설정에 대한 정보가 저장됩니다. 생성으로 선택할경우 사용자 설정은 저장되지않고, 프로젝트가 만들어집니다."
-        );
-      }
-    } else {
-      if (isProjectStarterValid) {
-        showModal("customSave", "프로젝트를 생성 하시겠습니까?");
-      }
+    const saveMessage = getSaveMessage();
+    if (saveMessage) {
+      showModal(saveMessage.type, saveMessage.message);
     }
   };
 
@@ -144,9 +184,7 @@ const CreateProject = () => {
         });
       }
 
-      resetUIState();
-      resetProjectState();
-
+      resetState();
       closeModal();
       navigateToPath("/project/project-list");
     } catch (error) {
@@ -157,14 +195,10 @@ const CreateProject = () => {
   };
 
   const handleConfirmCancel = () => {
-    resetUIState();
-    resetProjectState();
+    resetState();
     closeModal();
     navigateToPath("/project/project-list");
   };
-
-  const isProjectStarterComplete =
-    !!path && !!selectedPackageManager && !!projectName;
 
   return (
     <PageContentContainer>
@@ -175,8 +209,8 @@ const CreateProject = () => {
         </ButtonBox>
         <ButtonBox
           onClick={handleSaveClick}
-          variant={isProjectStarterValid ? "active" : "disabled"}
-          disabled={!isProjectStarterValid}
+          variant={isSaveEnabled() ? "active" : "disabled"}
+          disabled={!isSaveEnabled()}
         >
           저장
         </ButtonBox>
@@ -201,9 +235,7 @@ const CreateProject = () => {
           title="Framework Selector"
           isActive={sections.showFrameworkSelector}
           onToggle={() => toggleSection("showFrameworkSelector")}
-          disabled={
-            !isProjectStarterComplete || selectedSettingOption !== "userDefined"
-          }
+          disabled={!sections.showFrameworkSelector}
         >
           <FrameworkSelector
             selectedFrameworkIndex={selectedFrameworkIndex}
@@ -214,22 +246,19 @@ const CreateProject = () => {
           title="Variant Selector"
           isActive={sections.showVariantSelector}
           onToggle={() => toggleSection("showVariantSelector")}
-          disabled={
-            selectedFrameworkIndex === null ||
-            selectedSettingOption !== "userDefined"
-          }
+          disabled={!sections.showVariantSelector}
         >
           <VariantSelector
             selectedFrameworkIndex={selectedFrameworkIndex}
-            selectedVariantIndex={selectedVariantIndex}
             setSelectedVariantIndex={setSelectedVariantIndex}
+            setSelectedOptionIndex={setSelectedOptionIndex}
           />
         </ToggleSection>
         <ToggleSection
           title="Dependencies Selector"
           isActive={sections.showDependenciesSelector}
           onToggle={() => toggleSection("showDependenciesSelector")}
-          disabled={selectedSettingOption !== "userDefined"}
+          disabled={!sections.showDependenciesSelector}
         >
           <DependenciesSelector
             selectedDependenciesIndex={selectedDependenciesIndex}
@@ -259,6 +288,14 @@ const CreateProject = () => {
             onSave={closeModal}
             onCreate={handleConfirmCreate}
             onCancel={closeModal}
+            title="사용자 설정 저장"
+            description={
+              <>
+                의존성 설치 및 설정에 대한 정보가 저장됩니다. <br />
+                생성으로 선택할 경우 사용자 설정은 저장되지 않고, 프로젝트가
+                만들어집니다.
+              </>
+            }
           />
         </>
       )}
