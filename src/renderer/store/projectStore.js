@@ -16,7 +16,8 @@ const initialProjectState = {
   path: "",
   projects: [],
   frameworkName: "",
-  variantName: ""
+  variantName: "",
+  customName: ""
 };
 
 const checkProjectStarterValidity = state =>
@@ -35,6 +36,7 @@ const useProjectStore = create(set => ({
 
   setFrameworkName: state => set({ frameworkName: state }),
   setVariantName: state => set({ variantName: state }),
+  setCustomName: customName => set({ customName }),
 
   setSelectedSettingOption: option =>
     set(() => ({

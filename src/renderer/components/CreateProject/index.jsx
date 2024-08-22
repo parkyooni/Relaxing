@@ -169,14 +169,20 @@ const CreateProject = () => {
     }
   };
 
-  const handleConfirmCreate = async () => {
+  const handleConfirmCreate = async customName => {
     const framework = variantName
       ? `${frameworkName}-${variantName}`
       : frameworkName;
 
     try {
       setLoading(true);
-      await window.api.installProject({ projectName, path, framework });
+      await window.api.installProject({
+        projectName,
+        path,
+        framework,
+        variant: variantName ? [variantName] : ["undefined"],
+        customName
+      });
 
       if (selectedDependenciesIndex.length > 0) {
         const selectedDependencies = selectedDependenciesIndex.map(
@@ -301,8 +307,14 @@ const CreateProject = () => {
       {isModalOpen && activeModal === "save" && (
         <>
           <SaveModal
-            onSave={closeModal}
-            onCreate={handleConfirmCreate}
+            onSave={customName => {
+              closeModal();
+              handleConfirmCreate(customName);
+            }}
+            onCreate={customName => {
+              closeModal();
+              handleConfirmCreate(customName);
+            }}
             onCancel={closeModal}
             title="사용자 설정 저장"
             description={

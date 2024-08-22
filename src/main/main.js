@@ -9,6 +9,53 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+const getNextProjectId = projectData => {
+  if (projectData.length === 0) return 0;
+  return Math.max(...projectData.map(project => project.id)) + 1;
+};
+
+const addProjectToJson = (
+  projectJsonPath,
+  projectId,
+  projectName,
+  framework,
+  variant,
+  customName,
+  projectPath,
+  dependencies = []
+) => {
+  try {
+    let projectData = [];
+    if (fs.existsSync(projectJsonPath)) {
+      const data = fs.readFileSync(projectJsonPath, "utf-8");
+      projectData = JSON.parse(data);
+    }
+
+    const newProject = {
+      id: projectId,
+      projectName: projectName,
+      framework: framework,
+      variant: variant || ["undefined"],
+      path: projectPath,
+      custom: {
+        customName: customName || ["undefined"],
+        dependencies: dependencies
+      },
+      createdAt: new Date().toISOString()
+    };
+
+    projectData.push(newProject);
+
+    fs.writeFileSync(
+      projectJsonPath,
+      JSON.stringify(projectData, null, 2),
+      "utf-8"
+    );
+  } catch (error) {
+    console.error("Error adding project to JSON file:", error);
+  }
+};
+
 const initializeProjectDirectories = () => {
   const homeDirectory = os.homedir();
   let basePath = "";
@@ -169,13 +216,38 @@ ipcMain.handle("read-all-directory", async (_, folderPath) => {
 const execAsync = promisify(exec);
 ipcMain.handle(
   "install-project",
-  async (_, { path, projectName, framework }) => {
+  async (
+    _,
+    { path: basePath, projectName, framework, variant, customName }
+  ) => {
     try {
+      const projectPath = path.join(basePath, projectName);
+
       const command = `npm create vite@latest ${projectName} -- --template ${framework}`;
-      const { stdout } = await execAsync(command, { cwd: path });
+      const { stdout } = await execAsync(command, { cwd: basePath });
+
+      const projectJsonPath = initializeProjectDirectories();
+
+      let projectData = [];
+      if (fs.existsSync(projectJsonPath)) {
+        const data = fs.readFileSync(projectJsonPath, "utf-8");
+        projectData = JSON.parse(data);
+      }
+
+      const projectId = getNextProjectId(projectData);
+      addProjectToJson(
+        projectJsonPath,
+        projectId,
+        projectName,
+        framework,
+        variant,
+        customName,
+        projectPath
+      );
+
       return stdout;
     } catch (error) {
-      console.error(error);
+      console.error("Error installing project:", error);
     }
   }
 );
@@ -187,6 +259,30 @@ ipcMain.handle(
       const projectPath = `${path}/${projectName}`;
       const command = `npm install ${dependencies.join(" ")}`;
       const { stdout } = await execAsync(command, { cwd: projectPath });
+
+      const projectJsonPath = initializeProjectDirectories();
+
+      let projectData = [];
+      if (fs.existsSync(projectJsonPath)) {
+        const data = fs.readFileSync(projectJsonPath, "utf-8");
+        projectData = JSON.parse(data);
+      }
+
+      const projectIndex = projectData.findIndex(
+        project => project.projectName === projectName
+      );
+      if (projectIndex !== -1) {
+        projectData[projectIndex].custom.dependencies = dependencies;
+      } else {
+        console.error("Project not found");
+      }
+
+      fs.writeFileSync(
+        projectJsonPath,
+        JSON.stringify(projectData, null, 2),
+        "utf-8"
+      );
+
       return stdout;
     } catch (error) {
       console.error(error);

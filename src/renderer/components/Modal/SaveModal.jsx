@@ -1,12 +1,23 @@
-import { useState } from "react";
 import ButtonBox from "@components/common/ButtonBox";
 import { ModalBackground, ModalContainer } from "@public/style/Modal.styles";
+import useProjectStore from "@/store/projectStore";
 
 const SaveModal = ({ onSave, onCreate, onCancel, title, description }) => {
-  const [inputValue, setInputValue] = useState("");
+  const { customName, setCustomName } = useProjectStore(state => ({
+    customName: state.customName,
+    setCustomName: state.setCustomName
+  }));
 
   const handleInputChange = e => {
-    setInputValue(e.target.value);
+    setCustomName(e.target.value);
+  };
+
+  const handleSaveClick = () => {
+    onSave(customName);
+  };
+
+  const handleCreateClick = () => {
+    onCreate(customName.trim() ? customName : "undefined");
   };
 
   return (
@@ -18,7 +29,7 @@ const SaveModal = ({ onSave, onCreate, onCancel, title, description }) => {
             <input
               type="text"
               placeholder="프로젝트 설정이름"
-              value={inputValue}
+              value={customName}
               onChange={handleInputChange}
             />
             <div className="info-text">{description}</div>
@@ -30,16 +41,15 @@ const SaveModal = ({ onSave, onCreate, onCancel, title, description }) => {
           </ButtonBox>
           <div className="save-button">
             <ButtonBox
-              variant={inputValue.trim() ? "disabled" : "active"}
-              onClick={onCreate}
-              disabled={!!inputValue.trim()}
+              variant={customName.trim() ? "disabled" : "active"}
+              onClick={handleCreateClick}
             >
               생성
             </ButtonBox>
             <ButtonBox
-              variant={inputValue.trim() ? "active" : "default"}
-              onClick={onSave}
-              disabled={!inputValue.trim()}
+              variant={customName.trim() ? "active" : "disabled"}
+              onClick={handleSaveClick}
+              disabled={!customName.trim()}
             >
               저장
             </ButtonBox>
