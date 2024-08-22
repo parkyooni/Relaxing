@@ -6,7 +6,7 @@ import {
   TextContainer
 } from "@public/style/Project.styles";
 import useProjectStore from "@/store/projectStore";
-import mockData from "@utils/mockData.json";
+import optionConfig from "@utils/option.config";
 
 const VariantSelector = () => {
   const {
@@ -21,7 +21,7 @@ const VariantSelector = () => {
     setVariantName: state.setVariantName
   }));
 
-  const frameworks = mockData.frameworkSelector;
+  const frameworks = optionConfig.frameworkSelector;
 
   if (selectedFrameworkIndex === null) {
     return <div>Please select a framework first.</div>;

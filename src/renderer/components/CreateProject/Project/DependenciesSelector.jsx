@@ -7,7 +7,7 @@ import {
   TextContainer
 } from "@public/style/Project.styles";
 import useProjectStore from "@/store/projectStore";
-import mockData from "@utils/mockData.json";
+import optionConfig from "@utils/option.config";
 
 const DependenciesSelector = () => {
   const {
@@ -26,7 +26,7 @@ const DependenciesSelector = () => {
     })
   );
 
-  const dependencies = mockData.dependenciesSelector;
+  const dependencies = optionConfig.dependenciesSelector;
 
   const handleCheckboxChange = index => {
     const newSelectedIndex = selectedDependenciesIndex.includes(index)

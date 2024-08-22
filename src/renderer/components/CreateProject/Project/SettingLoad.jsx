@@ -1,6 +1,6 @@
 import { SettingLoadContainer, RadioGroup } from "@public/style/Project.styles";
 import RadioBox from "@components/common/RadioBox";
-import mockData from "@utils/mockData.json";
+import optionConfig from "@utils/option.config";
 import useProjectStore from "@/store/projectStore";
 
 const SettingLoad = () => {
@@ -11,7 +11,7 @@ const SettingLoad = () => {
     })
   );
 
-  const savedSettings = mockData.savedSettings;
+  const savedSettings = optionConfig.savedSettings;
 
   const handleChange = e => {
     setSelectedSettingOption(e.target.value);

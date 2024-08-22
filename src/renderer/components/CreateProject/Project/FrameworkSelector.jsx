@@ -7,7 +7,7 @@ import {
   ControlContainer
 } from "@public/style/Project.styles";
 import useProjectStore from "@/store/projectStore";
-import mockData from "@utils/mockData.json";
+import optionConfig from "@utils/option.config";
 
 const FrameworkSelector = () => {
   const {
@@ -22,7 +22,7 @@ const FrameworkSelector = () => {
     setFrameworkName: state.setFrameworkName
   }));
 
-  const frameworks = mockData.frameworkSelector;
+  const frameworks = optionConfig.frameworkSelector;
 
   const handleCheckboxChange = index => {
     const newIndex = index === selectedFrameworkIndex ? null : index;

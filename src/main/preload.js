@@ -6,6 +6,8 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.invoke("delete-project-list", projectName),
   selectFolder: () => ipcRenderer.invoke("setting-path"),
   readDirectory: folderPath => ipcRenderer.invoke("read-directory", folderPath),
+  readAllDirectory: folderPath =>
+    ipcRenderer.invoke("read-all-directory", folderPath),
   installProject: projectData =>
     ipcRenderer.invoke("install-project", projectData),
   installDependencies: dependencyData =>

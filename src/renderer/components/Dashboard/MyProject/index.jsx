@@ -1,24 +1,12 @@
-import { useState } from "react";
 import { MyProjectContentContainer } from "@public/style/Dashboard.styles";
 import icons from "@public/images";
-import mockData from "@utils/mockData.json";
+import useDashboardStore from "@/store/dashboardStore";
 
-const ItemList = ({ items, setItems }) => {
-  const handleDelete = indexToDelete => {
-    const updatedItems = items.filter((_, index) => index !== indexToDelete);
-    setItems(updatedItems);
-  };
-
+const ItemList = ({ items = [], setItems }) => {
   return (
     <ul>
       {items.map((item, index) => (
         <li key={index}>
-          <img
-            src={icons.closeIcon}
-            alt="Close Icon"
-            onClick={() => handleDelete(index)}
-            style={{ cursor: "pointer" }}
-          />
           <img
             src={item.type === "folder" ? icons.folderLineIcon : icons.fileIcon}
             alt={item.type === "folder" ? "Folder Line Icon" : "File Icon"}
@@ -43,22 +31,32 @@ const ItemList = ({ items, setItems }) => {
 };
 
 const MyProject = () => {
-  const [folderStructure, setFolderStructure] = useState(
-    mockData.folderStructure
-  );
+  const { folderStructure, setFolderStructure } = useDashboardStore(state => ({
+    folderStructure: state.folderStructure,
+    setFolderStructure: state.setFolderStructure
+  }));
 
   return (
     <MyProjectContentContainer>
-      <p>
-        <img src={icons.folderLineIcon} alt="Folder Line Icon" />
-        <span>{folderStructure.name}</span>
-      </p>
-      <ItemList
-        items={folderStructure.children}
-        setItems={updatedChildren =>
-          setFolderStructure({ ...folderStructure, children: updatedChildren })
-        }
-      />
+      {folderStructure ? (
+        <>
+          <p>
+            <img src={icons.folderLineIcon} alt="Folder Line Icon" />
+            <span>{folderStructure.name}</span>
+          </p>
+          <ItemList
+            items={folderStructure.children}
+            setItems={updatedChildren =>
+              setFolderStructure({
+                ...folderStructure,
+                children: updatedChildren
+              })
+            }
+          />
+        </>
+      ) : (
+        <p>프로젝트가 없습니다.</p>
+      )}
     </MyProjectContentContainer>
   );
 };

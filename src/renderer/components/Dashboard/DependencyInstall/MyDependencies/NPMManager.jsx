@@ -7,7 +7,7 @@ import {
   ButtonContainer
 } from "@public/style/DependencyInstall.styles";
 import ButtonBox from "@components/common/ButtonBox";
-import mockData from "@utils/mockData.json";
+import optionConfig from "@utils/option.config";
 import useUIStore from "@/store/uiStore";
 
 const NPMManager = () => {
@@ -49,7 +49,7 @@ const NPMManager = () => {
 
   const handleSearch = () => {
     if (searchQuery) {
-      const filtered = mockData.frameworkSelector
+      const filtered = optionConfig.frameworkSelector
         .filter(pkg =>
           pkg.name.toLowerCase().includes(searchQuery.toLowerCase())
         )

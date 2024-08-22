@@ -10,8 +10,8 @@ import {
   SelectWrapper,
   ProjectNameSelect
 } from "@public/style/Project.styles";
-import mockData from "@utils/mockData.json";
-import { processFileList } from "@utils/fileUtils.cjs";
+import optionConfig from "@utils/option.config";
+import { processFileList } from "@utils/processFileList";
 import useProjectStore from "@/store/projectStore";
 import useUIStore from "@/store/uiStore";
 
@@ -37,7 +37,7 @@ const ProjectStarter = () => {
     setFiles: state.setFiles
   }));
 
-  const packageManagers = mockData.packageManagers;
+  const packageManagers = optionConfig.packageManagers;
 
   const handleUploadClick = async () => {
     try {

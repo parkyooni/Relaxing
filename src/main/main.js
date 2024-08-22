@@ -134,6 +134,38 @@ ipcMain.handle("read-directory", async (_, folderPath) => {
   }
 });
 
+ipcMain.handle("read-all-directory", async (_, folderPath) => {
+  try {
+    let fileLists = [];
+
+    const list = currentPath => {
+      const files = fs.readdirSync(currentPath, { withFileTypes: true });
+      files.forEach(file => {
+        const fullPath = path.join(currentPath, file.name);
+
+        if (file.name === "node_modules") {
+          return;
+        }
+
+        fileLists.push({
+          name: file.name,
+          type: file.isDirectory() ? "folder" : "file",
+          path: fullPath
+        });
+
+        if (file.isDirectory()) {
+          list(fullPath);
+        }
+      });
+    };
+
+    list(folderPath);
+    return fileLists;
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 const execAsync = promisify(exec);
 ipcMain.handle(
   "install-project",

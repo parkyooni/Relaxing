@@ -1,6 +1,6 @@
 import { MyDependenciesContainer } from "@public/style/DependencyInstall.styles";
 import DependencyList from "@components/common/DependencyList";
-import mockData from "@utils/mockData.json";
+import optionConfig from "@utils/option.config";
 import useUIStore from "@/store/uiStore";
 
 const MyDependencies = () => {
@@ -30,13 +30,13 @@ const MyDependencies = () => {
         <li>
           {activeTab === "dependencies" && (
             <DependencyList
-              dependencies={mockData.dependencies}
+              dependencies={optionConfig.dependencies}
               onDelete={handleIconClick}
             />
           )}
           {activeTab === "devDependencies" && (
             <DependencyList
-              dependencies={mockData.devDependencies}
+              dependencies={optionConfig.devDependencies}
               onDelete={handleIconClick}
             />
           )}
