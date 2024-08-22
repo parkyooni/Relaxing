@@ -124,6 +124,10 @@ app.on("window-all-closed", () => {
   }
 });
 
+ipcMain.handle("joined-project-path", (_, basePath, projectName) => {
+  return path.join(basePath, projectName);
+});
+
 ipcMain.handle("get-project-list", async () => {
   try {
     const data = fs.readFileSync(projectPath, "utf-8");

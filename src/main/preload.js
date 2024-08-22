@@ -1,6 +1,8 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("api", {
+  joinProjectPath: (path, projectName) =>
+    ipcRenderer.invoke("joined-project-path", path, projectName),
   loadProjectList: () => ipcRenderer.invoke("get-project-list"),
   deleteProjectList: projectName =>
     ipcRenderer.invoke("delete-project-list", projectName),

@@ -194,7 +194,7 @@ const CreateProject = () => {
           dependencies: selectedDependencies
         });
       }
-      const projectPath = `${path}\\${projectName}`;
+      const projectPath = await window.api.joinProjectPath(path, projectName);
       const projectFolderStructure =
         await window.api.readAllDirectory(projectPath);
 
