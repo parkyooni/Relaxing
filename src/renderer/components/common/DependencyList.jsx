@@ -1,11 +1,15 @@
 import icons from "@public/images";
 
 const DependencyList = ({ dependencies, onDelete }) => {
+  const dependenciesData = dependencies.map(
+    ([index, dependency]) => dependency
+  );
+
   return (
     <ul>
-      {dependencies.map(dependency => (
-        <li key={dependency.packageName}>
-          <span>{dependency.packageName}</span>
+      {dependenciesData.map(dependency => (
+        <li key={dependency.name}>
+          <span>{dependency.name}</span>
           <div className="version-container">
             <span>현재 버전 {dependency.currentVersion}</span>
             <span>최신 버전 {dependency.latestVersion}</span>

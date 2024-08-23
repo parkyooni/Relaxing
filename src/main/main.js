@@ -293,3 +293,46 @@ ipcMain.handle(
     }
   }
 );
+
+const getLatestVersion = async packageName => {
+  try {
+    const { stdout } = await execAsync(`npm view ${packageName} version`);
+    return stdout.trim();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+ipcMain.handle("get-packageJson-data", async (_, projectPath) => {
+  try {
+    const packageJsonPath = path.join(projectPath, "package.json");
+    const packageJsonData = fs.readFileSync(packageJsonPath, "utf-8");
+    const packageJson = JSON.parse(packageJsonData);
+
+    const dependencies = packageJson.dependencies || {};
+    const devDependencies = packageJson.devDependencies || {};
+
+    const dependenciesWithLatest = await Promise.all(
+      Object.entries(dependencies).map(async ([name, version]) => ({
+        name,
+        currentVersion: version,
+        latestVersion: await getLatestVersion(name)
+      }))
+    );
+
+    const devDependenciesWithLatest = await Promise.all(
+      Object.entries(devDependencies).map(async ([name, version]) => ({
+        name,
+        currentVersion: version,
+        latestVersion: await getLatestVersion(name)
+      }))
+    );
+
+    return {
+      dependencies: dependenciesWithLatest,
+      devDependencies: devDependenciesWithLatest
+    };
+  } catch (error) {
+    console.error;
+  }
+});
