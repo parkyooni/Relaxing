@@ -43,6 +43,7 @@ const SaveModal = ({ onSave, onCreate, onCancel, title, description }) => {
             <ButtonBox
               variant={customName.trim() ? "disabled" : "active"}
               onClick={handleCreateClick}
+              disabled={customName.trim()}
             >
               생성
             </ButtonBox>

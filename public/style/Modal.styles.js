@@ -36,12 +36,33 @@ export const ModalContainer = styled.div`
     height: 18.75rem;
     padding: 1.25rem;
 
-    div.user-title {
+    div.user-title,
+    div.title {
       display: flex;
       flex-direction: column;
       justify-content: center;
       width: 100%;
       height: 18.75rem;
+
+      &.title {
+        div {
+          cursor: default;
+          color: ${({ theme }) => theme.colors.gray};
+
+          p {
+            font-size: ${({ theme }) => theme.fontSizes.largePlus};
+          }
+        }
+
+        > span {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 3.125rem;
+          font-size: ${({ theme }) => theme.fontSizes.normal};
+          color: ${({ theme }) => theme.colors.sub};
+        }
+      }
     }
 
     > p {

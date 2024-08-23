@@ -5,10 +5,10 @@ const CancelCompleteModal = ({ onSave, onCancel, message, subMessage }) => {
   return (
     <ModalBackground onClick={onCancel}>
       <ModalContainer className="large" onClick={e => e.stopPropagation()}>
-        <p>
-          <span>{message}</span>
+        <div className="title">
+          <div dangerouslySetInnerHTML={{ __html: message }} />
           <span>{subMessage}</span>
-        </p>
+        </div>
         <div className="button-group">
           <ButtonBox variant="default" onClick={onCancel}>
             취소
