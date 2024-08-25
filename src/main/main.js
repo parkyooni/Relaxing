@@ -5,6 +5,8 @@ import path from "node:path";
 import fs from "fs";
 import os from "os";
 
+const fsPromise = fs.promises;
+
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
@@ -14,7 +16,7 @@ const getNextProjectId = projectData => {
   return Math.max(...projectData.map(project => project.id)) + 1;
 };
 
-const addProjectToJson = (
+const addProjectToJson = async (
   projectJsonPath,
   projectId,
   projectName,
@@ -27,7 +29,7 @@ const addProjectToJson = (
   try {
     let projectData = [];
     if (fs.existsSync(projectJsonPath)) {
-      const data = fs.readFileSync(projectJsonPath, "utf-8");
+      const data = await fsPromise.readFile(projectJsonPath, "utf-8");
       projectData = JSON.parse(data);
     }
 
@@ -130,7 +132,7 @@ ipcMain.handle("joined-project-path", (_, basePath, projectName) => {
 
 ipcMain.handle("get-project-list", async () => {
   try {
-    const data = fs.readFileSync(projectPath, "utf-8");
+    const data = await fsPromise.readFile(projectPath, "utf-8");
     const projectData = JSON.parse(data);
     return projectData;
   } catch (error) {
@@ -140,7 +142,7 @@ ipcMain.handle("get-project-list", async () => {
 
 ipcMain.handle("delete-project-list", async (_, projectName) => {
   try {
-    const data = fs.readFileSync(projectPath, "utf-8");
+    const data = await fsPromise.readFile(projectPath, "utf-8");
     let projectData = JSON.parse(data);
 
     projectData = projectData.filter(
@@ -173,7 +175,7 @@ ipcMain.handle("setting-path", async () => {
 
 ipcMain.handle("read-directory", async (_, folderPath) => {
   try {
-    const files = fs.readdirSync(folderPath, { withFileTypes: true });
+    const files = await fsPromise.readdir(folderPath, { withFileTypes: true });
 
     return files.map(file => ({
       name: file.name,
@@ -189,13 +191,16 @@ ipcMain.handle("read-all-directory", async (_, folderPath) => {
   try {
     let fileLists = [];
 
-    const list = currentPath => {
-      const files = fs.readdirSync(currentPath, { withFileTypes: true });
-      files.forEach(file => {
+    const list = async currentPath => {
+      const files = await fsPromise.readdir(currentPath, {
+        withFileTypes: true
+      });
+
+      for (const file of files) {
         const fullPath = path.join(currentPath, file.name);
 
         if (file.name === "node_modules") {
-          return;
+          continue;
         }
 
         fileLists.push({
@@ -205,12 +210,12 @@ ipcMain.handle("read-all-directory", async (_, folderPath) => {
         });
 
         if (file.isDirectory()) {
-          list(fullPath);
+          await list(fullPath);
         }
-      });
+      }
     };
 
-    list(folderPath);
+    await list(folderPath);
     return fileLists;
   } catch (error) {
     console.error(error);
@@ -234,7 +239,7 @@ ipcMain.handle(
 
       let projectData = [];
       if (fs.existsSync(projectJsonPath)) {
-        const data = fs.readFileSync(projectJsonPath, "utf-8");
+        const data = await fsPromise.readFile(projectJsonPath, "utf-8");
         projectData = JSON.parse(data);
       }
 
@@ -258,9 +263,10 @@ ipcMain.handle(
 
 ipcMain.handle(
   "install-dependencies",
-  async (_, { path, projectName, dependencies }) => {
+  async (_, { path: basePath, projectName, dependencies }) => {
     try {
-      const projectPath = `${path}/${projectName}`;
+      const projectPath = path.join(basePath, projectName);
+
       const command = `npm install ${dependencies.join(" ")}`;
       const { stdout } = await execAsync(command, { cwd: projectPath });
 
@@ -268,7 +274,7 @@ ipcMain.handle(
 
       let projectData = [];
       if (fs.existsSync(projectJsonPath)) {
-        const data = fs.readFileSync(projectJsonPath, "utf-8");
+        const data = await fsPromise.readFile(projectJsonPath, "utf-8");
         projectData = JSON.parse(data);
       }
 
@@ -303,34 +309,33 @@ const getLatestVersion = async packageName => {
   }
 };
 
+const fetchDependencies = async dependency => {
+  return await Promise.all(
+    Object.entries(dependency).map(async ([name, version]) => ({
+      name,
+      currentVersion: version,
+      latestVersion: await getLatestVersion(name)
+    }))
+  );
+};
+
 ipcMain.handle("get-packageJson-data", async (_, projectPath) => {
   try {
     const packageJsonPath = path.join(projectPath, "package.json");
-    const packageJsonData = fs.readFileSync(packageJsonPath, "utf-8");
+    const packageJsonData = await fsPromise.readFile(packageJsonPath, "utf-8");
     const packageJson = JSON.parse(packageJsonData);
 
     const dependencies = packageJson.dependencies || {};
     const devDependencies = packageJson.devDependencies || {};
 
-    const dependenciesWithLatest = await Promise.all(
-      Object.entries(dependencies).map(async ([name, version]) => ({
-        name,
-        currentVersion: version,
-        latestVersion: await getLatestVersion(name)
-      }))
-    );
-
-    const devDependenciesWithLatest = await Promise.all(
-      Object.entries(devDependencies).map(async ([name, version]) => ({
-        name,
-        currentVersion: version,
-        latestVersion: await getLatestVersion(name)
-      }))
-    );
+    const [myDependencies, myDevDependencies] = await Promise.all([
+      fetchDependencies(dependencies),
+      fetchDependencies(devDependencies)
+    ]);
 
     return {
-      dependencies: dependenciesWithLatest,
-      devDependencies: devDependenciesWithLatest
+      dependencies: myDependencies,
+      devDependencies: myDevDependencies
     };
   } catch (error) {
     console.error;
