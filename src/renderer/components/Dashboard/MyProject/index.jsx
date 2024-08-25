@@ -31,10 +31,13 @@ const ItemList = ({ items = [], setItems }) => {
 };
 
 const MyProject = () => {
-  const { folderStructure, setFolderStructure } = useDashboardStore(state => ({
-    folderStructure: state.folderStructure,
-    setFolderStructure: state.setFolderStructure
-  }));
+  const { folderStructure, dependencies, devDependencies } = useDashboardStore(
+    state => ({
+      folderStructure: state.folderStructure,
+      dependencies: state.dependencies,
+      devDependencies: state.devDependencies
+    })
+  );
 
   return (
     <MyProjectContentContainer>
@@ -55,7 +58,7 @@ const MyProject = () => {
           />
         </>
       ) : (
-        <p>프로젝트가 없습니다.</p>
+        <span>프로젝트가 없습니다.</span>
       )}
     </MyProjectContentContainer>
   );

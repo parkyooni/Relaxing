@@ -12,14 +12,19 @@ import ProjectList from "@components/ProjectList";
 import ErrorModal from "@components/Modal/ErrorModal";
 import DashboardLayout from "@components/Layout/DashboardLayout";
 import PrivateLayout from "@components/Layout/PrivateLayout";
-import useUIStore from "@/store/uiStore";
 
 function App() {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-  const { showModal } = useUIStore();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const closeErrorModal = () => {
     setIsErrorModalOpen(false);
+    setErrorMessage("");
+  };
+
+  const openErrorModal = message => {
+    setErrorMessage(message);
+    setIsErrorModalOpen(true);
   };
 
   return (
@@ -31,11 +36,8 @@ function App() {
           <Route path="my-dependencies" element={<DependencyInstall />} />
         </Route>
         <Route path="project" element={<PrivateLayout />}>
-          <Route index element={<ProjectList showModal={showModal} />} />
-          <Route
-            path="project-list"
-            element={<ProjectList showModal={showModal} />}
-          />
+          <Route index element={<ProjectList showModal={openErrorModal} />} />
+          <Route path="project-list" element={<ProjectList />} />
           <Route path="create-project" element={<CreateProject />} />
         </Route>
 
@@ -46,7 +48,7 @@ function App() {
       </Routes>
 
       {isErrorModalOpen && (
-        <ErrorModal message="An error occurred" onClose={closeErrorModal} />
+        <ErrorModal message={errorMessage} onClose={closeErrorModal} />
       )}
     </Router>
   );
