@@ -19,5 +19,7 @@ contextBridge.exposeInMainWorld("api", {
   loadPackageJsonData: projectPath =>
     ipcRenderer.invoke("get-packageJson-data", projectPath),
   addInstallDependencies: dependencyData =>
-    ipcRenderer.invoke("add-install-dependencies", dependencyData)
+    ipcRenderer.invoke("add-install-dependencies", dependencyData),
+  uninstallDependencies: dependencyData =>
+    ipcRenderer.invoke("uninstall-dependencies", dependencyData)
 });

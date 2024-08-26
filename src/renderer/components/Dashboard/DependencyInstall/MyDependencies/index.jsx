@@ -53,8 +53,29 @@ const MyDependencies = ({ showModal }) => {
     loadPackageJson();
   }, [projectPath, setDependencies, setDevDependencies]);
 
-  const handleIconClick = dependency => {
-    console.log(`삭제 할 패키지: ${dependency.packageName}`);
+  const handleDeleteIconClick = async dependency => {
+    try {
+      if (!projectPath) {
+        showModal("현재 설정된 프로젝트 경로가 없습니다.");
+        return;
+      }
+      setActiveLoading(true);
+
+      await window.api.uninstallDependencies({
+        projectPath,
+        packageName: dependency.name
+      });
+
+      const updatedPackageJsonData =
+        await window.api.loadPackageJsonData(projectPath);
+      setDependencies(updatedPackageJsonData.dependencies);
+      setDevDependencies(updatedPackageJsonData.devDependencies);
+    } catch (error) {
+      console.error(error);
+      showModal(`${dependency.packageName} 삭제에 실패 했습니다.`);
+    } finally {
+      setActiveLoading(false);
+    }
   };
 
   if (isLoading) {
@@ -82,13 +103,13 @@ const MyDependencies = ({ showModal }) => {
           {activeTab === "dependencies" && (
             <DependencyList
               dependencies={Object.entries(dependencies)}
-              onDelete={handleIconClick}
+              onDelete={handleDeleteIconClick}
             />
           )}
           {activeTab === "devDependencies" && (
             <DependencyList
               dependencies={Object.entries(devDependencies)}
-              onDelete={handleIconClick}
+              onDelete={handleDeleteIconClick}
             />
           )}
         </li>

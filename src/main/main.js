@@ -370,3 +370,17 @@ ipcMain.handle("get-packageJson-data", async (_, projectPath) => {
     console.error;
   }
 });
+
+ipcMain.handle(
+  "uninstall-dependencies",
+  async (_, { projectPath, packageName }) => {
+    try {
+      const command = `npm uninstall ${packageName}`;
+      const { stdout } = await execAsync(command, { cwd: projectPath });
+
+      return stdout;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
