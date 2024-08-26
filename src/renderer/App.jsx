@@ -33,7 +33,10 @@ function App() {
         <Route path="/" element={<Navigate to="project/project-list" />} />
         <Route path="/" element={<DashboardLayout />}>
           <Route path="dashboard/:id" element={<Dashboard />} />
-          <Route path="my-dependencies" element={<DependencyInstall />} />
+          <Route
+            path="my-dependencies"
+            element={<DependencyInstall showModal={openErrorModal} />}
+          />
         </Route>
         <Route path="project" element={<PrivateLayout />}>
           <Route index element={<ProjectList showModal={openErrorModal} />} />

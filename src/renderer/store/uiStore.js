@@ -25,7 +25,8 @@ const initialState = {
   loading: {
     loadingMessages: ["프로젝트를 생성중 입니다....", "Vite Create Project..."],
     currentLoadingMessageIndex: 0
-  }
+  },
+  isLoading: false
 };
 
 const useUIStore = create(set => ({
@@ -79,6 +80,8 @@ const useUIStore = create(set => ({
     })),
 
   setActiveTab: tabName => set({ activeTab: tabName }),
+
+  setActiveLoading: isLoading => set({ isLoading }),
 
   setLoading: isLoading =>
     set(state => ({

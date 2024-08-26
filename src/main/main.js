@@ -312,6 +312,23 @@ ipcMain.handle(
   }
 );
 
+ipcMain.handle(
+  "add-install-dependencies",
+  async (_, { path: basePath, dependencies }) => {
+    try {
+      const projectPath = basePath;
+
+      const command = `npm install ${dependencies.join(" ")}`;
+
+      const { stdout } = await execAsync(command, { cwd: projectPath });
+
+      return stdout;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
 const getLatestVersion = async packageName => {
   try {
     const { stdout } = await execAsync(`npm view ${packageName} version`);

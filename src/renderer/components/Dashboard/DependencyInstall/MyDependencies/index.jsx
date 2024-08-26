@@ -1,14 +1,19 @@
 import { useEffect } from "react";
 import { MyDependenciesContainer } from "@public/style/DependencyInstall.styles";
 import DependencyList from "@components/common/DependencyList";
+import Loading from "@components/common/Loading";
 import useUIStore from "@/store/uiStore";
 import useDashboardStore from "@/store/dashboardStore";
 
-const MyDependencies = () => {
-  const { activeTab, setActiveTab } = useUIStore(state => ({
-    activeTab: state.activeTab,
-    setActiveTab: state.setActiveTab
-  }));
+const MyDependencies = ({ showModal }) => {
+  const { activeTab, setActiveTab, isLoading, setActiveLoading } = useUIStore(
+    state => ({
+      activeTab: state.activeTab,
+      setActiveTab: state.setActiveTab,
+      isLoading: state.isLoading,
+      setActiveLoading: state.setActiveLoading
+    })
+  );
   const {
     projectPath,
     dependencies,
@@ -25,14 +30,23 @@ const MyDependencies = () => {
 
   useEffect(() => {
     const loadPackageJson = async () => {
-      if (projectPath) {
-        const loadPackageJson =
+      try {
+        if (projectPath) {
+          setActiveLoading(true);
+        }
+
+        const packageJsonData =
           await window.api.loadPackageJsonData(projectPath);
 
-        if (loadPackageJson) {
-          setDependencies(loadPackageJson.dependencies);
-          setDevDependencies(loadPackageJson.devDependencies);
+        if (packageJsonData) {
+          setDependencies(packageJsonData.dependencies);
+          setDevDependencies(packageJsonData.devDependencies);
         }
+      } catch (error) {
+        console.error(error);
+        showModal("패키지를 검색하는 중 오류가 발생했습니다.");
+      } finally {
+        setActiveLoading(false);
       }
     };
 
@@ -42,6 +56,10 @@ const MyDependencies = () => {
   const handleIconClick = dependency => {
     console.log(`삭제 할 패키지: ${dependency.packageName}`);
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <MyDependenciesContainer>

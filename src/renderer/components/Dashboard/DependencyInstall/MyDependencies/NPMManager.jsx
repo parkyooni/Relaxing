@@ -7,10 +7,11 @@ import {
   ButtonContainer
 } from "@public/style/DependencyInstall.styles";
 import ButtonBox from "@components/common/ButtonBox";
-import optionConfig from "@utils/option.config";
+import Loading from "@components/common/Loading";
 import useUIStore from "@/store/uiStore";
+import useDashboardStore from "@/store/dashboardStore";
 
-const NPMManager = () => {
+const NPMManager = ({ showModal }) => {
   const {
     searchQuery,
     setSearchQuery,
@@ -19,9 +20,11 @@ const NPMManager = () => {
     selectedPackageItem,
     setSelectedPackageItem,
     uiFlags: { isDropdownVisible, isEnterPressed },
-    setUIFlag
+    setUIFlag,
+    isLoading,
+    setActiveLoading
   } = useUIStore();
-
+  const projectPath = useDashboardStore(state => state.projectPath);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -47,18 +50,61 @@ const NPMManager = () => {
     setUIFlag("isDropdownVisible", false);
   };
 
-  const handleSearch = () => {
-    if (searchQuery) {
-      const filtered = optionConfig.frameworkSelector
-        .filter(pkg =>
-          pkg.name.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-        .map(pkg => `${pkg.name} ${pkg.version || ""}`);
+  const searchPackages = async query => {
+    try {
+      if (!query) {
+        return [];
+      }
+      const response = await fetch(
+        `https://registry.npmjs.org/-/v1/search?text=${query}`
+      );
+      const responseData = await response.json();
+      return responseData.objects.map(packages => ({
+        name: packages.package.name,
+        version: packages.package.version
+      }));
+    } catch (error) {
+      console.error(error);
+      showModal("패키지 검색 중 오류가 발생했습니다.");
+    }
+  };
 
-      setPackageItems(filtered);
+  const handleSearch = async () => {
+    if (searchQuery) {
+      const searchDependencyKeyword = await searchPackages(searchQuery);
+      const searchData = searchDependencyKeyword.map(
+        packages => `${packages.name} ${packages.version || ""}`
+      );
+
+      setPackageItems(searchData);
       setSelectedPackageItem(null);
       setUIFlag("isDropdownVisible", true);
       setUIFlag("isEnterPressed", true);
+    }
+  };
+
+  const handleInstall = async () => {
+    try {
+      if (!selectedPackageItem) {
+        return;
+      }
+
+      setActiveLoading(true);
+
+      const [packageName, packageVersion] = selectedPackageItem.split(" ");
+      const packageToInstall = packageVersion
+        ? `${packageName}@${packageVersion}`
+        : packageName;
+      await window.api.addInstallDependencies({
+        path: projectPath,
+        dependencies: [packageToInstall]
+      });
+
+      setActiveLoading(false);
+    } catch (error) {
+      console.error(error);
+      setActiveLoading(false);
+      showModal("패키지 설치 중 오류가 발생했습니다.");
     }
   };
 
@@ -75,6 +121,10 @@ const NPMManager = () => {
   const handleClickOutside = () => {
     setUIFlag("isDropdownVisible", false);
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div onClick={handleClickOutside}>
@@ -124,6 +174,7 @@ const NPMManager = () => {
             <ButtonBox
               variant={selectedPackageItem ? "active" : "disabled"}
               disabled={!selectedPackageItem}
+              onClick={handleInstall}
             >
               Install
             </ButtonBox>
