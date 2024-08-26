@@ -73,10 +73,10 @@ const addProjectToJson = async (
       id: projectId,
       projectName: projectName,
       framework: framework,
-      variant: variant || ["undefined"],
+      variant: variant || "undefined",
       path: projectPath,
       custom: {
-        customName: customName || ["undefined"],
+        customName: customName || "undefined",
         dependencies: dependencies
       },
       createdAt: new Date().toISOString()

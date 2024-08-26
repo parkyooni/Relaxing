@@ -40,7 +40,10 @@ function App() {
         </Route>
         <Route path="project" element={<PrivateLayout />}>
           <Route index element={<ProjectList showModal={openErrorModal} />} />
-          <Route path="project-list" element={<ProjectList />} />
+          <Route
+            path="project-list"
+            element={<ProjectList showModal={openErrorModal} />}
+          />
           <Route path="create-project" element={<CreateProject />} />
         </Route>
 

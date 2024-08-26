@@ -33,7 +33,7 @@ const ProjectList = ({ showModal: showModalProp }) => {
       const isValidPath = await window.api.checkProjectPath(project.path);
 
       if (!isValidPath) {
-        showModalProp(`경로를 찾을 수 없습니다: ${project.path}`);
+        showModalProp(`경로를 찾을 수 없습니다`);
         return;
       }
 
