@@ -14,6 +14,27 @@ export const Container = styled.div`
   overflow-y: auto;
   transition: transform 0.1s ease-in-out;
 
+  .root-path {
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 0.1875rem;
+    margin-bottom: 0.3125rem;
+    color: ${({ theme }) => theme.colors.white};
+    cursor: default;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: inherit;
+      height: 1px;
+      opacity: 0.5;
+      border-bottom: 1px dashed ${({ theme }) => theme.colors.white};
+    }
+  }
+
   .error-message-text {
     display: inline-block;
     padding: 0 0 0.3125rem 0.625rem;

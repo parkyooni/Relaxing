@@ -11,6 +11,42 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+const buildTree = flatList => {
+  const root = { name: "/", children: [], path: "/", type: "folder" };
+  const pathMap = { "/": root };
+
+  const createNode = (name, path, type) => ({
+    name,
+    path,
+    type,
+    children: []
+  });
+
+  flatList.forEach(item => {
+    const normalizedPath = path.normalize(item.path);
+    const parts = normalizedPath.split(path.sep).filter(Boolean);
+
+    let currentPath = path.sep;
+    let parent = root;
+
+    parts.forEach((part, index) => {
+      currentPath = path.join(currentPath, part);
+      const isFile = index === parts.length - 1 && item.type !== "folder";
+      const nodeType = isFile ? "file" : "folder";
+
+      if (!pathMap[currentPath]) {
+        const node = createNode(part, currentPath, nodeType);
+        pathMap[currentPath] = node;
+        parent.children.push(node);
+      }
+
+      parent = pathMap[currentPath];
+    });
+  });
+
+  return root.children;
+};
+
 const getNextProjectId = projectData => {
   if (projectData.length === 0) return 0;
   return Math.max(...projectData.map(project => project.id)) + 1;
@@ -228,7 +264,8 @@ ipcMain.handle("read-all-directory", async (_, folderPath) => {
     };
 
     await list(folderPath);
-    return fileLists;
+    const treeStructure = buildTree(fileLists);
+    return treeStructure;
   } catch (error) {
     console.error(error);
   }

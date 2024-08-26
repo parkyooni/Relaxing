@@ -50,7 +50,7 @@ export const MyProjectContentContainer = styled.div`
   }
 
   > ul {
-    height: 100%;
+    height: calc(100% - 1.25rem);
     overflow-y: auto;
     padding: 0.625rem 0 0.9375rem 1rem;
 
