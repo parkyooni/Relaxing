@@ -246,7 +246,16 @@ const CreateProject = () => {
 
   return (
     <PageContentContainer>
-      {isLoading && <Loading />}
+      {isLoading && (
+        <Loading
+          noSpinner={false}
+          customStyles={false}
+          loadingMessages={[
+            "프로젝트를 생성중 입니다....",
+            "Vite Create Project..."
+          ]}
+        />
+      )}
       <ButtonContainer>
         <ButtonBox variant="default" onClick={handleCancelClick}>
           취소

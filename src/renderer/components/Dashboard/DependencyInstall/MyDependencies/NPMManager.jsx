@@ -13,18 +13,36 @@ import useDashboardStore from "@/store/dashboardStore";
 
 const NPMManager = ({ showModal }) => {
   const {
+    npmLoading,
+    setLoadingState,
+    uiFlags: { isDropdownVisible, isEnterPressed },
     searchQuery,
     setSearchQuery,
     packageItems,
     setPackageItems,
     selectedPackageItem,
     setSelectedPackageItem,
-    uiFlags: { isDropdownVisible, isEnterPressed },
-    setUIFlag,
-    isLoading,
-    setActiveLoading
-  } = useUIStore();
-  const projectPath = useDashboardStore(state => state.projectPath);
+    setUIFlag
+  } = useUIStore(state => ({
+    npmLoading: state.npmLoading,
+    setLoadingState: state.setLoadingState,
+    uiFlags: state.uiFlags,
+    searchQuery: state.searchQuery,
+    setSearchQuery: state.setSearchQuery,
+    packageItems: state.packageItems,
+    setPackageItems: state.setPackageItems,
+    selectedPackageItem: state.selectedPackageItem,
+    setSelectedPackageItem: state.setSelectedPackageItem,
+    setUIFlag: state.setUIFlag
+  }));
+
+  const { projectPath, setDependencies, setDevDependencies } =
+    useDashboardStore(state => ({
+      projectPath: state.projectPath,
+      setDependencies: state.setDependencies,
+      setDevDependencies: state.setDevDependencies
+    }));
+
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -39,10 +57,15 @@ const NPMManager = ({ showModal }) => {
     };
 
     window.addEventListener("click", handleClickOutside);
-    return () => {
-      window.removeEventListener("click", handleClickOutside);
-    };
+    return () => window.removeEventListener("click", handleClickOutside);
   }, [setUIFlag]);
+
+  useEffect(() => {
+    if (!npmLoading.isLoading) {
+      setUIFlag("isDropdownVisible", false);
+      setUIFlag("isEnterPressed", false);
+    }
+  }, [npmLoading.isLoading, setUIFlag]);
 
   const handleInputChange = e => {
     setSearchQuery(e.target.value);
@@ -52,13 +75,13 @@ const NPMManager = ({ showModal }) => {
 
   const searchPackages = async query => {
     try {
-      if (!query) {
-        return [];
-      }
+      if (!query) return [];
+
       const response = await fetch(
         `https://registry.npmjs.org/-/v1/search?text=${query}`
       );
       const responseData = await response.json();
+
       return responseData.objects.map(packages => ({
         name: packages.package.name,
         version: packages.package.version
@@ -66,6 +89,7 @@ const NPMManager = ({ showModal }) => {
     } catch (error) {
       console.error(error);
       showModal("패키지 검색 중 오류가 발생했습니다.");
+      return [];
     }
   };
 
@@ -84,27 +108,31 @@ const NPMManager = ({ showModal }) => {
   };
 
   const handleInstall = async () => {
-    try {
-      if (!selectedPackageItem) {
-        return;
-      }
+    if (!selectedPackageItem) return;
 
-      setActiveLoading(true);
+    try {
+      setLoadingState("npmLoading", true);
 
       const [packageName, packageVersion] = selectedPackageItem.split(" ");
       const packageToInstall = packageVersion
         ? `${packageName}@${packageVersion}`
         : packageName;
+
       await window.api.addInstallDependencies({
         path: projectPath,
         dependencies: [packageToInstall]
       });
 
-      setActiveLoading(false);
+      const updatedPackageJsonData =
+        await window.api.loadPackageJsonData(projectPath);
+
+      setDependencies(updatedPackageJsonData.dependencies);
+      setDevDependencies(updatedPackageJsonData.devDependencies);
     } catch (error) {
       console.error(error);
-      setActiveLoading(false);
       showModal("패키지 설치 중 오류가 발생했습니다.");
+    } finally {
+      setLoadingState("npmLoading", false);
     }
   };
 
@@ -113,23 +141,31 @@ const NPMManager = ({ showModal }) => {
   };
 
   const handleKeyUp = e => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
+    if (e.key === "Enter") handleSearch();
   };
 
   const handleClickOutside = () => {
     setUIFlag("isDropdownVisible", false);
   };
 
-  if (isLoading) {
-    return <Loading />;
+  if (npmLoading.isLoading) {
+    return (
+      <Loading
+        noSpinner={false}
+        changeSpinner={true}
+        customStyles={true}
+        textLoading={true}
+        loadingMessages={[
+          "패키지를 설치 하고 있습니다 ...",
+          "Install packages..."
+        ]}
+      />
+    );
   }
 
   return (
     <div onClick={handleClickOutside}>
       <NPMManagerContainer
-        className="npm-manager-container"
         ref={containerRef}
         onClick={e => e.stopPropagation()}
       >
@@ -153,11 +189,11 @@ const NPMManager = ({ showModal }) => {
             ) : (
               packageItems.map(packageItem => (
                 <PackageListItem
+                  key={packageItem}
                   onClick={() => handleSearchKeywordClick(packageItem)}
                   className={
                     packageItem === selectedPackageItem ? "selected" : ""
                   }
-                  key={packageItem}
                 >
                   {packageItem}
                 </PackageListItem>

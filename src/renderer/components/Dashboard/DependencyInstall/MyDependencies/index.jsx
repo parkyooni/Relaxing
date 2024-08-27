@@ -6,14 +6,15 @@ import useUIStore from "@/store/uiStore";
 import useDashboardStore from "@/store/dashboardStore";
 
 const MyDependencies = ({ showModal }) => {
-  const { activeTab, setActiveTab, isLoading, setActiveLoading } = useUIStore(
+  const { loading, activeTab, setActiveTab, setLoadingState } = useUIStore(
     state => ({
+      loading: state.loading,
       activeTab: state.activeTab,
       setActiveTab: state.setActiveTab,
-      isLoading: state.isLoading,
-      setActiveLoading: state.setActiveLoading
+      setLoadingState: state.setLoadingState
     })
   );
+
   const {
     projectPath,
     dependencies,
@@ -32,7 +33,7 @@ const MyDependencies = ({ showModal }) => {
     const loadPackageJson = async () => {
       try {
         if (projectPath) {
-          setActiveLoading(true);
+          setLoadingState("loading", true);
         }
 
         const packageJsonData =
@@ -46,12 +47,12 @@ const MyDependencies = ({ showModal }) => {
         console.error(error);
         showModal("패키지를 검색하는 중 오류가 발생했습니다.");
       } finally {
-        setActiveLoading(false);
+        setLoadingState("loading", false);
       }
     };
 
     loadPackageJson();
-  }, [projectPath, setDependencies, setDevDependencies]);
+  }, [projectPath, setDependencies, setDevDependencies, setLoadingState]);
 
   const handleDeleteIconClick = async dependency => {
     try {
@@ -59,7 +60,7 @@ const MyDependencies = ({ showModal }) => {
         showModal("현재 설정된 프로젝트 경로가 없습니다.");
         return;
       }
-      setActiveLoading(true);
+      setLoadingState("loading", true);
 
       await window.api.uninstallDependencies({
         projectPath,
@@ -74,12 +75,21 @@ const MyDependencies = ({ showModal }) => {
       console.error(error);
       showModal(`${dependency.packageName} 삭제에 실패 했습니다.`);
     } finally {
-      setActiveLoading(false);
+      setLoadingState("loading", false);
     }
   };
 
-  if (isLoading) {
-    return <Loading />;
+  if (loading.isLoading) {
+    return (
+      <Loading
+        noSpinner={false}
+        customStyles={true}
+        loadingMessages={[
+          "패키지를 불러오고 있습니다 ...",
+          "Loading packages..."
+        ]}
+      />
+    );
   }
 
   return (

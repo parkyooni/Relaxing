@@ -21,12 +21,16 @@ const initialState = {
     showVariantSelector: false,
     showDependenciesSelector: false
   },
-
   loading: {
-    loadingMessages: ["프로젝트를 생성중 입니다....", "Vite Create Project..."],
-    currentLoadingMessageIndex: 0
+    loadingMessages: [],
+    currentLoadingMessageIndex: 0,
+    isLoading: false
   },
-  isLoading: false
+  npmLoading: {
+    isLoading: false,
+    loadingMessages: [],
+    currentLoadingMessageIndex: 0
+  }
 };
 
 const useUIStore = create(set => ({
@@ -60,6 +64,7 @@ const useUIStore = create(set => ({
       activeModal: modalType,
       modalMessage: message
     })),
+
   closeModal: () =>
     set(() => ({
       uiFlags: {
@@ -81,33 +86,42 @@ const useUIStore = create(set => ({
 
   setActiveTab: tabName => set({ activeTab: tabName }),
 
-  setActiveLoading: isLoading => set({ isLoading }),
-
-  setLoading: isLoading =>
+  setLoadingState: (type, isLoading) =>
     set(state => ({
-      loading: {
-        ...state.loading,
+      [type]: {
+        ...state[type],
         isLoading
       }
     })),
 
-  updateLoadingMessageIndex: () =>
+  setLoadingMessages: (type, messages) =>
+    set(state => ({
+      [type]: {
+        ...state[type],
+        loadingMessages: messages
+      }
+    })),
+
+  updateLoadingMessageIndex: type =>
     set(state => {
-      const { loadingMessages, currentLoadingMessageIndex } = state.loading;
+      const { loadingMessages, currentLoadingMessageIndex } = state[type];
+      if (!loadingMessages || loadingMessages.length === 0) return state[type];
+
+      const newIndex =
+        (currentLoadingMessageIndex + 1) % loadingMessages.length;
 
       return {
-        loading: {
-          ...state.loading,
-          currentLoadingMessageIndex:
-            (currentLoadingMessageIndex + 1) % loadingMessages.length
+        [type]: {
+          ...state[type],
+          currentLoadingMessageIndex: newIndex
         }
       };
     }),
 
-  resetLoadingMessageIndex: () =>
+  resetLoadingMessageIndex: type =>
     set(state => ({
-      loading: {
-        ...state.loading,
+      [type]: {
+        ...state[type],
         currentLoadingMessageIndex: 0
       }
     })),
