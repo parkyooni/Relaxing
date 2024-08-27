@@ -30,8 +30,8 @@ const CreateProject = () => {
   const { navigateToPath } = useNavigation();
   const {
     uiFlags: { isModalOpen },
-    loading: { isLoading },
-    setLoading,
+    loading,
+    setLoadingState,
     activeModal,
     showModal,
     closeModal,
@@ -185,7 +185,7 @@ const CreateProject = () => {
 
   const handleConfirmCreate = async customName => {
     try {
-      setLoading(true);
+      setLoadingState("loading", true);
 
       const projectSettings =
         selectedSettingOption === "userDefined"
@@ -234,7 +234,7 @@ const CreateProject = () => {
     } catch (error) {
       console.error("프로젝트 생성 중 오류 발생:", error);
     } finally {
-      setLoading(false);
+      setLoadingState("loading", false);
     }
   };
 
@@ -246,7 +246,7 @@ const CreateProject = () => {
 
   return (
     <PageContentContainer>
-      {isLoading && (
+      {loading.isLoading && (
         <Loading
           noSpinner={false}
           customStyles={false}
