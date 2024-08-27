@@ -30,7 +30,8 @@ const initialState = {
     isLoading: false,
     loadingMessages: [],
     currentLoadingMessageIndex: 0
-  }
+  },
+  isChecked: false
 };
 
 const useUIStore = create(set => ({
@@ -126,7 +127,9 @@ const useUIStore = create(set => ({
       }
     })),
 
-  resetUIState: () => set(initialState)
+  resetUIState: () => set(initialState),
+
+  setIsChecked: isChecked => set({ isChecked })
 }));
 
 export default useUIStore;

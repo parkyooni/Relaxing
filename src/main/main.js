@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
-import { exec } from "node:child_process";
-import { promisify } from "node:util";
-import path from "node:path";
+import { exec, spawn } from "child_process";
+import { promisify } from "util";
+import path from "path";
 import fs from "fs";
 import os from "os";
 
@@ -421,3 +421,50 @@ ipcMain.handle(
     }
   }
 );
+
+ipcMain.handle("run-project", async (_, projectPath) => {
+  try {
+    const { default: open } = await import("open");
+
+    await execAsync("npm install", { cwd: projectPath });
+
+    const runProcess = spawn("npm", ["run", "dev"], {
+      cwd: projectPath,
+      shell: true,
+      windowsHide: true,
+      stdio: "pipe"
+    });
+
+    runProcess.stdout.on("data", processData => {
+      let processOutput = processData.toString();
+
+      processOutput = processOutput.replace(/\x1b\[[0-9;]*m/g, "");
+
+      const match = processOutput.match(/http:\/\/localhost:\d+/);
+      if (match) {
+        const url = match[0];
+        open(url);
+      }
+    });
+
+    runProcess.unref();
+
+    return { runProcessId: runProcess.pid };
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+ipcMain.handle("end-project", async (_, processId) => {
+  try {
+    if (process.platform === "win32") {
+      await execAsync(`taskkill /pid ${processId} /T /F`);
+    } else {
+      process.kill(-processId);
+    }
+
+    return true;
+  } catch (error) {
+    console.error(error);
+  }
+});

@@ -4,7 +4,8 @@ const initialState = {
   folderStructure: null,
   projectPath: "",
   dependencies: {},
-  devDependencies: {}
+  devDependencies: {},
+  processId: null
 };
 
 const useDashboardStore = create(set => ({
@@ -15,7 +16,8 @@ const useDashboardStore = create(set => ({
   },
   setProjectPath: projectPath => set({ projectPath }),
   setDependencies: dependencies => set({ dependencies }),
-  setDevDependencies: devDependencies => set({ devDependencies })
+  setDevDependencies: devDependencies => set({ devDependencies }),
+  setProcessId: processId => set({ processId })
 }));
 
 export default useDashboardStore;

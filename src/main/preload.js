@@ -21,5 +21,7 @@ contextBridge.exposeInMainWorld("api", {
   addInstallDependencies: dependencyData =>
     ipcRenderer.invoke("add-install-dependencies", dependencyData),
   uninstallDependencies: dependencyData =>
-    ipcRenderer.invoke("uninstall-dependencies", dependencyData)
+    ipcRenderer.invoke("uninstall-dependencies", dependencyData),
+  runProject: projectPath => ipcRenderer.invoke("run-project", projectPath),
+  endProject: processId => ipcRenderer.invoke("end-project", processId)
 });
