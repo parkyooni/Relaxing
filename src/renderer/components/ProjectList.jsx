@@ -9,10 +9,12 @@ const ProjectList = ({ showModal: showModalProp }) => {
   const { projects, setProjects } = useProjectStore();
   const { navigateToPath } = useNavigation();
 
-  const { setFolderStructure, setProjectPath } = useDashboardStore(state => ({
-    setFolderStructure: state.setFolderStructure,
-    setProjectPath: state.setProjectPath
-  }));
+  const { setFolderStructure, setProjectPath, setSelectedProject } =
+    useDashboardStore(state => ({
+      setFolderStructure: state.setFolderStructure,
+      setProjectPath: state.setProjectPath,
+      setSelectedProject: state.setSelectedProject
+    }));
 
   useEffect(() => {
     const loadProjectLists = async () => {
@@ -33,7 +35,7 @@ const ProjectList = ({ showModal: showModalProp }) => {
       const isValidPath = await window.api.checkProjectPath(project.path);
 
       if (!isValidPath) {
-        showModalProp(`경로를 찾을 수 없습니다`);
+        showModalProp("경로를 찾을 수 없습니다");
         return;
       }
 
@@ -45,17 +47,22 @@ const ProjectList = ({ showModal: showModalProp }) => {
       const projectFolderStructure =
         await window.api.readAllDirectory(projectPath);
 
-      if (!projectFolderStructure || projectFolderStructure.length === 0) {
+      if (
+        !Array.isArray(projectFolderStructure) ||
+        projectFolderStructure.length === 0
+      ) {
         showModalProp(`경로에 프로젝트가 없습니다: ${projectPath}`);
         return;
       }
 
       setFolderStructure({
         name: project.projectName,
-        children: projectFolderStructure
+        type: "folder",
+        children: projectFolderStructure || []
       });
 
       setProjectPath(projectPath);
+      setSelectedProject(project);
 
       navigateToPath(`/dashboard/${project.projectName}`);
     } catch (error) {

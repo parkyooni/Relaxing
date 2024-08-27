@@ -1,6 +1,5 @@
 import { MyProjectContentContainer } from "@public/style/Dashboard.styles";
 import icons from "@public/images";
-import useDashboardStore from "@/store/dashboardStore";
 
 const sortItems = items => {
   return [...items].sort((a, b) => {
@@ -37,42 +36,32 @@ const findMatchingFolder = (children, name) => {
   return null;
 };
 
-const ItemList = ({ items = [], setItems }) => {
+const ItemList = ({ items = [] }) => {
   const sortedItems = sortItems(items);
 
   return (
     <ul>
-      {sortedItems.map((item, index) => (
+      {sortedItems.map(item => (
         <li key={item.path}>
           <img
             src={item.type === "folder" ? icons.folderLineIcon : icons.fileIcon}
             alt={item.type === "folder" ? "Folder Line Icon" : "File Icon"}
           />
           <span>{item.name}</span>
+
           {item.type === "folder" &&
             item.children &&
-            item.children.length > 0 && (
-              <ItemList
-                items={item.children}
-                setItems={updatedChildren => {
-                  const updatedItems = [...items];
-                  updatedItems[index].children = updatedChildren;
-                  setItems(updatedItems);
-                }}
-              />
-            )}
+            item.children.length > 0 && <ItemList items={item.children} />}
         </li>
       ))}
     </ul>
   );
 };
 
-const MyProject = () => {
-  const { folderStructure, setFolderStructure } = useDashboardStore(state => ({
-    folderStructure: state.folderStructure,
-    setFolderStructure: state.setFolderStructure
-  }));
-
+const MyProject = ({
+  folderStructure = { children: [] },
+  setFolderStructure
+}) => {
   const targetFolder = findMatchingFolder(
     folderStructure.children,
     folderStructure.name

@@ -1,11 +1,12 @@
 import { create } from "zustand";
 
 const initialState = {
-  folderStructure: null,
+  folderStructure: [],
   projectPath: "",
   dependencies: {},
   devDependencies: {},
-  processId: null
+  processId: null,
+  selectedProject: null
 };
 
 const useDashboardStore = create(set => ({
@@ -15,6 +16,7 @@ const useDashboardStore = create(set => ({
     set({ folderStructure });
   },
   setProjectPath: projectPath => set({ projectPath }),
+  setSelectedProject: selectedProject => set({ selectedProject }),
   setDependencies: dependencies => set({ dependencies }),
   setDevDependencies: devDependencies => set({ devDependencies }),
   setProcessId: processId => set({ processId })

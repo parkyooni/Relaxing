@@ -4,7 +4,7 @@ import {
   Routes,
   Navigate
 } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DependencyInstall from "@components/Dashboard/DependencyInstall";
 import Dashboard from "@components/Dashboard";
 import CreateProject from "@components/CreateProject";
@@ -26,6 +26,18 @@ function App() {
     setErrorMessage(message);
     setIsErrorModalOpen(true);
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = event => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <Router>

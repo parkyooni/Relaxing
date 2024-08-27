@@ -4,15 +4,18 @@ import ProjectController from "@components/Dashboard/MyProject/ProjectController
 import useDashboardStore from "@/store/dashboardStore";
 
 const Dashboard = () => {
-  const projectPath = useDashboardStore(state => state.projectPath);
+  const { projectPath, folderStructure } = useDashboardStore(state => ({
+    projectPath: state.projectPath,
+    folderStructure: state.folderStructure
+  }));
 
   return (
     <DashboardContentContainer>
       <span className="root-path">{projectPath || "No Project Selected"}</span>
       <p>Dashboard</p>
       <div className="layer">
-        <MyProject />
-        <ProjectController />
+        <MyProject folderStructure={folderStructure} />
+        <ProjectController projectPath={projectPath} />
       </div>
     </DashboardContentContainer>
   );
