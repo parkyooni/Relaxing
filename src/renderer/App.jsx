@@ -4,28 +4,39 @@ import {
   Routes,
   Navigate
 } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import DependencyInstall from "@components/Dashboard/DependencyInstall";
 import Dashboard from "@components/Dashboard";
 import CreateProject from "@components/CreateProject";
 import ProjectList from "@components/ProjectList";
 import ErrorModal from "@components/Modal/ErrorModal";
+import DeleteModal from "@/components/Modal/DeleteModal";
 import DashboardLayout from "@components/Layout/DashboardLayout";
 import PrivateLayout from "@components/Layout/PrivateLayout";
+import useUIStore from "@/store/uiStore";
 
 function App() {
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const closeErrorModal = () => {
-    setIsErrorModalOpen(false);
-    setErrorMessage("");
-  };
-
-  const openErrorModal = message => {
-    setErrorMessage(message);
-    setIsErrorModalOpen(true);
-  };
+  const {
+    isErrorModalOpen,
+    errorMessage,
+    closeErrorModal,
+    activeModal,
+    showModal,
+    closeModal,
+    showDeleteModal,
+    deleteMessage,
+    onConfirm
+  } = useUIStore(state => ({
+    isErrorModalOpen: state.isErrorModalOpen,
+    errorMessage: state.errorMessage,
+    closeErrorModal: state.closeErrorModal,
+    activeModal: state.activeModal,
+    showModal: state.showModal,
+    closeModal: state.closeModal,
+    showDeleteModal: state.showDeleteModal,
+    deleteMessage: state.deleteMessage,
+    onConfirm: state.onConfirm
+  }));
 
   useEffect(() => {
     const handleBeforeUnload = event => {
@@ -47,14 +58,32 @@ function App() {
           <Route path="dashboard/:id" element={<Dashboard />} />
           <Route
             path="my-dependencies"
-            element={<DependencyInstall showModal={openErrorModal} />}
+            element={
+              <DependencyInstall
+                showModal={showModal}
+                showDeleteModal={showDeleteModal}
+              />
+            }
           />
         </Route>
         <Route path="project" element={<PrivateLayout />}>
-          <Route index element={<ProjectList showModal={openErrorModal} />} />
+          <Route
+            index
+            element={
+              <ProjectList
+                showModal={showModal}
+                showDeleteModal={showDeleteModal}
+              />
+            }
+          />
           <Route
             path="project-list"
-            element={<ProjectList showModal={openErrorModal} />}
+            element={
+              <ProjectList
+                showModal={showModal}
+                showDeleteModal={showDeleteModal}
+              />
+            }
           />
           <Route path="create-project" element={<CreateProject />} />
         </Route>
@@ -67,6 +96,14 @@ function App() {
 
       {isErrorModalOpen && (
         <ErrorModal message={errorMessage} onClose={closeErrorModal} />
+      )}
+
+      {activeModal === "deleteModal" && (
+        <DeleteModal
+          message={deleteMessage}
+          onConfirm={onConfirm}
+          onClose={closeModal}
+        />
       )}
     </Router>
   );

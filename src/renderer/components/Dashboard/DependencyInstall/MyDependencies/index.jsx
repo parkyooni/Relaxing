@@ -5,7 +5,7 @@ import Loading from "@components/common/Loading";
 import useUIStore from "@/store/uiStore";
 import useDashboardStore from "@/store/dashboardStore";
 
-const MyDependencies = ({ showModal }) => {
+const MyDependencies = ({ showModal, showDeleteModal }) => {
   const { loading, activeTab, setActiveTab, setLoadingState } = useUIStore(
     state => ({
       loading: state.loading,
@@ -14,7 +14,6 @@ const MyDependencies = ({ showModal }) => {
       setLoadingState: state.setLoadingState
     })
   );
-
   const {
     projectPath,
     dependencies,
@@ -54,29 +53,31 @@ const MyDependencies = ({ showModal }) => {
     loadPackageJson();
   }, [projectPath, setDependencies, setDevDependencies, setLoadingState]);
 
-  const handleDeleteIconClick = async dependency => {
-    try {
-      if (!projectPath) {
-        showModal("현재 설정된 프로젝트 경로가 없습니다.");
-        return;
+  const handleDeleteIconClick = dependency => {
+    showDeleteModal(`${dependency.name}을(를) 삭제하시겠습니까?`, async () => {
+      try {
+        if (!projectPath) {
+          showModal("현재 설정된 프로젝트 경로가 없습니다.");
+          return;
+        }
+        setLoadingState("loading", true);
+
+        await window.api.uninstallDependencies({
+          projectPath,
+          packageName: dependency.name
+        });
+
+        const updatedPackageJsonData =
+          await window.api.loadPackageJsonData(projectPath);
+        setDependencies(updatedPackageJsonData.dependencies);
+        setDevDependencies(updatedPackageJsonData.devDependencies);
+      } catch (error) {
+        console.error(error);
+        showModal(`${dependency.name} 삭제에 실패 했습니다.`);
+      } finally {
+        setLoadingState("loading", false);
       }
-      setLoadingState("loading", true);
-
-      await window.api.uninstallDependencies({
-        projectPath,
-        packageName: dependency.name
-      });
-
-      const updatedPackageJsonData =
-        await window.api.loadPackageJsonData(projectPath);
-      setDependencies(updatedPackageJsonData.dependencies);
-      setDevDependencies(updatedPackageJsonData.devDependencies);
-    } catch (error) {
-      console.error(error);
-      showModal(`${dependency.packageName} 삭제에 실패 했습니다.`);
-    } finally {
-      setLoadingState("loading", false);
-    }
+    });
   };
 
   if (loading.isLoading) {

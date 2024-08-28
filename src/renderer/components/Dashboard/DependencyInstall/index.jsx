@@ -3,7 +3,7 @@ import MyDependencies from "@components/Dashboard/DependencyInstall/MyDependenci
 import NPMManager from "@components/Dashboard/DependencyInstall/MyDependencies/NPMManager";
 import useDashboardStore from "@/store/dashboardStore";
 
-const DependencyInstall = ({ showModal: showModalProp }) => {
+const DependencyInstall = ({ showModal: showModalProp, showDeleteModal }) => {
   const projectPath = useDashboardStore(state => state.projectPath);
   return (
     <DependencyInstallContentContainer>
@@ -12,7 +12,10 @@ const DependencyInstall = ({ showModal: showModalProp }) => {
           {projectPath || "No Project Selected"}
         </span>
         <h1>package.json</h1>
-        <MyDependencies showModal={showModalProp} />
+        <MyDependencies
+          showModal={showModalProp}
+          showDeleteModal={showDeleteModal}
+        />
       </div>
       <NPMManager showModal={showModalProp} />
     </DependencyInstallContentContainer>

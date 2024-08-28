@@ -31,7 +31,9 @@ const initialState = {
     loadingMessages: [],
     currentLoadingMessageIndex: 0
   },
-  isChecked: false
+  isChecked: false,
+  deleteMessage: "",
+  onConfirm: null
 };
 
 const useUIStore = create(set => ({
@@ -72,7 +74,9 @@ const useUIStore = create(set => ({
         isModalOpen: false
       },
       activeModal: null,
-      modalMessage: ""
+      modalMessage: "",
+      deleteMessage: "",
+      onConfirm: null
     })),
 
   setErrorMessage: message => set({ errorMessage: message }),
@@ -129,7 +133,17 @@ const useUIStore = create(set => ({
 
   resetUIState: () => set(initialState),
 
-  setIsChecked: isChecked => set({ isChecked })
+  setIsChecked: isChecked => set({ isChecked }),
+
+  showDeleteModal: (message, deleteFunction) =>
+    set(() => ({
+      uiFlags: {
+        isModalOpen: true
+      },
+      activeModal: "deleteModal",
+      deleteMessage: message,
+      onConfirm: deleteFunction
+    }))
 }));
 
 export default useUIStore;

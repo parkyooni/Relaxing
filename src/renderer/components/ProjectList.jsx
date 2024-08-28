@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { PageContentContainer } from "@public/style/Project.styles";
 import { useNavigation } from "@utils/projectUtils";
-import icons from "@public/images";
 import useProjectStore from "@/store/projectStore";
 import useDashboardStore from "@/store/dashboardStore";
+import icons from "@public/images";
+import { PageContentContainer } from "@public/style/Project.styles";
 
-const ProjectList = ({ showModal: showModalProp }) => {
+const ProjectList = ({ showModal: showModalProp, showDeleteModal }) => {
   const { projects, setProjects } = useProjectStore();
   const { navigateToPath } = useNavigation();
 
@@ -70,15 +70,21 @@ const ProjectList = ({ showModal: showModalProp }) => {
       console.error("Error in handleProjectClick:", error);
     }
   };
-
-  const handleIconClick = async project => {
-    try {
-      const response = await window.api.deleteProjectList(project.projectName);
-      setProjects(response);
-    } catch (error) {
-      showModalProp("프로젝트를 삭제하는 중 오류가 발생했습니다.");
-      console.error(error);
-    }
+  const handleDeleteIconClick = project => {
+    showDeleteModal(
+      `${project.projectName}을(를) 삭제하시겠습니까?`,
+      async () => {
+        try {
+          const response = await window.api.deleteProjectList(
+            project.projectName
+          );
+          setProjects(response);
+        } catch (error) {
+          showModalProp("프로젝트를 삭제하는 중 오류가 발생했습니다.");
+          console.error(error);
+        }
+      }
+    );
   };
 
   return (
@@ -101,7 +107,7 @@ const ProjectList = ({ showModal: showModalProp }) => {
                   alt="Close Icon"
                   onClick={e => {
                     e.stopPropagation();
-                    handleIconClick(project);
+                    handleDeleteIconClick(project);
                   }}
                 />
               </button>
