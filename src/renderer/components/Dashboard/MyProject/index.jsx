@@ -1,6 +1,28 @@
 import { MyProjectContentContainer } from "@public/style/Dashboard.styles";
 import icons from "@public/images";
 
+function getIconByFileType(type, path) {
+  if (type === "folder") return icons.folderLineIcon;
+
+  const extension = path.split(".").pop().toLowerCase();
+
+  const iconMap = {
+    vue: icons.vueIcon,
+    jsx: icons.reactIcon,
+    tsx: icons.reactIcon,
+    js: icons.jsIcon,
+    ts: icons.tsIcon,
+    css: icons.cssIcon,
+    json: icons.jsonIcon,
+    svg: icons.imgIcon,
+    png: icons.imgIcon,
+    jpg: icons.imgIcon,
+    gif: icons.imgIcon
+  };
+
+  return iconMap[extension] || icons.fileIcon;
+}
+
 const sortItems = items => {
   return [...items].sort((a, b) => {
     if (a.type === "folder" && b.type !== "folder") return -1;
@@ -11,18 +33,22 @@ const sortItems = items => {
 
 const updateFolderStructure = (
   folderStructure,
-  targetFolder,
+  targetFolderName,
   updatedChildren
 ) => {
-  const updatedFolderStructure = { ...folderStructure };
-  const folderToUpdate = findMatchingFolder(
-    updatedFolderStructure.children,
-    targetFolder.name
-  );
-  if (folderToUpdate) {
-    folderToUpdate.children = updatedChildren;
+  if (folderStructure.name === targetFolderName) {
+    return { ...folderStructure, children: updatedChildren };
   }
-  return updatedFolderStructure;
+
+  if (folderStructure.children) {
+    const updatedChildrenList = folderStructure.children.map(child =>
+      updateFolderStructure(child, targetFolderName, updatedChildren)
+    );
+
+    return { ...folderStructure, children: updatedChildrenList };
+  }
+
+  return folderStructure;
 };
 
 const findMatchingFolder = (children, name) => {
@@ -43,11 +69,13 @@ const ItemList = ({ items = [] }) => {
     <ul>
       {sortedItems.map(item => (
         <li key={item.path}>
-          <img
-            src={item.type === "folder" ? icons.folderLineIcon : icons.fileIcon}
-            alt={item.type === "folder" ? "Folder Line Icon" : "File Icon"}
-          />
-          <span>{item.name}</span>
+          <div className="data-list">
+            <img
+              src={getIconByFileType(item.type, item.path)}
+              alt={item.type === "folder" ? "Folder Line Icon" : "File Icon"}
+            />
+            <span>{item.name}</span>
+          </div>
 
           {item.type === "folder" &&
             item.children &&

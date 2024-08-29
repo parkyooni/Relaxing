@@ -50,15 +50,26 @@ export const MyProjectContentContainer = styled.div`
   }
 
   > ul {
-    height: calc(100% - 1.25rem);
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 1.875rem);
+    margin-top: 0.5rem;
+    padding-left: 1rem;
     overflow-y: auto;
-    padding: 0.625rem 0 0.9375rem 1rem;
+  }
 
-    li {
-      margin-bottom: 0.5rem;
-      padding-top: 0.1875rem;
+  li {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+    padding-top: 0.1875rem;
+
+    .data-list {
+      display: flex;
+      align-items: center;
 
       img {
+        width: 1.5625rem;
         margin-right: 0.5rem;
       }
 
@@ -68,7 +79,10 @@ export const MyProjectContentContainer = styled.div`
       }
     }
 
-    li ul {
+    ul {
+      display: flex;
+      flex-direction: column;
+      margin-top: 0.5rem;
       padding-left: 1rem;
     }
   }
@@ -85,7 +99,7 @@ export const ProjectControllerContainer = styled.div.withConfig({
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 20%;
+  width: 25%;
   height: 9.375rem;
   border-radius: ${({ theme }) => theme.borderRadius.sub};
   box-shadow: ${({ theme }) => theme.colors.opacity};
