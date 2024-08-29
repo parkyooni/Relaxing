@@ -7,6 +7,7 @@ const initialState = {
   activeModal: null,
   modalMessage: "",
   errorMessage: "",
+  isErrorModalOpen: false,
   activeTab: "dependencies",
   uiFlags: {
     isDropdownVisible: false,
@@ -60,12 +61,24 @@ const useUIStore = create(set => ({
     })),
 
   showModal: (modalType, message = "") =>
+    set(state => {
+      const isErrorModal = modalType === "error";
+      return {
+        uiFlags: {
+          ...state.uiFlags,
+          isModalOpen: true
+        },
+        activeModal: modalType,
+        modalMessage: message,
+        isErrorModalOpen: isErrorModal,
+        errorMessage: isErrorModal ? message : state.errorMessage
+      };
+    }),
+
+  closeErrorModal: () =>
     set(() => ({
-      uiFlags: {
-        isModalOpen: true
-      },
-      activeModal: modalType,
-      modalMessage: message
+      isErrorModalOpen: false,
+      errorMessage: ""
     })),
 
   closeModal: () =>

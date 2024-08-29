@@ -88,7 +88,7 @@ const NPMManager = ({ showModal }) => {
       }));
     } catch (error) {
       console.error(error);
-      showModal("패키지 검색 중 오류가 발생했습니다.");
+      showModal("error", "패키지 검색 중 오류가 발생했습니다.");
       return [];
     }
   };
@@ -130,7 +130,7 @@ const NPMManager = ({ showModal }) => {
       setDevDependencies(updatedPackageJsonData.devDependencies);
     } catch (error) {
       console.error(error);
-      showModal("패키지 설치 중 오류가 발생했습니다.");
+      showModal("error", "패키지 설치 중 오류가 발생했습니다.");
     } finally {
       setLoadingState("npmLoading", false);
     }

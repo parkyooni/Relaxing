@@ -5,7 +5,7 @@ import useDashboardStore from "@/store/dashboardStore";
 import icons from "@public/images";
 import { PageContentContainer } from "@public/style/Project.styles";
 
-const ProjectList = ({ showModal: showModalProp, showDeleteModal }) => {
+const ProjectList = ({ showModal, showDeleteModal }) => {
   const { projects, setProjects } = useProjectStore();
   const { navigateToPath } = useNavigation();
 
@@ -22,20 +22,20 @@ const ProjectList = ({ showModal: showModalProp, showDeleteModal }) => {
         const projectData = await window.api.loadProjectList();
         setProjects(projectData);
       } catch (error) {
-        showModalProp("프로젝트 목록을 불러오는 중 오류가 발생했습니다.");
+        showModal("error", "프로젝트 목록을 불러오는 중 오류가 발생했습니다.");
         console.error(error);
       }
     };
 
     loadProjectLists();
-  }, [setProjects, showModalProp]);
+  }, [setProjects, showModal]);
 
   const handleProjectClick = async project => {
     try {
       const isValidPath = await window.api.checkProjectPath(project.path);
 
       if (!isValidPath) {
-        showModalProp("경로를 찾을 수 없습니다");
+        showModal("error", "경로를 찾을 수 없습니다");
         return;
       }
 
@@ -51,7 +51,7 @@ const ProjectList = ({ showModal: showModalProp, showDeleteModal }) => {
         !Array.isArray(projectFolderStructure) ||
         projectFolderStructure.length === 0
       ) {
-        showModalProp(`경로에 프로젝트가 없습니다: ${projectPath}`);
+        showModal("error", `경로에 프로젝트가 없습니다: ${projectPath}`);
         return;
       }
 
@@ -66,7 +66,7 @@ const ProjectList = ({ showModal: showModalProp, showDeleteModal }) => {
 
       navigateToPath(`/dashboard/${project.projectName}`);
     } catch (error) {
-      showModalProp("프로젝트를 불러오는 중 오류가 발생했습니다.");
+      showModal("error", "프로젝트를 불러오는 중 오류가 발생했습니다.");
       console.error("Error in handleProjectClick:", error);
     }
   };
@@ -80,7 +80,7 @@ const ProjectList = ({ showModal: showModalProp, showDeleteModal }) => {
           );
           setProjects(response);
         } catch (error) {
-          showModalProp("프로젝트를 삭제하는 중 오류가 발생했습니다.");
+          showModal("error", "프로젝트를 삭제하는 중 오류가 발생했습니다.");
           console.error(error);
         }
       }

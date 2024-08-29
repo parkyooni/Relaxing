@@ -44,7 +44,7 @@ const MyDependencies = ({ showModal, showDeleteModal }) => {
         }
       } catch (error) {
         console.error(error);
-        showModal("패키지를 검색하는 중 오류가 발생했습니다.");
+        showModal("error", "패키지를 검색하는 중 오류가 발생했습니다.");
       } finally {
         setLoadingState("loading", false);
       }
@@ -57,7 +57,7 @@ const MyDependencies = ({ showModal, showDeleteModal }) => {
     showDeleteModal(`${dependency.name}을(를) 삭제하시겠습니까?`, async () => {
       try {
         if (!projectPath) {
-          showModal("현재 설정된 프로젝트 경로가 없습니다.");
+          showModal("error", "현재 설정된 프로젝트 경로가 없습니다.");
           return;
         }
         setLoadingState("loading", true);
@@ -73,7 +73,7 @@ const MyDependencies = ({ showModal, showDeleteModal }) => {
         setDevDependencies(updatedPackageJsonData.devDependencies);
       } catch (error) {
         console.error(error);
-        showModal(`${dependency.name} 삭제에 실패 했습니다.`);
+        showModal("error", `${dependency.name} 삭제에 실패 했습니다.`);
       } finally {
         setLoadingState("loading", false);
       }

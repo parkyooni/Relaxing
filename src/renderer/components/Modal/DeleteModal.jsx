@@ -1,6 +1,9 @@
 import React from "react";
-import { ModalBackground, ModalContainer } from "@public/style/Modal.styles";
-import ButtonBox from "@components/common/ButtonBox";
+import {
+  ModalBackground,
+  ModalContainer,
+  NoShadowButtonBox
+} from "@public/style/Modal.styles";
 
 const DeleteModal = ({ message, onConfirm, onClose }) => {
   const handleConfirm = () => {
@@ -17,12 +20,12 @@ const DeleteModal = ({ message, onConfirm, onClose }) => {
           <span>{message}</span>
         </div>
         <div className="button-group">
-          <ButtonBox variant="default" onClick={onClose}>
+          <NoShadowButtonBox variant="default" onClick={onClose}>
             취소
-          </ButtonBox>
-          <ButtonBox variant="active" onClick={handleConfirm}>
+          </NoShadowButtonBox>
+          <NoShadowButtonBox variant="active" onClick={handleConfirm}>
             확인
-          </ButtonBox>
+          </NoShadowButtonBox>
         </div>
       </ModalContainer>
     </ModalBackground>

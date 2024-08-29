@@ -20,19 +20,19 @@ function App() {
     isErrorModalOpen,
     errorMessage,
     closeErrorModal,
+    closeModal,
     activeModal,
     showModal,
-    closeModal,
     showDeleteModal,
     deleteMessage,
     onConfirm
   } = useUIStore(state => ({
     isErrorModalOpen: state.isErrorModalOpen,
     errorMessage: state.errorMessage,
-    closeErrorModal: state.closeErrorModal,
     activeModal: state.activeModal,
     showModal: state.showModal,
     closeModal: state.closeModal,
+    closeErrorModal: state.closeErrorModal,
     showDeleteModal: state.showDeleteModal,
     deleteMessage: state.deleteMessage,
     onConfirm: state.onConfirm
