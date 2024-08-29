@@ -68,7 +68,11 @@ const SettingLoad = () => {
   return (
     <SettingLoadContainer>
       <RadioGroup>
-        {renderRadioBox("userDefined", "userDefined", "사용자 정의")}
+        {renderRadioBox(
+          "userDefined",
+          "userDefined",
+          "프로젝트 생성 사용자 정의"
+        )}
         {customNames.map((name, index) =>
           renderRadioBox(`customProject-${index}`, name, name)
         )}

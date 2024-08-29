@@ -15,7 +15,7 @@ const initialState = {
     switchToggle: false
   },
   sections: {
-    showSettingLoad: true,
+    showSettingLoad: false,
     showProjectStarter: false,
     showFrameworkSelector: false,
     showVariantSelector: false,
@@ -82,12 +82,25 @@ const useUIStore = create(set => ({
   setErrorMessage: message => set({ errorMessage: message }),
 
   toggleSection: section =>
-    set(state => ({
-      sections: {
-        ...state.sections,
-        [section]: !state.sections[section]
-      }
-    })),
+    set(state => {
+      const newSections = Object.keys(state.sections).reduce((acc, key) => {
+        if (key === section) {
+          acc[key] = !state.sections[key];
+        } else {
+          if (
+            (section === "showSettingLoad" && key === "showProjectStarter") ||
+            (section === "showProjectStarter" && key === "showSettingLoad")
+          ) {
+            acc[key] = state.sections[key];
+          } else {
+            acc[key] = false;
+          }
+        }
+        return acc;
+      }, {});
+
+      return { sections: newSections };
+    }),
 
   setActiveTab: tabName => set({ activeTab: tabName }),
 

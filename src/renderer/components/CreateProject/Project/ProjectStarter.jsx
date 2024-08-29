@@ -39,7 +39,7 @@ const ProjectStarter = () => {
 
   const packageManagers = optionConfig.packageManagers;
 
-  const handleUploadClick = async () => {
+  const handlePathUpload = async () => {
     try {
       const selectedPath = await window.api.selectFolder();
       if (selectedPath) {
@@ -91,8 +91,15 @@ const ProjectStarter = () => {
   return (
     <ProjectStarterContainer>
       <PathInputContainer>
-        <PathInput type="text" value={path} readOnly />
-        <UploadButton onClick={handleUploadClick}>업로드</UploadButton>
+        <PathInput
+          type="text"
+          value={path}
+          readOnly
+          placeholder="/root/folder/path... click the upload button... "
+        />
+        <UploadButton variant={"active"} onClick={handlePathUpload}>
+          업로드
+        </UploadButton>
       </PathInputContainer>
       <DirectoryListContainer>
         <div className="layout">
@@ -104,7 +111,7 @@ const ProjectStarter = () => {
         </div>
       </DirectoryListContainer>
       <ProjectNameInput
-        placeholder="프로젝트 이름을 입력하세요..."
+        placeholder="Please enter the project name..."
         value={projectName}
         onChange={handleProjectNameChange}
       />

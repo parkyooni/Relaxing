@@ -1,5 +1,8 @@
-import ButtonBox from "@components/common/ButtonBox";
-import { ModalBackground, ModalContainer } from "@public/style/Modal.styles";
+import {
+  ModalBackground,
+  ModalContainer,
+  NoShadowButtonBox
+} from "@public/style/Modal.styles";
 import useProjectStore from "@/store/projectStore";
 
 const SaveModal = ({ onSave, onCreate, onCancel, title, description }) => {
@@ -36,24 +39,24 @@ const SaveModal = ({ onSave, onCreate, onCancel, title, description }) => {
           </div>
         </div>
         <div className="button-group">
-          <ButtonBox variant="default" onClick={onCancel}>
+          <NoShadowButtonBox variant="default" onClick={onCancel}>
             취소
-          </ButtonBox>
+          </NoShadowButtonBox>
           <div className="save-button">
-            <ButtonBox
+            <NoShadowButtonBox
               variant={customName.trim() ? "disabled" : "active"}
               onClick={handleCreateClick}
               disabled={customName.trim()}
             >
               생성
-            </ButtonBox>
-            <ButtonBox
+            </NoShadowButtonBox>
+            <NoShadowButtonBox
               variant={customName.trim() ? "active" : "disabled"}
               onClick={handleSaveClick}
               disabled={!customName.trim()}
             >
               저장
-            </ButtonBox>
+            </NoShadowButtonBox>
           </div>
         </div>
       </ModalContainer>

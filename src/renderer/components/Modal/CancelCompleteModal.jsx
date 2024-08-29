@@ -1,5 +1,8 @@
-import ButtonBox from "@components/common/ButtonBox";
-import { ModalBackground, ModalContainer } from "@public/style/Modal.styles";
+import {
+  ModalBackground,
+  ModalContainer,
+  NoShadowButtonBox
+} from "@public/style/Modal.styles";
 
 const CancelCompleteModal = ({ onSave, onCancel, message, subMessage }) => {
   return (
@@ -10,12 +13,12 @@ const CancelCompleteModal = ({ onSave, onCancel, message, subMessage }) => {
           <span>{subMessage}</span>
         </div>
         <div className="button-group">
-          <ButtonBox variant="default" onClick={onCancel}>
+          <NoShadowButtonBox variant="default" onClick={onCancel}>
             취소
-          </ButtonBox>
-          <ButtonBox variant="active" onClick={onSave}>
+          </NoShadowButtonBox>
+          <NoShadowButtonBox variant="active" onClick={onSave}>
             확인
-          </ButtonBox>
+          </NoShadowButtonBox>
         </div>
       </ModalContainer>
     </ModalBackground>

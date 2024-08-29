@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import ButtonBox from "@/components/common/ButtonBox";
 
 export const ModalBackground = styled.div`
   position: fixed;
@@ -164,4 +165,8 @@ export const ModalContainer = styled.div`
       }
     }
   }
+`;
+
+export const NoShadowButtonBox = styled(ButtonBox)`
+  box-shadow: none;
 `;

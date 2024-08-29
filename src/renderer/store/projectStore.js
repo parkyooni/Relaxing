@@ -5,7 +5,7 @@ const initialProjectState = {
   selectedSettingOption: "userDefined",
   selectedPackageManager: "",
   projectName: "",
-  isUserDefinedSetting: true,
+  isUserDefinedSetting: false,
   isProjectStarterValid: false,
   isFrameworksSelected: false,
   isDependenciesSelected: false,
@@ -43,7 +43,7 @@ const useProjectStore = create(set => ({
   setSelectedSettingOption: option =>
     set(() => ({
       selectedSettingOption: option,
-      isUserDefinedSetting: option === "userDefined"
+      isUserDefinedSetting: option !== null
     })),
 
   setFiles: files => set({ files }),

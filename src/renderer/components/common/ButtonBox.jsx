@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { commonBoxShadow } from "@public/style/utils.styles";
 
 const getBackgroundColor = (theme, variant) => {
   if (variant === "active") return theme.colors.action;
@@ -36,7 +37,8 @@ const ButtonBox = styled.button.withConfig({
   cursor: ${({ variant }) =>
     variant === "disabled" ? "not-allowed" : "pointer"};
   border: 1px solid ${({ theme, variant }) => getBorderColor(theme, variant)};
-  opacity: ${({ variant }) => (variant === "disabled" ? 0.5 : 1)};
+  opacity: ${({ variant }) => (variant === "disabled" ? 0.7 : 1)};
+  ${commonBoxShadow}
 
   &:hover {
     background-color: ${({ theme, variant }) =>
