@@ -7,7 +7,9 @@ const DashboardNavigation = () => {
     <Navigation>
       <ul>
         <li>
-          <img src={icons.logoIcon} alt="Logo Icon" />
+          <Link to="/dashboard/:id">
+            <img src={icons.logoIcon} alt="Logo Icon" />
+          </Link>
         </li>
         <li>
           <Link to="project">
