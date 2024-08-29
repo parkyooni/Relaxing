@@ -16,7 +16,6 @@ import useProjectStore from "@/store/projectStore";
 import useUIStore from "@/store/uiStore";
 
 const ProjectStarter = () => {
-  const { errorMessage, setErrorMessage } = useUIStore();
   const {
     path,
     setPath,
@@ -37,6 +36,7 @@ const ProjectStarter = () => {
     setFiles: state.setFiles
   }));
 
+  const { errorMessage, setErrorMessage } = useUIStore();
   const packageManagers = optionConfig.packageManagers;
 
   const handlePathUpload = async () => {
@@ -44,15 +44,14 @@ const ProjectStarter = () => {
       const selectedPath = await window.api.selectFolder();
       if (selectedPath) {
         setPath(selectedPath);
-
         const fileList = await window.api.readDirectory(selectedPath);
         if (fileList) {
-          const processedFiles = processFileList(fileList, selectedPath);
-          setFiles(processedFiles);
+          setFiles(processFileList(fileList, selectedPath));
         }
       }
     } catch (error) {
       console.error("파일 업로드 중 오류 발생:", error);
+      setErrorMessage("파일 업로드 중 오류가 발생했습니다.");
     }
   };
 
@@ -60,32 +59,37 @@ const ProjectStarter = () => {
     if (!selectedPackageManager && packageManagers.length > 0) {
       setSelectedPackageManager(packageManagers[0]);
     }
-  }, [selectedPackageManager, setSelectedPackageManager, packageManagers]);
+  }, [selectedPackageManager, packageManagers, setSelectedPackageManager]);
 
   const handleProjectNameChange = event => {
     const inputValue = event.target.value;
-    const validInput = inputValue.replace(/[^a-z0-9_-]/g, "");
-    const startsWithNumber = /^[0-9]/.test(validInput);
+    const sanitizedInputValue = inputValue.replace(/[^a-z0-9_-]/g, "");
     const maxLength = 214;
+
+    const containsInvalidChars = inputValue !== sanitizedInputValue;
+    const isStartsWithNumber = /^[0-9]/.test(sanitizedInputValue);
+    const isOverMaxLength = sanitizedInputValue.length > maxLength;
+    const isNameTaken = files.some(
+      file => file.type === "folder" && file.name === sanitizedInputValue
+    );
+
     let errorMessage = "";
 
-    if (inputValue !== validInput) {
+    if (containsInvalidChars) {
       errorMessage = "영문 소문자, 숫자, -, _만 입력 가능합니다.";
-    } else if (startsWithNumber) {
+    } else if (isStartsWithNumber) {
       errorMessage = "숫자로 시작할 수 없습니다.";
-    } else if (validInput.length > maxLength) {
+    } else if (isOverMaxLength) {
       errorMessage = `최대 ${maxLength}자까지 가능합니다.`;
+    } else if (isNameTaken) {
+      errorMessage = "이미 존재하는 폴더 이름입니다.";
     }
 
     setErrorMessage(errorMessage);
 
     if (!errorMessage) {
-      setProjectName(validInput);
+      setProjectName(sanitizedInputValue);
     }
-  };
-
-  const handlePackageManagerChange = event => {
-    setSelectedPackageManager(event.target.value);
   };
 
   return (
@@ -97,7 +101,7 @@ const ProjectStarter = () => {
           readOnly
           placeholder="/root/folder/path... click the upload button... "
         />
-        <UploadButton variant={"active"} onClick={handlePathUpload}>
+        <UploadButton variant="active" onClick={handlePathUpload}>
           업로드
         </UploadButton>
       </PathInputContainer>
@@ -121,7 +125,7 @@ const ProjectStarter = () => {
       <SelectWrapper>
         <ProjectNameSelect
           value={selectedPackageManager}
-          onChange={handlePackageManagerChange}
+          onChange={e => setSelectedPackageManager(e.target.value)}
         >
           {packageManagers.map((manager, index) => (
             <option key={index} value={manager}>

@@ -28,35 +28,8 @@ import useDashboardStore from "@/store/dashboardStore";
 
 const CreateProject = () => {
   const { navigateToPath } = useNavigation();
-  const {
-    uiFlags: { isModalOpen },
-    loading,
-    setLoadingState,
-    activeModal,
-    showModal,
-    closeModal,
-    modalMessage,
-    sections,
-    toggleSection,
-    resetUIState,
-    setSectionsVisibility
-  } = useUIStore();
-  const {
-    isProjectStarterValid,
-    isFrameworksSelected,
-    selectedSettingOption,
-    selectedFrameworkIndex,
-    selectedOptionIndex,
-    selectedDependenciesIndex,
-    selectedPackageManager,
-    setSelectedVariantIndex,
-    setSelectedOptionIndex,
-    path,
-    projectName,
-    frameworkName,
-    variantName,
-    resetProjectState
-  } = useProjectStore(state => ({
+  const uiStore = useUIStore();
+  const projectStore = useProjectStore(state => ({
     projectName: state.projectName,
     path: state.path,
     frameworkName: state.frameworkName,
@@ -72,17 +45,24 @@ const CreateProject = () => {
     selectedOptionIndex: state.selectedOptionIndex,
     setSelectedVariantIndex: state.setSelectedVariantIndex
   }));
-  const { setFolderStructure, setProjectPath } = useDashboardStore(state => ({
+  const dashboardStore = useDashboardStore(state => ({
     setFolderStructure: state.setFolderStructure,
     setProjectPath: state.setProjectPath
   }));
 
   const resetState = () => {
-    resetUIState();
-    resetProjectState();
+    uiStore.resetUIState();
+    projectStore.resetProjectState();
   };
 
   const isSaveEnabled = () => {
+    const {
+      path,
+      selectedPackageManager,
+      projectName,
+      isProjectStarterValid,
+      selectedSettingOption
+    } = projectStore;
     const areBasicFieldsValid =
       !!path &&
       !!selectedPackageManager &&
@@ -92,32 +72,78 @@ const CreateProject = () => {
     if (selectedSettingOption === "userDefined") {
       return (
         areBasicFieldsValid &&
-        isFrameworksSelected &&
-        selectedFrameworkIndex !== null &&
-        selectedOptionIndex !== null
+        projectStore.isFrameworksSelected &&
+        projectStore.selectedFrameworkIndex !== null &&
+        projectStore.selectedOptionIndex !== null
       );
     }
 
     return areBasicFieldsValid;
   };
 
-  const isSectionVisible = () => ({
-    showSettingLoad: sections.showSettingLoad || selectedSettingOption,
-    showProjectStarter: sections.showProjectStarter || selectedSettingOption,
-    showFrameworkSelector:
-      selectedSettingOption && selectedPackageManager && path,
-    showVariantSelector:
-      selectedSettingOption && isProjectStarterValid && isFrameworksSelected,
-    showDependenciesSelector:
-      selectedSettingOption &&
-      isProjectStarterValid &&
-      isFrameworksSelected &&
-      selectedFrameworkIndex !== null &&
-      selectedOptionIndex !== null
-  });
+  const isSectionVisible = () => {
+    const { sections } = uiStore;
+    const {
+      selectedSettingOption,
+      selectedPackageManager,
+      path,
+      isProjectStarterValid,
+      isFrameworksSelected,
+      selectedFrameworkIndex,
+      selectedOptionIndex
+    } = projectStore;
+
+    if (!selectedSettingOption) return {};
+
+    return {
+      showSettingLoad: sections.showSettingLoad || selectedSettingOption,
+      showProjectStarter: sections.showProjectStarter || selectedSettingOption,
+      showFrameworkSelector: selectedPackageManager && path,
+      showVariantSelector: isProjectStarterValid && isFrameworksSelected,
+      showDependenciesSelector:
+        isProjectStarterValid &&
+        isFrameworksSelected &&
+        selectedFrameworkIndex !== null &&
+        selectedOptionIndex !== null
+    };
+  };
+
+  const getCompletedToggleCount = () => {
+    const {
+      selectedSettingOption,
+      projectName,
+      selectedPackageManager,
+      path,
+      selectedFrameworkIndex,
+      selectedOptionIndex,
+      selectedDependenciesIndex
+    } = projectStore;
+
+    let completedCount = 0;
+
+    if (selectedSettingOption) completedCount++;
+    if (projectName && selectedPackageManager && path) completedCount++;
+    if (selectedFrameworkIndex !== null) completedCount++;
+    if (selectedOptionIndex !== null) completedCount++;
+    if (
+      selectedDependenciesIndex !== null &&
+      typeof selectedDependenciesIndex !== "undefined"
+    )
+      completedCount++;
+
+    return completedCount;
+  };
 
   useEffect(() => {
+    const { setSectionsVisibility, toggleSection } = uiStore;
+    const {
+      selectedPackageManager,
+      path,
+      selectedFrameworkIndex,
+      selectedOptionIndex
+    } = projectStore;
     const visibilitySettings = isSectionVisible();
+
     setSectionsVisibility(visibilitySettings);
 
     if (selectedPackageManager && path) {
@@ -130,25 +156,22 @@ const CreateProject = () => {
       toggleSection("showDependenciesSelector");
     }
   }, [
-    selectedPackageManager,
-    path,
-    selectedFrameworkIndex,
-    selectedOptionIndex
+    projectStore.selectedPackageManager,
+    projectStore.path,
+    projectStore.selectedFrameworkIndex,
+    projectStore.selectedOptionIndex
   ]);
 
   const getSaveMessage = async () => {
+    const { selectedSettingOption } = projectStore;
+
     if (selectedSettingOption === "userDefined" && isSaveEnabled()) {
       return {
         type: "save",
         message:
           "의존성 설치 및 설정에 대한 정보가 저장됩니다. 생성으로 선택할경우 사용자 설정은 저장되지않고, 프로젝트가 만들어집니다."
       };
-    } else if (
-      selectedSettingOption !== "userDefined" &&
-      !!path &&
-      !!selectedPackageManager &&
-      !!projectName
-    ) {
+    } else if (selectedSettingOption !== "userDefined" && isSaveEnabled()) {
       try {
         const projectData = await window.api.loadProjectList();
         return processProjectData(projectData, selectedSettingOption);
@@ -165,14 +188,21 @@ const CreateProject = () => {
   };
 
   const handleCancelClick = () => {
+    const { isProjectStarterValid, isFrameworksSelected } = projectStore;
+    const {
+      showSettingLoad,
+      showProjectStarter,
+      showFrameworkSelector,
+      showVariantSelector
+    } = uiStore.sections;
     const anySectionActive =
-      sections.showSettingLoad ||
-      sections.showProjectStarter ||
-      sections.showFrameworkSelector ||
-      sections.showVariantSelector;
+      showSettingLoad ||
+      showProjectStarter ||
+      showFrameworkSelector ||
+      showVariantSelector;
 
     if (isProjectStarterValid || isFrameworksSelected || anySectionActive) {
-      showModal("cancel", "프로젝트 생성을 취소하시겠습니까?");
+      uiStore.showModal("cancel", "프로젝트 생성을 취소하시겠습니까?");
     } else {
       navigateToPath("/project/project-list");
     }
@@ -181,13 +211,21 @@ const CreateProject = () => {
   const handleSaveClick = async () => {
     const saveMessage = await getSaveMessage();
     if (saveMessage) {
-      showModal(saveMessage.type, saveMessage.message);
+      uiStore.showModal(saveMessage.type, saveMessage.message);
     }
   };
 
   const handleConfirmCreate = async customName => {
     try {
-      setLoadingState("loading", true);
+      uiStore.setLoadingState("loading", true);
+      const {
+        selectedSettingOption,
+        frameworkName,
+        variantName,
+        selectedDependenciesIndex,
+        path,
+        projectName
+      } = projectStore;
 
       const projectSettings =
         selectedSettingOption === "userDefined"
@@ -223,32 +261,91 @@ const CreateProject = () => {
       const { projectPath, projectFolderStructure } =
         await setupProjectEnvironment(projectName, path, window.api);
 
-      setFolderStructure({
+      dashboardStore.setFolderStructure({
         name: projectName,
         type: "folder",
         children: projectFolderStructure
       });
 
-      setProjectPath(projectPath);
+      dashboardStore.setProjectPath(projectPath);
       resetState();
-      closeModal();
+      uiStore.closeModal();
       navigateToPath(`/dashboard/${projectName}`);
     } catch (error) {
       console.error("프로젝트 생성 중 오류 발생:", error);
     } finally {
-      setLoadingState("loading", false);
+      uiStore.setLoadingState("loading", false);
     }
   };
 
   const handleConfirmCancel = () => {
     resetState();
-    closeModal();
+    uiStore.closeModal();
     navigateToPath("/project/project-list");
+  };
+
+  const totalToggles = 5;
+  const completedToggles = getCompletedToggleCount();
+
+  const renderModalContent = () => {
+    if (!uiStore.uiFlags.isModalOpen) {
+      return null;
+    }
+
+    switch (uiStore.activeModal) {
+      case "cancel":
+        return (
+          <CancelCompleteModal
+            onSave={handleConfirmCancel}
+            onCancel={uiStore.closeModal}
+            message={uiStore.modalMessage}
+            subMessage="입력한 정보는 복구할 수 없습니다."
+          />
+        );
+
+      case "customSave":
+        return (
+          <CancelCompleteModal
+            onSave={() =>
+              handleConfirmCreate(projectStore.selectedSettingOption)
+            }
+            onCancel={uiStore.closeModal}
+            message={uiStore.modalMessage}
+            subMessage="프로젝트를 생성 하시겠습니까?"
+          />
+        );
+
+      case "save":
+        return (
+          <SaveModal
+            onSave={customName => {
+              uiStore.closeModal();
+              handleConfirmCreate(customName);
+            }}
+            onCreate={customName => {
+              uiStore.closeModal();
+              handleConfirmCreate(customName);
+            }}
+            onCancel={uiStore.closeModal}
+            title="사용자 설정 저장"
+            description={
+              <>
+                의존성 설치 및 설정에 대한 정보가 저장됩니다. <br />
+                생성으로 선택할 경우 사용자 설정은 저장되지 않고, 프로젝트가
+                만들어집니다.
+              </>
+            }
+          />
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
     <PageContentContainer>
-      {loading.isLoading && (
+      {uiStore.loading.isLoading && (
         <Loading
           noSpinner={false}
           customStyles={false}
@@ -271,13 +368,18 @@ const CreateProject = () => {
         </ButtonBox>
       </ButtonContainer>
       <div className="toggle-layout">
-        <h1>Create Project</h1>
+        <h1>
+          Create Project
+          <span className="toggle-status">
+            <span>{completedToggles}</span> / <span>{totalToggles}</span>
+          </span>
+        </h1>
         <ToggleSection
           title="1. Setting Load"
           description="Select either ' Custom Project Creation ' or ' One-Time Project Creation '"
-          isActive={sections.showSettingLoad}
-          onToggle={() => toggleSection("showSettingLoad")}
-          isComplete={selectedSettingOption}
+          isActive={uiStore.sections.showSettingLoad}
+          onToggle={() => uiStore.toggleSection("showSettingLoad")}
+          isComplete={projectStore.selectedSettingOption}
           isVisible={true}
         >
           <SettingLoad />
@@ -285,101 +387,67 @@ const CreateProject = () => {
         <ToggleSection
           title="2. Project Starter"
           description="Please Target directory path & Project name"
-          isActive={sections.showProjectStarter}
-          onToggle={() => toggleSection("showProjectStarter")}
-          isComplete={projectName && selectedPackageManager && path}
-          isVisible={selectedSettingOption}
+          isActive={uiStore.sections.showProjectStarter}
+          onToggle={() => uiStore.toggleSection("showProjectStarter")}
+          isComplete={
+            projectStore.projectName &&
+            projectStore.selectedPackageManager &&
+            projectStore.path
+          }
+          isVisible={projectStore.selectedSettingOption}
         >
           <ProjectStarter />
         </ToggleSection>
         <ToggleSection
           title="3. Framework Selector"
           description="Select a framework"
-          isActive={sections.showFrameworkSelector}
-          onToggle={() => toggleSection("showFrameworkSelector")}
-          isComplete={selectedFrameworkIndex !== null}
+          isActive={uiStore.sections.showFrameworkSelector}
+          onToggle={() => uiStore.toggleSection("showFrameworkSelector")}
+          isComplete={projectStore.selectedFrameworkIndex !== null}
           isVisible={
-            selectedSettingOption === "userDefined" &&
-            selectedPackageManager &&
-            projectName &&
-            path
+            projectStore.selectedSettingOption === "userDefined" &&
+            projectStore.selectedPackageManager &&
+            projectStore.projectName &&
+            projectStore.path
           }
         >
-          <FrameworkSelector selectedFrameworkIndex={selectedFrameworkIndex} />
+          <FrameworkSelector
+            selectedFrameworkIndex={projectStore.selectedFrameworkIndex}
+          />
         </ToggleSection>
         <ToggleSection
           title="4. Variant Selector"
           description="Select a variant"
-          isActive={sections.showVariantSelector}
-          onToggle={() => toggleSection("showVariantSelector")}
-          isComplete={selectedOptionIndex !== null}
-          isVisible={selectedFrameworkIndex !== null}
+          isActive={uiStore.sections.showVariantSelector}
+          onToggle={() => uiStore.toggleSection("showVariantSelector")}
+          isComplete={projectStore.selectedOptionIndex !== null}
+          isVisible={projectStore.selectedFrameworkIndex !== null}
         >
           <VariantSelector
-            selectedFrameworkIndex={selectedFrameworkIndex}
-            setSelectedVariantIndex={setSelectedVariantIndex}
-            setSelectedOptionIndex={setSelectedOptionIndex}
+            selectedFrameworkIndex={projectStore.selectedFrameworkIndex}
+            setSelectedVariantIndex={projectStore.setSelectedVariantIndex}
+            setSelectedOptionIndex={projectStore.setSelectedOptionIndex}
           />
         </ToggleSection>
         <ToggleSection
           title="5. [option] Dependencies Selector"
           description="Please search for and add the dependency package(s)"
-          isActive={sections.showDependenciesSelector}
-          onToggle={() => toggleSection("showDependenciesSelector")}
-          isComplete={selectedDependenciesIndex}
+          isActive={uiStore.sections.showDependenciesSelector}
+          onToggle={() => uiStore.toggleSection("showDependenciesSelector")}
+          isComplete={projectStore.selectedDependenciesIndex}
           isVisible={
-            selectedFrameworkIndex !== null &&
-            setSelectedVariantIndex &&
-            setSelectedOptionIndex
+            projectStore.selectedFrameworkIndex !== null &&
+            projectStore.setSelectedVariantIndex &&
+            projectStore.setSelectedOptionIndex
           }
         >
           <DependenciesSelector
-            selectedDependenciesIndex={selectedDependenciesIndex}
+            selectedDependenciesIndex={projectStore.selectedDependenciesIndex}
           />
         </ToggleSection>
       </div>
 
-      {isModalOpen &&
-        (activeModal === "cancel" || activeModal === "customSave") && (
-          <CancelCompleteModal
-            onSave={
-              activeModal === "cancel"
-                ? handleConfirmCancel
-                : () => handleConfirmCreate(selectedSettingOption)
-            }
-            onCancel={closeModal}
-            message={modalMessage}
-            subMessage={
-              activeModal === "cancel"
-                ? "입력한 정보는 복구할 수 없습니다."
-                : "프로젝트를 생성 하시겠습니까?"
-            }
-          />
-        )}
-
-      {isModalOpen && activeModal === "save" && (
-        <>
-          <SaveModal
-            onSave={customName => {
-              closeModal();
-              handleConfirmCreate(customName);
-            }}
-            onCreate={customName => {
-              closeModal();
-              handleConfirmCreate(customName);
-            }}
-            onCancel={closeModal}
-            title="사용자 설정 저장"
-            description={
-              <>
-                의존성 설치 및 설정에 대한 정보가 저장됩니다. <br />
-                생성으로 선택할 경우 사용자 설정은 저장되지 않고, 프로젝트가
-                만들어집니다.
-              </>
-            }
-          />
-        </>
-      )}
+      {renderModalContent()}
     </PageContentContainer>
   );
 };

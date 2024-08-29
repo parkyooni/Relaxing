@@ -247,6 +247,22 @@ export const PageContentContainer = styled.div`
       padding-bottom: 0.625rem;
       font-size: ${({ theme }) => theme.fontSizes.xlarge};
       color: ${({ theme }) => theme.colors.white};
+
+      .toggle-status {
+        display: inline-flex;
+        max-width: 6.25rem;
+        text-align: center;
+        font-size: ${({ theme }) => theme.fontSizes.largePlus};
+
+        span {
+          min-width: 1.875rem;
+          font-weight: bolder;
+
+          &:first-child {
+            color: ${({ theme }) => theme.colors.lighAction};
+          }
+        }
+      }
     }
   }
 `;
