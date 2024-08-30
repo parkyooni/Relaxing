@@ -134,6 +134,14 @@ export const ModalContainer = styled.div`
       text-align: left;
       cursor: default;
     }
+
+    .error-message-text {
+      width: inherit;
+      padding-top: 0.625rem;
+      text-align: left;
+      font-size: ${({ theme }) => theme.fontSizes.normal};
+      color: ${({ theme }) => theme.colors.deepGray};
+    }
   }
 
   .button-group {

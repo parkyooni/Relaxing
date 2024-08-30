@@ -1,27 +1,59 @@
+import { useEffect } from "react";
 import {
   ModalBackground,
   ModalContainer,
   NoShadowButtonBox
 } from "@public/style/Modal.styles";
 import useProjectStore from "@/store/projectStore";
+import useUIStore from "@/store/uiStore";
+import { DUPLICATE_NAME_ERROR } from "@utils/constants";
 
-const SaveModal = ({ onSave, onCreate, onCancel, title, description }) => {
+const SaveModal = ({
+  onSave,
+  onCreate,
+  onCancel,
+  title,
+  description,
+  existingProjectNames = []
+}) => {
   const { customName, setCustomName } = useProjectStore(state => ({
     customName: state.customName,
     setCustomName: state.setCustomName
   }));
+
+  const { errorMessage, setErrorMessage } = useUIStore(state => ({
+    errorMessage: state.errorMessage,
+    setErrorMessage: state.setErrorMessage
+  }));
+
+  const trimmedName = customName.trim();
+  const isDuplicateName = existingProjectNames.includes(trimmedName);
+
+  useEffect(() => {
+    const newErrorMessage = isDuplicateName ? DUPLICATE_NAME_ERROR : "";
+    if (errorMessage !== newErrorMessage) {
+      setErrorMessage(newErrorMessage);
+    }
+  }, [trimmedName, isDuplicateName, errorMessage, setErrorMessage]);
 
   const handleInputChange = e => {
     setCustomName(e.target.value);
   };
 
   const handleSaveClick = () => {
-    onSave(customName);
+    if (!errorMessage) {
+      onSave(trimmedName);
+    }
   };
 
   const handleCreateClick = () => {
-    onCreate(customName.trim() ? customName : "undefined");
+    if (!errorMessage) {
+      onCreate(trimmedName || "undefined");
+    }
   };
+
+  const isSaveButtonEnabled = trimmedName && !isDuplicateName;
+  const isCreateButtonEnabled = !trimmedName && !isDuplicateName;
 
   return (
     <ModalBackground onClick={onCancel}>
@@ -31,10 +63,13 @@ const SaveModal = ({ onSave, onCreate, onCancel, title, description }) => {
           <div className="input-container">
             <input
               type="text"
-              placeholder="프로젝트 설정이름"
+              placeholder="프로젝트 설정 이름을 적어주세요..."
               value={customName}
               onChange={handleInputChange}
             />
+            {errorMessage && (
+              <span className="error-message-text">{errorMessage}</span>
+            )}
             <div className="info-text">{description}</div>
           </div>
         </div>
@@ -44,16 +79,16 @@ const SaveModal = ({ onSave, onCreate, onCancel, title, description }) => {
           </NoShadowButtonBox>
           <div className="save-button">
             <NoShadowButtonBox
-              variant={customName.trim() ? "disabled" : "active"}
+              variant={isCreateButtonEnabled ? "active" : "disabled"}
               onClick={handleCreateClick}
-              disabled={customName.trim()}
+              disabled={!isCreateButtonEnabled}
             >
               생성
             </NoShadowButtonBox>
             <NoShadowButtonBox
-              variant={customName.trim() ? "active" : "disabled"}
+              variant={isSaveButtonEnabled ? "active" : "disabled"}
               onClick={handleSaveClick}
-              disabled={!customName.trim()}
+              disabled={!isSaveButtonEnabled}
             >
               저장
             </NoShadowButtonBox>

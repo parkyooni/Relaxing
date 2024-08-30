@@ -45,6 +45,95 @@
           "type": "boolean"
         }
       ]
+    },
+    {
+      "name": "Preact",
+      "type": "boolean",
+      "option": [
+        {
+          "name": "TypeScript",
+          "value": "ts",
+          "type": "boolean"
+        },
+        {
+          "name": "Javascript",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "Lit",
+      "type": "boolean",
+      "option": [
+        {
+          "name": "TypeScript",
+          "value": "ts",
+          "type": "boolean"
+        },
+        {
+          "name": "Javascript",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "Svelte",
+      "type": "boolean",
+      "option": [
+        {
+          "name": "TypeScript",
+          "value": "ts",
+          "type": "boolean"
+        },
+        {
+          "name": "Javascript",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "Solid",
+      "type": "boolean",
+      "option": [
+        {
+          "name": "TypeScript",
+          "value": "ts",
+          "type": "boolean"
+        },
+        {
+          "name": "Javascript",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "Qwik",
+      "type": "boolean",
+      "option": [
+        {
+          "name": "TypeScript",
+          "value": "ts",
+          "type": "boolean"
+        },
+        {
+          "name": "Javascript",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "Others",
+      "type": "boolean",
+      "option": [
+        {
+          "name": "create-vite-extra",
+          "type": "boolean"
+        },
+        {
+          "name": "create-electron-vite",
+          "type": "boolean"
+        }
+      ]
     }
   ],
   "dependenciesSelector": [

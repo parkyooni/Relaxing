@@ -8,6 +8,7 @@ const initialState = {
   modalMessage: "",
   errorMessage: "",
   isErrorModalOpen: false,
+  existingProjectNames: [],
   activeTab: "dependencies",
   uiFlags: {
     isDropdownVisible: false,
@@ -93,6 +94,7 @@ const useUIStore = create(set => ({
     })),
 
   setErrorMessage: message => set({ errorMessage: message }),
+  setExistingProjectNames: names => set({ existingProjectNames: names }),
 
   toggleSection: section =>
     set(state => {

@@ -39,9 +39,12 @@ function App() {
   }));
 
   useEffect(() => {
+    const isElectron = !!window.process?.versions?.electron;
     const handleBeforeUnload = event => {
-      event.preventDefault();
-      event.returnValue = "";
+      if (!isElectron) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
