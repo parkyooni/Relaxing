@@ -1,4 +1,8 @@
-import { useEffect } from "react";
+import {
+  useEffect,
+  useRef,
+  useCallback
+} from "react";
 import {
   ProjectStarterContainer,
   PathInputContainer,
@@ -39,21 +43,30 @@ const ProjectStarter = () => {
   const { errorMessage, setErrorMessage } = useUIStore();
   const packageManagers = optionConfig.packageManagers;
 
-  const handlePathUpload = async () => {
-    try {
-      const selectedPath = await window.api.selectFolder();
-      if (selectedPath) {
-        setPath(selectedPath);
-        const fileList = await window.api.readDirectory(selectedPath);
-        if (fileList) {
-          setFiles(processFileList(fileList, selectedPath));
-        }
-      }
-    } catch (error) {
-      console.error("파일 업로드 중 오류 발생:", error);
-      setErrorMessage("파일 업로드 중 오류가 발생했습니다.");
+  const debounceRef = useRef(null);
+
+  const handlePathUpload = useCallback(async () => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
     }
-  };
+
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const selectedPath = await window.api.selectFolder();
+        if (selectedPath) {
+          setPath(selectedPath);
+
+          const fileList = await window.api.readDirectory(selectedPath);
+          if (fileList) {
+            const processedFiles = processFileList(fileList, selectedPath);
+            setFiles(processedFiles);
+          }
+        }
+      } catch (error) {
+        console.error("파일 업로드 중 오류 발생:", error);
+      }
+    }, 300);
+  }, [setPath, setFiles]);
 
   useEffect(() => {
     if (!selectedPackageManager && packageManagers.length > 0) {

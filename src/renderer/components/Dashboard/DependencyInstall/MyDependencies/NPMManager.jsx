@@ -94,8 +94,18 @@ const NPMManager = ({ showModal }) => {
   };
 
   const handleSearch = async () => {
+    if (searchQuery.length < 2) {
+      return;
+    }
+
     if (searchQuery) {
       const searchDependencyKeyword = await searchPackages(searchQuery);
+
+      if (searchDependencyKeyword.length === 0) {
+        setUIFlag("isDropdownVisible", false);
+        return;
+      }
+
       const searchData = searchDependencyKeyword.map(
         packages => `${packages.name} ${packages.version || ""}`
       );
