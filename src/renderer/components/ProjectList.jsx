@@ -101,15 +101,13 @@ const ProjectList = ({ showModal, showDeleteModal }) => {
                 )}
                 <span>{project.path}</span>
               </div>
-              <button>
-                <img
-                  src={icons.closeIcon}
-                  alt="Close Icon"
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleDeleteIconClick(project);
-                  }}
-                />
+              <button
+                onClick={e => {
+                  e.stopPropagation();
+                  handleDeleteIconClick(project);
+                }}
+              >
+                <img src={icons.closeIcon} alt="Close Icon" />
               </button>
             </li>
           ))}

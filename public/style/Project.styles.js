@@ -215,6 +215,11 @@ export const PageContentContainer = styled.div`
           }
         }
       }
+
+      button {
+        width: 3.125rem;
+        height: 3.125rem;
+      }
     }
   }
 
@@ -228,13 +233,7 @@ export const PageContentContainer = styled.div`
 
         .project-title{
           display: block;
-
-          span {
-            &:last-child {
-              min-width: 50%;
-              font-size: ${({ theme }) => theme.fontSizes.small};
-            }
-          }
+          padding: .3125rem 0;
         }
       }
     }

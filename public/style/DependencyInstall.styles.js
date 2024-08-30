@@ -7,7 +7,6 @@ import {
   ContainerStyle,
   ButtonContainerStyle
 } from "./utils.styles";
-import ButtonBox from "@components/common/ButtonBox";
 
 export const DependencyInstallContentContainer = styled(ContainerStyle)`
   .my-dependencies {
@@ -117,7 +116,7 @@ export const MyDependenciesContainer = styled.div`
 
           button {
             width: 10%;
-            min-width: 1.875rem;
+            height: 3.125rem;
           }
         }
       }
@@ -169,6 +168,7 @@ export const PackageListContainer = styled.div.withConfig({
   border-top: 1px dashed ${({ theme }) => theme.colors.lightMain};
   background-color: ${({ theme }) => theme.colors.white};
   overflow-y: auto;
+  overflow-x: hidden;
   border-radius: ${({ isNotFound, theme }) =>
     isNotFound
       ? `0 0 ${theme.borderRadius.small} ${theme.borderRadius.small}`
@@ -188,23 +188,23 @@ export const PackageListItem = styled.div.withConfig({
   border-bottom: 1px dashed ${({ theme }) => theme.colors.lightMain};
   background-color: ${({ isSelected, theme }) =>
     isSelected ? theme.colors.action : theme.colors.white};
+  white-space: wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   cursor: pointer;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.action};
   }
 
-  &.selected {
-    color: ${({ theme }) => theme.colors.white};
-    background-color: ${({ theme }) => theme.colors.action};
+  ${({ isSelected, theme }) =>
+    isSelected &&
+    `
+    color: ${theme.colors.white};
     font-weight: bold;
-  }
+  `}
 `;
 
 export const ButtonContainer = styled(ButtonContainerStyle)`
-  ${ButtonBox} {
-    &.active {
-      color: ${({ theme }) => theme.colors.white};
-    }
-  }
+  justify-content: flex-end;
 `;

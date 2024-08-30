@@ -6,7 +6,7 @@ import {
   PackageListItem,
   ButtonContainer
 } from "@public/style/DependencyInstall.styles";
-import ButtonBox from "@components/common/ButtonBox";
+import { NoShadowButtonBox } from "@public/style/Modal.styles";
 import Loading from "@components/common/Loading";
 import useUIStore from "@/store/uiStore";
 import useDashboardStore from "@/store/dashboardStore";
@@ -201,9 +201,7 @@ const NPMManager = ({ showModal }) => {
                 <PackageListItem
                   key={packageItem}
                   onClick={() => handleSearchKeywordClick(packageItem)}
-                  className={
-                    packageItem === selectedPackageItem ? "selected" : ""
-                  }
+                  isSelected={packageItem === selectedPackageItem}
                 >
                   {packageItem}
                 </PackageListItem>
@@ -214,16 +212,13 @@ const NPMManager = ({ showModal }) => {
 
         {isDropdownVisible && packageItems.length > 0 && (
           <ButtonContainer>
-            <ButtonBox variant="active" onClick={handleSearch}>
-              검색
-            </ButtonBox>
-            <ButtonBox
+            <NoShadowButtonBox
               variant={selectedPackageItem ? "active" : "disabled"}
               disabled={!selectedPackageItem}
               onClick={handleInstall}
             >
               Install
-            </ButtonBox>
+            </NoShadowButtonBox>
           </ButtonContainer>
         )}
       </NPMManagerContainer>
