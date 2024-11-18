@@ -119,8 +119,14 @@ const initializeProjectDirectories = () => {
   }
 
   const projectPath = path.join(savePath, "rlxproject.json");
+
+  if (!fs.existsSync(projectPath)) {
+    fs.writeFileSync(projectPath, JSON.stringify([]), "utf-8");
+  }
+
   return projectPath;
 };
+
 
 const projectPath = initializeProjectDirectories();
 
