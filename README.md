@@ -12,7 +12,7 @@ Relaxing은 프로젝트를 쉽게 만들고 배포할 수 있도록 도와주�
 </p>
 
 <p align="center">
- 일렉트론 실행 <br/> GitHub Repo - <a href="https://github.com/parkyooni/Relaxing" target="_blank">Clint<br/>
+ 일렉트론 실행 <br/> GitHub Repo - <a href="https://github.com/parkyooni/Relaxing" target="_blank">Client<br/>
  <div align="center">
   <img src="https://img.shields.io/badge/Electron-222222?style=for-the-badge">
   <img src="https://img.shields.io/badge/react-222222?style=for-the-badge">
@@ -84,9 +84,8 @@ Relaxing은 프로젝트를 쉽게 만들고 배포할 수 있도록 도와주�
 
 ### [일렉트론 포지 선택]
 
-> 일렉트론은 두 가지 형태로 제공됩니다. 일렉트론 데스크톱 애플리케이션을 패키징하고 배포하기 쉽게 올인원으로 구성된 Electron Forge를 사용하여 초기 세팅을 진행합니다.
->
-> 또한, 사용자의 PC 로컬 환경에 접근하는 프로젝트로서, 일렉트론의 내장 기능인 프로세스 간 통신(IPC)을 통해 메인 프로세스와 렌더러 간의 통신 방식을 채택하여 사용자 PC 환경에 대한 간편성을 의도하였습니다.
+> - Electron Forge를 활용하여 초기 세팅 및 실행 파일 생성 프로세스를 자동화
+> - IPC 통신을 통해 로컬 PC 환경과의 인터페이스를 구현, 사용자 경험 강화
 
 #### 기능 구체화 <br/>
 
